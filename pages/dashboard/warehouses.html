@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المخازن - نظام إدارة المخازن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: var(--dark);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        
+        .sidebar-menu ul {
+            list-style: none;
+        }
+        
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            padding-right: 25px;
+        }
+        
+        .sidebar-menu li a i {
+            margin-left: 10px;
+        }
+        
+        .sidebar-menu li.active a {
+            background: var(--primary);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #d35400;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        /* Warehouse Card Styles */
+        .warehouse-card {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+        
+        .warehouse-card .card-header {
+            background-color: #f8f9fa;
+        }
+        
+        .warehouse-details {
+            padding: 15px;
+        }
+        
+        .warehouse-details p {
+            margin-bottom: 10px;
+        }
+        
+        .warehouse-managers {
+            margin-top: 15px;
+        }
+        
+        .manager-card {
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .manager-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        
+        /* Grid Layout */
+        .warehouses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-dialog {
+            background: white;
+            margin: 5% auto;
+            width: 600px;
+            max-width: 90%;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--primary);
+            color: white;
+        }
+        
+        .modal-header .close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            background: #f9f9f9;
+            text-align: left;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        /* Manager Selection */
+        .manager-selection {
+            margin-top: 20px;
+        }
+        
+        .manager-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        
+        .manager-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .manager-item:last-child {
+            border-bottom: none;
+        }
+        
+        .manager-item input {
+            margin-left: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .warehouses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>نظام إدارة المخازن</h3>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> لوحة التحكم</a></li>
+                    <li class="active"><a href="warehouses.html"><i class="fas fa-warehouse"></i> إدارة المخازن</a></li>
+                    <li><a href="stockkeepers.html"><i class="fas fa-user-shield"></i> أمناء المخازن</a></li>
+                    <li><a href="items.html"><i class="fas fa-boxes"></i> إدارة الأصناف</a></li>
+                    <li><a href="categories.html"><i class="fas fa-tags"></i> إدارة الأقسام</a></li>
+                    <li><a href="suppliers.html"><i class="fas fa-truck"></i> إدارة الموردين</a></li>
+                    <li><a href="custody.html"><i class="fas fa-hand-holding"></i> إدارة العهدة</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
+                    <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
+                    <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2>إدارة المخازن</h2>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40" alt="User">
+                    <span>أمين المخزن</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>قائمة المخازن</h3>
+                    <button class="btn btn-primary" id="addWarehouseBtn">
+                        <i class="fas fa-plus"></i> إضافة مخزن جديد
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="warehouses-grid" id="warehousesGrid">
+                        <!-- Warehouses will be loaded here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Warehouse Modal -->
+    <div id="warehouseModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="modalTitle">إضافة مخزن جديد</h4>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="warehouseForm">
+                        <input type="hidden" id="warehouseId">
+                        <div class="form-group">
+                            <label for="warehouseName">اسم المخزن</label>
+                            <input type="text" id="warehouseName" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="warehouseLocation">الموقع</label>
+                                <input type="text" id="warehouseLocation" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="warehouseCode">كود المخزن</label>
+                                <input type="text" id="warehouseCode" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="warehouseDescription">الوصف (اختياري)</label>
+                            <textarea id="warehouseDescription" class="form-control" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="manager-selection">
+                            <h5>أمناء المخزن</h5>
+                            <div class="form-group">
+                                <input type="text" id="managerSearch" class="form-control" placeholder="ابحث عن الموظفين...">
+                            </div>
+                            <div class="manager-list" id="managerList">
+                                <!-- Managers will be loaded here dynamically -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="saveWarehouseBtn" class="btn btn-primary">حفظ</button>
+                    <button type="button" id="cancelWarehouseBtn" class="btn btn-danger">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-dialog" style="max-width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>تأكيد الحذف</h4>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmMessage">هل أنت متأكد من حذف هذا المخزن؟ سيتم حذف جميع البيانات المرتبطة به.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">حذف</button>
+                    <button type="button" id="cancelDeleteBtn" class="btn btn-secondary">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const addWarehouseBtn = document.getElementById('addWarehouseBtn');
+            const warehouseModal = document.getElementById('warehouseModal');
+            const confirmModal = document.getElementById('confirmModal');
+            const warehouseForm = document.getElementById('warehouseForm');
+            const warehousesGrid = document.getElementById('warehousesGrid');
+            const saveWarehouseBtn = document.getElementById('saveWarehouseBtn');
+            const cancelWarehouseBtn = document.getElementById('cancelWarehouseBtn');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+            const closeButtons = document.querySelectorAll('.close');
+            
+            // Sample Data (in a real app, this would come from an API)
+            let employees = [
+                { id: 1, name: 'أحمد محمد', email: 'ahmed@example.com', phone: '01012345678', position: 'أمين مخزن' },
+                { id: 2, name: 'محمد علي', email: 'mohamed@example.com', phone: '01023456789', position: 'مساعد أمين مخزن' },
+                { id: 3, name: 'سارة عبدالله', email: 'sara@example.com', phone: '01034567890', position: 'مدير مخازن' }
+            ];
+            
+            let warehouses = [
+                { 
+                    id: 1, 
+                    name: 'المخزن الرئيسي', 
+                    code: 'WH-001', 
+                    location: 'المبنى الرئيسي - الطابق الأول', 
+                    description: 'المخزن الرئيسي للمؤسسة', 
+                    createdAt: '2023-03-15',
+                    managers: [1]
+                },
+                { 
+                    id: 2, 
+                    name: 'مخزن المواد المكتبية', 
+                    code: 'WH-002', 
+                    location: 'المبنى الإداري - الطابق الأرضي', 
+                    description: 'يحتوي على المواد المكتبية والقرطاسية', 
+                    createdAt: '2023-04-10',
+                    managers: [2]
+                },
+                { 
+                    id: 3, 
+                    name: 'مخزن الأجهزة الإلكترونية', 
+                    code: 'WH-003', 
+                    location: 'المبنى الفني - الطابق الثاني', 
+                    description: 'يحتوي على الأجهزة الإلكترونية والكمبيوترات', 
+                    createdAt: '2023-05-20',
+                    managers: [1, 3]
+                }
+            ];
+            
+            // Current state
+            let currentWarehouseId = null;
+            let warehouseToDelete = null;
+            
+            // Initialize the app
+            function init() {
+                renderWarehouses();
+                loadManagers();
+                setupEventListeners();
+            }
+            
+            // Render warehouses grid
+            function renderWarehouses() {
+                warehousesGrid.innerHTML = '';
+                
+                if (warehouses.length === 0) {
+                    warehousesGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;">لا توجد مخازن مسجلة</p>';
+                    return;
+                }
+                
+                warehouses.forEach(warehouse => {
+                    const warehouseCard = document.createElement('div');
+                    warehouseCard.className = 'warehouse-card card';
+                    
+                    // Get managers for this warehouse
+                    const warehouseManagers = employees.filter(emp => 
+                        warehouse.managers.includes(emp.id)
+                    );
+                    
+                    warehouseCard.innerHTML = `
+                        <div class="card-header">
+                            <h4>${warehouse.name}</h4>
+                            <div>
+                                <button class="btn btn-sm btn-primary edit-btn" data-id="${warehouse.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-btn" data-id="${warehouse.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="warehouse-details">
+                            <p><strong>الكود:</strong> ${warehouse.code}</p>
+                            <p><strong>الموقع:</strong> ${warehouse.location}</p>
+                            <p><strong>تاريخ الإنشاء:</strong> ${formatDate(warehouse.createdAt)}</p>
+                            ${warehouse.description ? `<p><strong>الوصف:</strong> ${warehouse.description}</p>` : ''}
+                            
+                            <div class="warehouse-managers">
+                                <h5>أمناء المخزن:</h5>
+                                ${warehouseManagers.map(manager => `
+                                    <div class="manager-card">
+                                        <strong>${manager.name}</strong>
+                                        <p>${manager.email} - ${manager.phone}</p>
+                                        <p>${manager.position}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    warehousesGrid.appendChild(warehouseCard);
+                });
+            }
+            
+            // Load managers into selection list
+            function loadManagers() {
+                const managerList = document.getElementById('managerList');
+                managerList.innerHTML = '';
+                
+                employees.forEach(employee => {
+                    const div = document.createElement('div');
+                    div.className = 'manager-item';
+                    div.innerHTML = `
+                        <input type="checkbox" id="emp-${employee.id}" value="${employee.id}">
+                        <label for="emp-${employee.id}">
+                            ${employee.name} - ${employee.position} (${employee.email})
+                        </label>
+                    `;
+                    managerList.appendChild(div);
+                });
+            }
+            
+            // Format date for display
+            function formatDate(dateString) {
+                if (!dateString) return '-';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ar-EG');
+            }
+            
+            // Setup event listeners
+            function setupEventListeners() {
+                // Add warehouse button
+                addWarehouseBtn.addEventListener('click', openAddWarehouseModal);
+                
+                // Save warehouse button
+                saveWarehouseBtn.addEventListener('click', saveWarehouse);
+                
+                // Cancel warehouse button
+                cancelWarehouseBtn.addEventListener('click', closeWarehouseModal);
+                
+                // Confirm delete button
+                confirmDeleteBtn.addEventListener('click', deleteWarehouse);
+                
+                // Cancel delete button
+                cancelDeleteBtn.addEventListener('click', closeConfirmModal);
+                
+                // Close buttons
+                closeButtons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (warehouseModal.style.display === 'block') {
+                            closeWarehouseModal();
+                        } else if (confirmModal.style.display === 'block') {
+                            closeConfirmModal();
+                        }
+                    });
+                });
+                
+                // Warehouse grid events (delegated)
+                warehousesGrid.addEventListener('click', function(e) {
+                    // Edit button
+                    if (e.target.classList.contains('edit-btn') || 
+                        e.target.parentElement.classList.contains('edit-btn')) {
+                        const btn = e.target.classList.contains('edit-btn') ? 
+                            e.target : e.target.parentElement;
+                        currentWarehouseId = parseInt(btn.dataset.id);
+                        openEditWarehouseModal(currentWarehouseId);
+                    }
+                    
+                    // Delete button
+                    else if (e.target.classList.contains('delete-btn') || 
+                             e.target.parentElement.classList.contains('delete-btn')) {
+                        const btn = e.target.classList.contains('delete-btn') ? 
+                            e.target : e.target.parentElement;
+                        warehouseToDelete = parseInt(btn.dataset.id);
+                        openConfirmModal(warehouseToDelete);
+                    }
+                });
+                
+                // Close modals when clicking outside
+                window.addEventListener('click', function(e) {
+                    if (e.target === warehouseModal) {
+                        closeWarehouseModal();
+                    } else if (e.target === confirmModal) {
+                        closeConfirmModal();
+                    }
+                });
+            }
+            
+            // Open modal for adding a new warehouse
+            function openAddWarehouseModal() {
+                currentWarehouseId = null;
+                document.getElementById('modalTitle').textContent = 'إضافة مخزن جديد';
+                warehouseForm.reset();
+                
+                // Generate warehouse code
+                document.getElementById('warehouseCode').value = 
+                    `WH-${(warehouses.length + 1).toString().padStart(3, '0')}`;
+                
+                // Set today's date as default
+                document.getElementById('warehouseCreatedAt').valueAsDate = new Date();
+                
+                // Uncheck all managers
+                document.querySelectorAll('#managerList input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Show modal
+                warehouseModal.style.display = 'block';
+            }
+            
+            // Open modal for editing a warehouse
+            function openEditWarehouseModal(warehouseId) {
+                const warehouse = warehouses.find(w => w.id === warehouseId);
+                if (!warehouse) return;
+                
+                document.getElementById('modalTitle').textContent = 'تعديل المخزن';
+                currentWarehouseId = warehouseId;
+                
+                // Fill the form
+                document.getElementById('warehouseName').value = warehouse.name;
+                document.getElementById('warehouseCode').value = warehouse.code;
+                document.getElementById('warehouseLocation').value = warehouse.location;
+                document.getElementById('warehouseDescription').value = warehouse.description || '';
+                
+                // Check managers
+                document.querySelectorAll('#managerList input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = warehouse.managers.includes(parseInt(checkbox.value));
+                });
+                
+                // Show modal
+                warehouseModal.style.display = 'block';
+            }
+            
+            // Open confirmation modal for deletion
+            function openConfirmModal(warehouseId) {
+                const warehouse = warehouses.find(w => w.id === warehouseId);
+                if (!warehouse) return;
+                
+                document.getElementById('confirmMessage').textContent = 
+                    `هل أنت متأكد من حذف المخزن "${warehouse.name}"؟ سيتم حذف جميع البيانات المرتبطة به.`;
+                
+                confirmModal.style.display = 'block';
+            }
+            
+            // Close warehouse modal
+            function closeWarehouseModal() {
+                warehouseModal.style.display = 'none';
+                currentWarehouseId = null;
+            }
+            
+            // Close confirmation modal
+            function closeConfirmModal() {
+                confirmModal.style.display = 'none';
+                warehouseToDelete = null;
+            }
+            
+            // Save warehouse (add or edit)
+            function saveWarehouse() {
+                const name = document.getElementById('warehouseName').value.trim();
+                const code = document.getElementById('warehouseCode').value.trim();
+                const location = document.getElementById('warehouseLocation').value.trim();
+                const description = document.getElementById('warehouseDescription').value.trim();
+                
+                // Validate form
+                if (!name || !code || !location) {
+                    alert('الرجاء إدخال جميع الحقول المطلوبة');
+                    return;
+                }
+                
+                // Get selected managers
+                const selectedManagers = [];
+                document.querySelectorAll('#managerList input[type="checkbox"]:checked').forEach(checkbox => {
+                    selectedManagers.push(parseInt(checkbox.value));
+                });
+                
+                if (selectedManagers.length === 0) {
+                    alert('الرجاء اختيار أمين مخزن واحد على الأقل');
+                    return;
+                }
+                
+                if (currentWarehouseId) {
+                    // Edit existing warehouse
+                    const index = warehouses.findIndex(w => w.id === currentWarehouseId);
+                    if (index !== -1) {
+                        warehouses[index] = {
+                            ...warehouses[index],
+                            name,
+                            code,
+                            location,
+                            description,
+                            managers: selectedManagers
+                        };
+                    }
+                } else {
+                    // Add new warehouse
+                    const newWarehouse = {
+                        id: warehouses.length > 0 ? Math.max(...warehouses.map(w => w.id)) + 1 : 1,
+                        name,
+                        code,
+                        location,
+                        description,
+                        createdAt: new Date().toISOString().split('T')[0],
+                        managers: selectedManagers
+                    };
+                    warehouses.push(newWarehouse);
+                }
+                
+                // Update UI
+                renderWarehouses();
+                closeWarehouseModal();
+                
+                alert(`تم ${currentWarehouseId ? 'تعديل' : 'إضافة'} المخزن بنجاح`);
+            }
+            
+            // Delete warehouse
+            function deleteWarehouse() {
+                if (!warehouseToDelete) return;
+                
+                // Remove the warehouse
+                warehouses = warehouses.filter(w => w.id !== warehouseToDelete);
+                
+                // Update UI
+                renderWarehouses();
+                closeConfirmModal();
+                
+                alert('تم حذف المخزن بنجاح');
+                warehouseToDelete = null;
+            }
+            
+            // Initialize the app
+            init();
+        });
+    </script>
+</body>
+</html>

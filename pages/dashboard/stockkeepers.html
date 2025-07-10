@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة أمناء المخازن - نظام إدارة المخازن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #fff;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background-color: #1a252f;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        
+        .sidebar-menu ul {
+            list-style: none;
+        }
+        
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: #b8c7ce;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu li a:hover {
+            color: #fff;
+            background-color: #1e282c;
+        }
+        
+        .sidebar-menu li a i {
+            margin-left: 10px;
+        }
+        
+        .sidebar-menu .active a {
+            color: #fff;
+            background-color: #3c8dbc;
+        }
+        
+        .main-content {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .header {
+            padding: 15px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        
+        table th {
+            background-color: #f9f9f9;
+            font-weight: 500;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #3c8dbc;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #367fa9;
+        }
+        
+        .btn-danger {
+            background-color: #dd4b39;
+            color: #fff;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c23321;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .employee-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 50%;
+            max-width: 600px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+        }
+        
+        .close {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        .modal-body {
+            padding: 20px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .select-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        .modal-footer {
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: left;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .modal-content {
+                width: 90%;
+                margin: 10% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>نظام إدارة المخازن</h3>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> لوحة التحكم</a></li>
+                    <li><a href="warehouses.html"><i class="fas fa-warehouse"></i> إدارة المخازن</a></li>
+                    <li class="active"><a href="stockkeepers.html"><i class="fas fa-user-shield"></i> أمناء المخازن</a></li>
+                    <li><a href="items.html"><i class="fas fa-boxes"></i> إدارة الأصناف</a></li>
+                    <li><a href="categories.html"><i class="fas fa-tags"></i> إدارة الأقسام</a></li>
+                    <li><a href="suppliers.html"><i class="fas fa-truck"></i> إدارة الموردين</a></li>
+                    <li><a href="custody.html"><i class="fas fa-hand-holding"></i> إدارة العهدة</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
+                    <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
+                    <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <h2>إدارة أمناء المخازن</h2>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40" alt="User">
+                    <span>مدير النظام</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>قائمة أمناء المخازن</h3>
+                    <button class="btn btn-primary" id="addStockKeeperBtn">إضافة أمين مخزن</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="stockKeepersTable">
+                            <thead>
+                                <tr>
+                                    <th>الصورة</th>
+                                    <th>الاسم</th>
+                                    <th>المخزن المسؤول عنه</th>
+                                    <th>تاريخ التعيين</th>
+                                    <th>حالة الحساب</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockKeepersList">
+                                <!-- Stock keepers will be added here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Stock Keeper Modal -->
+    <div id="stockKeeperModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">إضافة أمين مخزن جديد</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="stockKeeperForm">
+                    <input type="hidden" id="stockKeeperId">
+                    <div class="form-group">
+                        <label for="keeperName">الاسم الكامل</label>
+                        <input type="text" class="form-control" id="keeperName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="keeperEmail">البريد الإلكتروني</label>
+                        <input type="email" class="form-control" id="keeperEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="keeperPhone">رقم الهاتف</label>
+                        <input type="tel" class="form-control" id="keeperPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="warehouse">المخزن المسؤول عنه</label>
+                        <select class="select-control" id="warehouse" required>
+                            <option value="">اختر المخزن</option>
+                            <option value="1">المخزن الرئيسي</option>
+                            <option value="2">مخزن المواد الخام</option>
+                            <option value="3">مخزن المنتجات النهائية</option>
+                            <option value="4">مخزن الأدوات</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="hireDate">تاريخ التعيين</label>
+                        <input type="date" class="form-control" id="hireDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">حالة الحساب</label>
+                        <select class="select-control" id="status" required>
+                            <option value="active">نشط</option>
+                            <option value="inactive">غير نشط</option>
+                            <option value="suspended">موقوف</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">اسم المستخدم</label>
+                        <input type="text" class="form-control" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">كلمة المرور</label>
+                        <input type="password" class="form-control" id="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="keeperImage">صورة أمين المخزن</label>
+                        <input type="file" class="form-control" id="keeperImage" accept="image/*">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveStockKeeperBtn">حفظ</button>
+                <button type="button" class="btn btn-danger" id="cancelStockKeeperBtn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="width: 400px;">
+            <div class="modal-header">
+                <h3>تأكيد الحذف</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>هل أنت متأكد أنك تريد حذف هذا المسؤول؟</p>
+                <input type="hidden" id="deleteStockKeeperId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
+                <button type="button" class="btn btn-primary" id="cancelDeleteBtn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for stock keepers
+        let stockKeepers = [
+            {
+                id: 1,
+                name: "أحمد محمد",
+                email: "ahmed@example.com",
+                phone: "01012345678",
+                warehouseId: 1,
+                warehouseName: "المخزن الرئيسي",
+                hireDate: "15/01/2020",
+                status: "active",
+                username: "ahmed_mohamed",
+                image: "https://via.placeholder.com/50"
+            },
+            {
+                id: 2,
+                name: "محمد علي",
+                email: "mohamed@example.com",
+                phone: "01123456789",
+                warehouseId: 2,
+                warehouseName: "مخزن المواد الخام",
+                hireDate: "10/05/2019",
+                status: "active",
+                username: "mohamed_ali",
+                image: "https://via.placeholder.com/50"
+            }
+        ];
+
+        // Sample warehouses data
+        const warehouses = [
+            { id: 1, name: "المخزن الرئيسي" },
+            { id: 2, name: "مخزن المواد الخام" },
+            { id: 3, name: "مخزن المنتجات النهائية" },
+            { id: 4, name: "مخزن الأدوات" }
+        ];
+
+        // DOM Elements
+        const stockKeepersList = document.getElementById('stockKeepersList');
+        const addStockKeeperBtn = document.getElementById('addStockKeeperBtn');
+        const stockKeeperModal = document.getElementById('stockKeeperModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const stockKeeperForm = document.getElementById('stockKeeperForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const saveStockKeeperBtn = document.getElementById('saveStockKeeperBtn');
+        const cancelStockKeeperBtn = document.getElementById('cancelStockKeeperBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const deleteStockKeeperId = document.getElementById('deleteStockKeeperId');
+        const closeButtons = document.getElementsByClassName('close');
+
+        // Current stock keeper ID for editing
+        let currentStockKeeperId = null;
+
+        // Display stock keepers in the table
+        function displayStockKeepers() {
+            stockKeepersList.innerHTML = '';
+            
+            stockKeepers.forEach(keeper => {
+                // Get status badge class
+                let statusClass = '';
+                switch(keeper.status) {
+                    case 'active':
+                        statusClass = 'badge-success';
+                        break;
+                    case 'inactive':
+                        statusClass = 'badge-warning';
+                        break;
+                    case 'suspended':
+                        statusClass = 'badge-danger';
+                        break;
+                    default:
+                        statusClass = 'badge-secondary';
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${keeper.image}" class="employee-avatar" alt="${keeper.name}"></td>
+                    <td>${keeper.name}</td>
+                    <td>${keeper.warehouseName}</td>
+                    <td>${keeper.hireDate}</td>
+                    <td><span class="badge ${statusClass}">${getStatusText(keeper.status)}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary edit-btn" data-id="${keeper.id}"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${keeper.id}"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                stockKeepersList.appendChild(row);
+            });
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.closest('.edit-btn').getAttribute('data-id'));
+                    editStockKeeper(id);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.closest('.delete-btn').getAttribute('data-id'));
+                    showDeleteModal(id);
+                });
+            });
+        }
+
+        // Get status text in Arabic
+        function getStatusText(status) {
+            switch(status) {
+                case 'active':
+                    return 'نشط';
+                case 'inactive':
+                    return 'غير نشط';
+                case 'suspended':
+                    return 'موقوف';
+                default:
+                    return status;
+            }
+        }
+
+        // Show add stock keeper modal
+        function showAddModal() {
+            currentStockKeeperId = null;
+            modalTitle.textContent = 'إضافة أمين مخزن جديد';
+            stockKeeperForm.reset();
+            document.getElementById('password').required = true;
+            stockKeeperModal.style.display = 'block';
+        }
+
+        // Show edit stock keeper modal
+        function editStockKeeper(id) {
+            const keeper = stockKeepers.find(k => k.id === id);
+            if (keeper) {
+                currentStockKeeperId = id;
+                modalTitle.textContent = 'تعديل بيانات أمين المخزن';
+                
+                // Convert date from dd/mm/yyyy to yyyy-mm-dd for input
+                const [day, month, year] = keeper.hireDate.split('/');
+                const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                
+                document.getElementById('stockKeeperId').value = keeper.id;
+                document.getElementById('keeperName').value = keeper.name;
+                document.getElementById('keeperEmail').value = keeper.email;
+                document.getElementById('keeperPhone').value = keeper.phone;
+                document.getElementById('warehouse').value = keeper.warehouseId;
+                document.getElementById('hireDate').value = formattedDate;
+                document.getElementById('status').value = keeper.status;
+                document.getElementById('username').value = keeper.username;
+                document.getElementById('password').required = false;
+                
+                stockKeeperModal.style.display = 'block';
+            }
+        }
+
+        // Save stock keeper (add or update)
+        function saveStockKeeper() {
+            const id = currentStockKeeperId || stockKeepers.length > 0 ? Math.max(...stockKeepers.map(k => k.id)) + 1 : 1;
+            const name = document.getElementById('keeperName').value;
+            const email = document.getElementById('keeperEmail').value;
+            const phone = document.getElementById('keeperPhone').value;
+            const warehouseId = document.getElementById('warehouse').value;
+            const hireDate = document.getElementById('hireDate').value;
+            const status = document.getElementById('status').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Get warehouse name
+            const warehouse = warehouses.find(w => w.id == warehouseId);
+            const warehouseName = warehouse ? warehouse.name : '';
+            
+            // Convert date from yyyy-mm-dd to dd/mm/yyyy
+            const [year, month, day] = hireDate.split('-');
+            const formattedDate = `${day}/${month}/${year}`;
+            
+            const imageInput = document.getElementById('keeperImage');
+            let imageUrl = "https://via.placeholder.com/50";
+            
+            if (imageInput.files && imageInput.files[0]) {
+                // In a real app, you would upload the image to a server
+                // For this demo, we'll just use a placeholder
+                imageUrl = URL.createObjectURL(imageInput.files[0]);
+            }
+            
+            if (currentStockKeeperId) {
+                // Update existing stock keeper
+                const index = stockKeepers.findIndex(k => k.id === currentStockKeeperId);
+                if (index !== -1) {
+                    stockKeepers[index] = {
+                        ...stockKeepers[index],
+                        name,
+                        email,
+                        phone,
+                        warehouseId,
+                        warehouseName,
+                        hireDate: formattedDate,
+                        status,
+                        username,
+                        image: imageInput.files && imageInput.files[0] ? imageUrl : stockKeepers[index].image
+                    };
+                    
+                    // Update password if provided
+                    if (password) {
+                        // In a real app, you would hash the password before saving
+                        console.log('Password updated for keeper:', stockKeepers[index].name);
+                    }
+                }
+            } else {
+                // Add new stock keeper
+                stockKeepers.push({
+                    id,
+                    name,
+                    email,
+                    phone,
+                    warehouseId,
+                    warehouseName,
+                    hireDate: formattedDate,
+                    status,
+                    username,
+                    image: imageUrl
+                });
+                
+                // In a real app, you would hash the password before saving
+                if (password) {
+                    console.log('Password set for new keeper:', name);
+                }
+            }
+            
+            stockKeeperModal.style.display = 'none';
+            displayStockKeepers();
+        }
+
+        // Show delete confirmation modal
+        function showDeleteModal(id) {
+            deleteStockKeeperId.value = id;
+            deleteModal.style.display = 'block';
+        }
+
+        // Delete stock keeper
+        function deleteStockKeeper() {
+            const id = parseInt(deleteStockKeeperId.value);
+            stockKeepers = stockKeepers.filter(k => k.id !== id);
+            deleteModal.style.display = 'none';
+            displayStockKeepers();
+        }
+
+        // Event Listeners
+        addStockKeeperBtn.addEventListener('click', showAddModal);
+        
+        saveStockKeeperBtn.addEventListener('click', saveStockKeeper);
+        
+        cancelStockKeeperBtn.addEventListener('click', () => {
+            stockKeeperModal.style.display = 'none';
+        });
+        
+        confirmDeleteBtn.addEventListener('click', deleteStockKeeper);
+        
+        cancelDeleteBtn.addEventListener('click', () => {
+            deleteModal.style.display = 'none';
+        });
+        
+        // Close modals when clicking on X
+        Array.from(closeButtons).forEach(btn => {
+            btn.addEventListener('click', function() {
+                const modal = this.closest('.modal');
+                modal.style.display = 'none';
+            });
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === stockKeeperModal) {
+                stockKeeperModal.style.display = 'none';
+            }
+            if (e.target === deleteModal) {
+                deleteModal.style.display = 'none';
+            }
+        });
+
+        // Initialize the page
+        displayStockKeepers();
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - نظام إدارة المخازن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>نظام إدارة المخازن</h3>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li class="active"><a href="index.html"><i class="fas fa-home"></i> لوحة التحكم</a></li>
+                    <li><a href="warehouses.html"><i class="fas fa-warehouse"></i> إدارة المخازن</a></li>
+                    <li><a href="stockkeepers.html"><i class="fas fa-user-shield"></i> أمناء المخازن</a></li>
+                    <li><a href="items.html"><i class="fas fa-boxes"></i> إدارة الأصناف</a></li>
+                    <li><a href="categories.html"><i class="fas fa-tags"></i> إدارة الأقسام</a></li>
+                    <li><a href="suppliers.html"><i class="fas fa-truck"></i> إدارة الموردين</a></li>
+                    <li><a href="custody.html"><i class="fas fa-hand-holding"></i> إدارة العهدة</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
+                    <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
+                    <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2>لوحة التحكم</h2>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40" alt="User">
+                    <span>أمين المخزن</span>
+                </div>
+            </div>
+            
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="card-header">
+                        <h3>عدد المخازن</h3>
+                        <i class="fas fa-warehouse"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>5</h2>
+                    </div>
+                </div>
+                <!-- Other stat cards... -->
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>آخر الأصناف المضافة</h3>
+                    <a href="items.html" class="btn btn-primary btn-sm">عرض الكل</a>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الصورة</th>
+                                <th>كود الصنف</th>
+                                <th>اسم الصنف</th>
+                                <th>القسم</th>
+                                <th>الحالة</th>
+                                <th>الكمية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/60" class="item-img"></td>
+                                <td>ITM-1001</td>
+                                <td>كمبيوتر محمول</td>
+                                <td>أجهزة إلكترونية</td>
+                                <td><span class="badge badge-success">جديد</span></td>
+                                <td>15</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

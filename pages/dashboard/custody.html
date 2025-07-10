@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة العهدة - نظام إدارة المخازن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: var(--dark);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        
+        .sidebar-menu ul {
+            list-style: none;
+        }
+        
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            padding-right: 25px;
+        }
+        
+        .sidebar-menu li a i {
+            margin-left: 10px;
+        }
+        
+        .sidebar-menu li.active a {
+            background: var(--primary);
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #d35400;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        /* Status Indicators */
+        .custody-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        
+        .status-active {
+            background-color: var(--secondary);
+        }
+        
+        .status-returned {
+            background-color: var(--primary);
+        }
+        
+        .status-overdue {
+            background-color: var(--danger);
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .tab.active:after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-dialog {
+            background: white;
+            margin: 5% auto;
+            width: 700px;
+            max-width: 90%;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--primary);
+            color: white;
+        }
+        
+        .modal-header .close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            background: #f9f9f9;
+            text-align: left;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        /* Item Selection */
+        .item-selection {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .item-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        
+        .item-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .item-checkbox:last-child {
+            border-bottom: none;
+        }
+        
+        .item-checkbox input {
+            margin-left: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>نظام إدارة المخازن</h3>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> لوحة التحكم</a></li>
+                    <li><a href="warehouses.html"><i class="fas fa-warehouse"></i> إدارة المخازن</a></li> 
+                    <li><a href="stockkeepers.html"><i class="fas fa-user-shield"></i> أمناء المخازن</a></li>
+                    <li><a href="items.html"><i class="fas fa-boxes"></i> إدارة الأصناف</a></li>
+                    <li><a href="categories.html"><i class="fas fa-tags"></i> إدارة الأقسام</a></li>
+                    <li><a href="suppliers.html"><i class="fas fa-truck"></i> إدارة الموردين</a></li>
+                    <li class="active"><a href="custody.html"><i class="fas fa-hand-holding"></i> إدارة العهدة</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
+                    <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
+                    <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2>إدارة العهدة</h2>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40" alt="User">
+                    <span>أمين المخزن</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="tabs">
+                    <div class="tab active" data-tab="active">العهد النشطة</div>
+                    <div class="tab" data-tab="returned">العهد المرجعة</div>
+                </div>
+                
+                <div class="card-header">
+                    <h3 id="custodyTitle">العهد النشطة</h3>
+                    <button class="btn btn-primary" id="assignCustodyBtn">
+                        <i class="fas fa-plus"></i> تسليم عهدة جديدة
+                    </button>
+                </div>
+                
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="custodyTable">
+                            <thead>
+                                <tr>
+                                    <th>كود العهدة</th>
+                                    <th>الصنف</th>
+                                    <th>المستلم</th>
+                                    <th>تاريخ التسليم</th>
+                                    <th>تاريخ الاستلام</th>
+                                    <th>الحالة</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="custodyTableBody">
+                                <!-- Data will be loaded here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Assign Custody Modal -->
+    <div id="assignCustodyModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>تسليم عهدة جديدة</h4>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="custodyForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="employeeSelect">الموظف</label>
+                                <select id="employeeSelect" class="form-control" required>
+                                    <option value="">اختر الموظف</option>
+                                    <!-- Employees will be loaded here dynamically -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="assignDate">تاريخ التسليم</label>
+                                <input type="date" id="assignDate" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="returnDate">تاريخ الاستلام المتوقع</label>
+                                <input type="date" id="returnDate" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="custodyNotes">ملاحظات</label>
+                                <input type="text" id="custodyNotes" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="item-selection">
+                            <h5>الأصناف المطلوبة</h5>
+                            <div class="form-group">
+                                <input type="text" id="itemSearch" class="form-control" placeholder="ابحث عن الأصناف...">
+                            </div>
+                            <div class="item-list" id="itemList">
+                                <!-- Items will be loaded here dynamically -->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="saveCustodyBtn" class="btn btn-primary">حفظ</button>
+                    <button type="button" id="cancelCustodyBtn" class="btn btn-danger">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Return Custody Modal -->
+    <div id="returnCustodyModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="returnModalTitle">استلام العهدة</h4>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="returnCustodyForm">
+                        <div class="form-group">
+                            <label for="actualReturnDate">تاريخ الاستلام الفعلي</label>
+                            <input type="date" id="actualReturnDate" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="returnCondition">حالة العهدة عند الاستلام</label>
+                            <select id="returnCondition" class="form-control" required>
+                                <option value="good">جيدة</option>
+                                <option value="damaged">تالفة</option>
+                                <option value="lost">مفقودة</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="returnNotes">ملاحظات الاستلام</label>
+                            <textarea id="returnNotes" class="form-control" rows="3"></textarea>
+                        </div>
+                        
+                        <div id="returnedItemsList">
+                            <!-- Items will be loaded here dynamically -->
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="confirmReturnBtn" class="btn btn-primary">تأكيد الاستلام</button>
+                    <button type="button" id="cancelReturnBtn" class="btn btn-danger">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const assignCustodyBtn = document.getElementById('assignCustodyBtn');
+            const assignCustodyModal = document.getElementById('assignCustodyModal');
+            const returnCustodyModal = document.getElementById('returnCustodyModal');
+            const custodyForm = document.getElementById('custodyForm');
+            const returnCustodyForm = document.getElementById('returnCustodyForm');
+            const saveCustodyBtn = document.getElementById('saveCustodyBtn');
+            const cancelCustodyBtn = document.getElementById('cancelCustodyBtn');
+            const confirmReturnBtn = document.getElementById('confirmReturnBtn');
+            const cancelReturnBtn = document.getElementById('cancelReturnBtn');
+            const custodyTableBody = document.getElementById('custodyTableBody');
+            const tabs = document.querySelectorAll('.tab');
+            const closeButtons = document.querySelectorAll('.close');
+            const custodyTitle = document.getElementById('custodyTitle');
+            
+            // Sample Data (in a real app, this would come from an API)
+            let employees = [
+                { id: 1, name: 'أحمد محمد', department: 'IT' },
+                { id: 2, name: 'محمد علي', department: 'المالية' },
+                { id: 3, name: 'سارة عبدالله', department: 'الموارد البشرية' }
+            ];
+            
+            let items = [
+                { id: 1, code: 'ITM-1001', name: 'كمبيوتر محمول', category: 'أجهزة إلكترونية', available: 5 },
+                { id: 2, code: 'ITM-1002', name: 'هاتف ذكي', category: 'أجهزة إلكترونية', available: 10 },
+                { id: 3, code: 'ITM-2001', name: 'طابعة', category: 'أجهزة مكتبية', available: 3 },
+                { id: 4, code: 'ITM-3001', name: 'طاولة مكتب', category: 'أثاث', available: 8 },
+                { id: 5, code: 'ITM-3002', name: 'كرسي مكتب', category: 'أثاث', available: 12 }
+            ];
+            
+            let custodyRecords = [
+                { 
+                    id: 1, 
+                    code: 'CST-2001', 
+                    employeeId: 1, 
+                    items: [
+                        { id: 1, code: 'ITM-1001', name: 'كمبيوتر محمول' }
+                    ], 
+                    assignDate: '2023-05-15', 
+                    expectedReturnDate: '2023-08-15', 
+                    actualReturnDate: null, 
+                    status: 'active', 
+                    notes: 'تسليم لموظف جديد', 
+                    returnCondition: null,
+                    returnNotes: null
+                },
+                { 
+                    id: 2, 
+                    code: 'CST-2002', 
+                    employeeId: 2, 
+                    items: [
+                        { id: 3, code: 'ITM-2001', name: 'طابعة' },
+                        { id: 5, code: 'ITM-3002', name: 'كرسي مكتب' }
+                    ], 
+                    assignDate: '2023-06-01', 
+                    expectedReturnDate: '2023-09-01', 
+                    actualReturnDate: '2023-09-05', 
+                    status: 'returned', 
+                    notes: 'تسليم لمشروع مؤقت', 
+                    returnCondition: 'good',
+                    returnNotes: 'تم الاستلام في حالة جيدة'
+                }
+            ];
+            
+            // Current state
+            let currentTab = 'active';
+            let currentCustodyId = null;
+            
+            // Initialize the app
+            function init() {
+                loadEmployees();
+                loadItems();
+                renderCustodyTable();
+                setupEventListeners();
+            }
+            
+            // Load employees into select dropdown
+            function loadEmployees() {
+                const select = document.getElementById('employeeSelect');
+                select.innerHTML = '<option value="">اختر الموظف</option>';
+                
+                employees.forEach(employee => {
+                    const option = document.createElement('option');
+                    option.value = employee.id;
+                    option.textContent = `${employee.name} - ${employee.department}`;
+                    select.appendChild(option);
+                });
+            }
+            
+            // Load available items
+            function loadItems() {
+                const itemList = document.getElementById('itemList');
+                itemList.innerHTML = '';
+                
+                items.forEach(item => {
+                    if (item.available > 0) {
+                        const div = document.createElement('div');
+                        div.className = 'item-checkbox';
+                        div.innerHTML = `
+                            <input type="checkbox" id="item-${item.id}" value="${item.id}">
+                            <label for="item-${item.id}">
+                                ${item.name} (${item.code}) - ${item.category} - متاح: ${item.available}
+                            </label>
+                        `;
+                        itemList.appendChild(div);
+                    }
+                });
+            }
+            
+            // Render custody table based on current tab
+            function renderCustodyTable() {
+                custodyTableBody.innerHTML = '';
+                
+                const filteredRecords = custodyRecords.filter(record => {
+                    if (currentTab === 'active') return record.status === 'active';
+                    if (currentTab === 'returned') return record.status === 'returned';
+                    return true;
+                });
+                
+                if (filteredRecords.length === 0) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td colspan="7" style="text-align: center;">لا توجد سجلات</td>`;
+                    custodyTableBody.appendChild(tr);
+                    return;
+                }
+                
+                filteredRecords.forEach(record => {
+                    const employee = employees.find(e => e.id === record.employeeId);
+                    const tr = document.createElement('tr');
+                    
+                    // Basic info
+                    tr.innerHTML = `
+                        <td>${record.code}</td>
+                        <td>
+                            ${record.items.map(item => `${item.name} (${item.code})`).join('<br>')}
+                        </td>
+                        <td>${employee ? employee.name : 'غير معروف'}</td>
+                        <td>${formatDate(record.assignDate)}</td>
+                        <td>${record.expectedReturnDate ? formatDate(record.expectedReturnDate) : '-'}</td>
+                        <td>
+                            <span class="custody-status ${getStatusClass(record)}"></span>
+                            ${getStatusText(record)}
+                        </td>
+                        <td>
+                            ${record.status === 'active' ? 
+                                `<button class="btn btn-sm btn-success return-btn" data-id="${record.id}">استلام</button>` : 
+                                `<button class="btn btn-sm btn-primary view-btn" data-id="${record.id}">عرض</button>`}
+                        </td>
+                    `;
+                    
+                    custodyTableBody.appendChild(tr);
+                });
+            }
+            
+            // Format date for display
+            function formatDate(dateString) {
+                if (!dateString) return '-';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ar-EG');
+            }
+            
+            // Get status class for styling
+            function getStatusClass(record) {
+                if (record.status === 'returned') return 'status-returned';
+                
+                const today = new Date();
+                const returnDate = new Date(record.expectedReturnDate);
+                if (today > returnDate) return 'status-overdue';
+                
+                return 'status-active';
+            }
+            
+            // Get status text
+            function getStatusText(record) {
+                if (record.status === 'returned') return 'مرجعة';
+                
+                const today = new Date();
+                const returnDate = new Date(record.expectedReturnDate);
+                if (today > returnDate) return 'متأخرة';
+                
+                return 'نشطة';
+            }
+            
+            // Setup event listeners
+            function setupEventListeners() {
+                // Tabs
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        tabs.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                        currentTab = this.dataset.tab;
+                        custodyTitle.textContent = this.textContent;
+                        renderCustodyTable();
+                    });
+                });
+                
+                // Assign custody button
+                assignCustodyBtn.addEventListener('click', openAssignCustodyModal);
+                
+                // Save custody button
+                saveCustodyBtn.addEventListener('click', saveCustody);
+                
+                // Cancel custody button
+                cancelCustodyBtn.addEventListener('click', closeAssignCustodyModal);
+                
+                // Confirm return button
+                confirmReturnBtn.addEventListener('click', returnCustody);
+                
+                // Cancel return button
+                cancelReturnBtn.addEventListener('click', closeReturnCustodyModal);
+                
+                // Close buttons
+                closeButtons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (assignCustodyModal.style.display === 'block') {
+                            closeAssignCustodyModal();
+                        } else if (returnCustodyModal.style.display === 'block') {
+                            closeReturnCustodyModal();
+                        }
+                    });
+                });
+                
+                // Table actions (delegated)
+                custodyTableBody.addEventListener('click', function(e) {
+                    // Return button
+                    if (e.target.classList.contains('return-btn') || 
+                        e.target.parentElement.classList.contains('return-btn')) {
+                        const btn = e.target.classList.contains('return-btn') ? 
+                            e.target : e.target.parentElement;
+                        currentCustodyId = parseInt(btn.dataset.id);
+                        openReturnCustodyModal(currentCustodyId);
+                    }
+                    
+                    // View button
+                    else if (e.target.classList.contains('view-btn') || 
+                             e.target.parentElement.classList.contains('view-btn')) {
+                        const btn = e.target.classList.contains('view-btn') ? 
+                            e.target : e.target.parentElement;
+                        currentCustodyId = parseInt(btn.dataset.id);
+                        viewCustodyDetails(currentCustodyId);
+                    }
+                });
+                
+                // Close modals when clicking outside
+                window.addEventListener('click', function(e) {
+                    if (e.target === assignCustodyModal) {
+                        closeAssignCustodyModal();
+                    } else if (e.target === returnCustodyModal) {
+                        closeReturnCustodyModal();
+                    }
+                });
+            }
+            
+            // Open assign custody modal
+            function openAssignCustodyModal() {
+                // Reset form
+                custodyForm.reset();
+                document.getElementById('assignDate').valueAsDate = new Date();
+                
+                // Show modal
+                assignCustodyModal.style.display = 'block';
+            }
+            
+            // Close assign custody modal
+            function closeAssignCustodyModal() {
+                assignCustodyModal.style.display = 'none';
+            }
+            
+            // Open return custody modal
+            function openReturnCustodyModal(custodyId) {
+                const record = custodyRecords.find(r => r.id === custodyId);
+                if (!record) return;
+                
+                // Set today's date as default return date
+                document.getElementById('actualReturnDate').valueAsDate = new Date();
+                
+                // Load items to be returned
+                const returnedItemsList = document.getElementById('returnedItemsList');
+                returnedItemsList.innerHTML = `
+                    <h5>الأصناف المرجعة</h5>
+                    <ul>
+                        ${record.items.map(item => `<li>${item.name} (${item.code})</li>`).join('')}
+                    </ul>
+                `;
+                
+                // Update modal title
+                document.getElementById('returnModalTitle').textContent = 
+                    `استلام العهدة ${record.code}`;
+                
+                // Show modal
+                returnCustodyModal.style.display = 'block';
+            }
+            
+            // Close return custody modal
+            function closeReturnCustodyModal() {
+                returnCustodyModal.style.display = 'none';
+                currentCustodyId = null;
+            }
+            
+            // View custody details
+            function viewCustodyDetails(custodyId) {
+                const record = custodyRecords.find(r => r.id === custodyId);
+                if (!record) return;
+                
+                alert(`تفاصيل العهدة ${record.code}\n\n` +
+                      `الموظف: ${employees.find(e => e.id === record.employeeId)?.name}\n` +
+                      `تاريخ التسليم: ${formatDate(record.assignDate)}\n` +
+                      `تاريخ الاستلام: ${formatDate(record.actualReturnDate)}\n` +
+                      `حالة العهدة: ${getStatusText(record)}\n` +
+                      `حالة الاستلام: ${getReturnConditionText(record.returnCondition)}\n` +
+                      `ملاحظات: ${record.notes || 'لا يوجد'}\n` +
+                      `ملاحظات الاستلام: ${record.returnNotes || 'لا يوجد'}\n\n` +
+                      `الأصناف:\n${record.items.map(item => `- ${item.name} (${item.code})`).join('\n')}`);
+            }
+            
+            // Get return condition text
+            function getReturnConditionText(condition) {
+                switch(condition) {
+                    case 'good': return 'جيدة';
+                    case 'damaged': return 'تالفة';
+                    case 'lost': return 'مفقودة';
+                    default: return 'غير معروف';
+                }
+            }
+            
+            // Save new custody assignment
+            function saveCustody() {
+                const employeeId = parseInt(document.getElementById('employeeSelect').value);
+                const assignDate = document.getElementById('assignDate').value;
+                const returnDate = document.getElementById('returnDate').value;
+                const notes = document.getElementById('custodyNotes').value;
+                
+                // Validate form
+                if (!employeeId || !assignDate || !returnDate) {
+                    alert('الرجاء إدخال جميع الحقول المطلوبة');
+                    return;
+                }
+                
+                // Get selected items
+                const selectedItems = [];
+                document.querySelectorAll('#itemList input[type="checkbox"]:checked').forEach(checkbox => {
+                    const itemId = parseInt(checkbox.value);
+                    const item = items.find(i => i.id === itemId);
+                    if (item) {
+                        selectedItems.push({
+                            id: item.id,
+                            code: item.code,
+                            name: item.name
+                        });
+                    }
+                });
+                
+                if (selectedItems.length === 0) {
+                    alert('الرجاء اختيار صنف واحد على الأقل');
+                    return;
+                }
+                
+                // Create new custody record
+                const newRecord = {
+                    id: custodyRecords.length > 0 ? Math.max(...custodyRecords.map(r => r.id)) + 1 : 1,
+                    code: `CST-${new Date().getFullYear()}${(custodyRecords.length + 1).toString().padStart(3, '0')}`,
+                    employeeId,
+                    items: selectedItems,
+                    assignDate,
+                    expectedReturnDate: returnDate,
+                    actualReturnDate: null,
+                    status: 'active',
+                    notes,
+                    returnCondition: null,
+                    returnNotes: null
+                };
+                
+                // Add to records
+                custodyRecords.push(newRecord);
+                
+                // Update UI
+                renderCustodyTable();
+                closeAssignCustodyModal();
+                
+                alert('تم تسليم العهدة بنجاح');
+            }
+            
+            // Return custody items
+            function returnCustody() {
+                const actualReturnDate = document.getElementById('actualReturnDate').value;
+                const returnCondition = document.getElementById('returnCondition').value;
+                const returnNotes = document.getElementById('returnNotes').value;
+                
+                // Validate form
+                if (!actualReturnDate || !returnCondition) {
+                    alert('الرجاء إدخال جميع الحقول المطلوبة');
+                    return;
+                }
+                
+                // Find the record
+                const recordIndex = custodyRecords.findIndex(r => r.id === currentCustodyId);
+                if (recordIndex === -1) return;
+                
+                // Update record
+                custodyRecords[recordIndex] = {
+                    ...custodyRecords[recordIndex],
+                    actualReturnDate,
+                    status: 'returned',
+                    returnCondition,
+                    returnNotes
+                };
+                
+                // Update UI
+                renderCustodyTable();
+                closeReturnCustodyModal();
+                
+                alert('تم استلام العهدة بنجاح');
+            }
+            
+            // Initialize the app
+            init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الموردين - نظام إدارة المخازن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #1abc9c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --white: #fff;
+            --gray: #95a5a6;
+            --border-radius: 5px;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: #f5f6fa;
+            color: #333;
+            direction: rtl;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--dark-color);
+            color: var(--white);
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+        }
+
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu li a:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding-right: 25px;
+        }
+
+        .sidebar-menu li a i {
+            margin-left: 10px;
+        }
+
+        .sidebar-menu li.active a {
+            background-color: var(--primary-color);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form Styles */
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -5px;
+            margin-left: -5px;
+        }
+
+        .col {
+            flex-basis: 0;
+            flex-grow: 1;
+            max-width: 100%;
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 8px 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-primary {
+            color: var(--white);
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-secondary {
+            color: var(--white);
+            background-color: var(--gray);
+            border-color: var(--gray);
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            border-color: #7f8c8d;
+        }
+
+        .btn-success {
+            color: var(--white);
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+            border-color: #27ae60;
+        }
+
+        .btn-danger {
+            color: var(--white);
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+
+        /* Badge Styles */
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 10px;
+        }
+
+        .badge-success {
+            color: var(--white);
+            background-color: var(--success-color);
+        }
+
+        .badge-warning {
+            color: var(--white);
+            background-color: var(--warning-color);
+        }
+
+        .badge-danger {
+            color: var(--white);
+            background-color: var(--danger-color);
+        }
+
+        /* Supplier Card Styles */
+        .supplier-card {
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .supplier-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .supplier-logo {
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            padding: 15px;
+        }
+        
+        .supplier-logo img {
+            max-width: 80px;
+            max-height: 60px;
+            object-fit: contain;
+        }
+        
+        .supplier-info {
+            flex: 1;
+            padding: 15px;
+        }
+        
+        .supplier-meta {
+            display: flex;
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+        
+        .supplier-meta span {
+            margin-left: 15px;
+        }
+        
+        .supplier-meta i {
+            margin-left: 5px;
+            color: var(--primary-color);
+        }
+        
+        .supplier-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+            border-right: 1px solid #eee;
+        }
+        
+        .supplier-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: #e3f7ec;
+            color: var(--success-color);
+        }
+        
+        .status-inactive {
+            background: #fdecea;
+            color: var(--danger-color);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1050;
+            overflow: hidden;
+            outline: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-dialog {
+            max-width: 600px;
+            margin: 30px auto;
+        }
+
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            outline: 0;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            position: relative;
+            flex: 1 1 auto;
+            padding: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-start;
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .close {
+            float: left;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: 0.5;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            opacity: 0.75;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+            border-radius: var(--border-radius);
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        /* Custom Styles */
+        .img-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background-color: #d5dbdb;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .supplier-card {
+                flex-direction: column;
+            }
+            
+            .supplier-logo {
+                width: 100%;
+                height: 80px;
+            }
+            
+            .supplier-actions {
+                flex-direction: row;
+                border-right: none;
+                border-top: 1px solid #eee;
+            }
+            
+            .supplier-meta {
+                flex-direction: column;
+            }
+            
+            .supplier-meta span {
+                margin-left: 0;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>نظام إدارة المخازن</h3>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> لوحة التحكم</a></li>
+                    <li><a href="warehouses.html"><i class="fas fa-warehouse"></i> إدارة المخازن</a></li>
+                    <li><a href="stockkeepers.html"><i class="fas fa-user-shield"></i> أمناء المخازن</a></li>
+                    <li><a href="items.html"><i class="fas fa-boxes"></i> إدارة الأصناف</a></li>
+                    <li><a href="categories.html"><i class="fas fa-tags"></i> إدارة الأقسام</a></li>
+                    <li class="active"><a href="suppliers.html"><i class="fas fa-truck"></i> إدارة الموردين</a></li>
+                    <li><a href="custody.html"><i class="fas fa-hand-holding"></i> إدارة العهدة</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
+                    <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
+                    <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <div class="main-content">
+            <div class="header">
+                <h2>إدارة الموردين</h2>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40" alt="User">
+                    <span>أمين المخزن</span>
+                </div>
+            </div>
+            
+            <div id="alertContainer"></div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>قائمة الموردين</h3>
+                    <div>
+                        <input type="text" id="searchInput" class="form-control" placeholder="بحث عن مورد..." style="width:200px;display:inline-block;">
+                        <button class="btn btn-primary" id="addSupplierBtn">
+                            <i class="fas fa-plus"></i> إضافة مورد جديد
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body" id="suppliersContainer">
+                    <!-- Suppliers will be loaded here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Supplier Modal -->
+    <div class="modal" id="supplierModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">إضافة مورد جديد</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="supplierForm">
+                        <input type="hidden" id="supplierId">
+                        <div class="form-group">
+                            <label for="supplierName">اسم المورد *</label>
+                            <input type="text" class="form-control" id="supplierName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="supplierContact">الشخص المسؤول *</label>
+                            <input type="text" class="form-control" id="supplierContact" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="supplierPhone">رقم الهاتف *</label>
+                                    <input type="tel" class="form-control" id="supplierPhone" required>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="supplierEmail">البريد الإلكتروني</label>
+                                    <input type="email" class="form-control" id="supplierEmail">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="supplierAddress">العنوان</label>
+                            <textarea class="form-control" id="supplierAddress" rows="2"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="supplierSpecialty">تخصص المورد</label>
+                            <select class="form-control" id="supplierSpecialty">
+                                <option value="أجهزة إلكترونية">أجهزة إلكترونية</option>
+                                <option value="أجهزة مكتبية">أجهزة مكتبية</option>
+                                <option value="أثاث">أثاث</option>
+                                <option value="قرطاسية">قرطاسية</option>
+                                <option value="أخرى">أخرى</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>حالة المورد</label>
+                            <div>
+                                <label style="margin-left: 15px;">
+                                    <input type="radio" name="supplierStatus" value="active" checked> نشط
+                                </label>
+                                <label>
+                                    <input type="radio" name="supplierStatus" value="inactive"> غير نشط
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>شعار المورد (اختياري)</label>
+                            <img id="supplierLogoPreview" class="img-preview">
+                            <label for="supplierLogo" class="file-input-label">
+                                <i class="fas fa-upload"></i> اختر شعار
+                            </label>
+                            <input type="file" class="file-input" id="supplierLogo" accept="image/*">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveSupplierBtn">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تأكيد الحذف</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>هل أنت متأكد أنك تريد حذف هذا المورد؟ لا يمكن التراجع عن هذه العملية.</p>
+                    <input type="hidden" id="deleteSupplierId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let suppliers = [
+            {
+                id: 1,
+                name: "شركة التقنية المتقدمة",
+                contact: "أحمد محمد",
+                phone: "01012345678",
+                email: "info@tech.com",
+                address: "القاهرة - مصر",
+                specialty: "أجهزة إلكترونية",
+                status: "active",
+                logo: "https://via.placeholder.com/80x60?text=Logo",
+                description: "متخصصون في توريد الأجهزة الإلكترونية وقطع الغيار"
+            },
+            {
+                id: 2,
+                name: "شركة الأوفيس للمستلزمات",
+                contact: "محمود علي",
+                phone: "01098765432",
+                email: "sales@office.com",
+                address: "الجيزة - مصر",
+                specialty: "أجهزة مكتبية",
+                status: "active",
+                logo: "https://via.placeholder.com/80x60?text=Office",
+                description: "توريد جميع مستلزمات المكاتب والأجهزة المكتبية"
+            },
+            {
+                id: 3,
+                name: "مصنع الأثاث الحديث",
+                contact: "خالد أحمد",
+                phone: "01011223344",
+                email: "contact@furniture.com",
+                address: "الإسكندرية - مصر",
+                specialty: "أثاث",
+                status: "inactive",
+                logo: "https://via.placeholder.com/80x60?text=Furniture",
+                description: "تصنيع وتوريد الأثاث المكتبي والمنزلي"
+            }
+        ];
+
+        // DOM Elements
+        const suppliersContainer = document.getElementById('suppliersContainer');
+        const supplierModal = document.getElementById('supplierModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const supplierForm = document.getElementById('supplierForm');
+        const searchInput = document.getElementById('searchInput');
+        const alertContainer = document.getElementById('alertContainer');
+        
+        // Buttons
+        const addSupplierBtn = document.getElementById('addSupplierBtn');
+        const saveSupplierBtn = document.getElementById('saveSupplierBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        
+        // Form fields
+        const supplierId = document.getElementById('supplierId');
+        const supplierName = document.getElementById('supplierName');
+        const supplierContact = document.getElementById('supplierContact');
+        const supplierPhone = document.getElementById('supplierPhone');
+        const supplierEmail = document.getElementById('supplierEmail');
+        const supplierAddress = document.getElementById('supplierAddress');
+        const supplierSpecialty = document.getElementById('supplierSpecialty');
+        const supplierLogo = document.getElementById('supplierLogo');
+        const supplierLogoPreview = document.getElementById('supplierLogoPreview');
+        const deleteSupplierId = document.getElementById('deleteSupplierId');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSuppliers(suppliers);
+            
+            // Event listeners
+            addSupplierBtn.addEventListener('click', openAddSupplierModal);
+            saveSupplierBtn.addEventListener('click', saveSupplier);
+            confirmDeleteBtn.addEventListener('click', deleteSupplier);
+            searchInput.addEventListener('input', filterSuppliers);
+            supplierLogo.addEventListener('change', handleLogoUpload);
+            
+            // Modal close buttons
+            document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target);
+                }
+            });
+        });
+
+        // Render suppliers
+        function renderSuppliers(suppliersToRender) {
+            suppliersContainer.innerHTML = '';
+            
+            if (suppliersToRender.length === 0) {
+                suppliersContainer.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        لا توجد موردين متاحين
+                    </div>
+                `;
+                return;
+            }
+            
+            suppliersToRender.forEach(supplier => {
+                const supplierCard = document.createElement('div');
+                supplierCard.className = 'supplier-card';
+                supplierCard.innerHTML = `
+                    <div class="supplier-logo">
+                        <img src="${supplier.logo}" alt="Supplier Logo">
+                    </div>
+                    <div class="supplier-info">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h4>${supplier.name}</h4>
+                            <span class="supplier-status ${supplier.status === 'active' ? 'status-active' : 'status-inactive'}">
+                                <i class="fas ${supplier.status === 'active' ? 'fa-check-circle' : 'fa-times-circle'}"></i> 
+                                ${supplier.status === 'active' ? 'نشط' : 'غير نشط'}
+                            </span>
+                        </div>
+                        <p>${supplier.description}</p>
+                        <div class="supplier-meta">
+                            <span><i class="fas fa-user"></i> ${supplier.contact}</span>
+                            <span><i class="fas fa-phone"></i> ${supplier.phone}</span>
+                            ${supplier.email ? `<span><i class="fas fa-envelope"></i> ${supplier.email}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="supplier-actions">
+                        <button class="btn btn-sm btn-primary edit-btn" data-id="${supplier.id}"><i class="fas fa-edit"></i> تعديل</button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${supplier.id}"><i class="fas fa-trash"></i> حذف</button>
+                    </div>
+                `;
+                suppliersContainer.appendChild(supplierCard);
+            });
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const supplierId = parseInt(this.getAttribute('data-id'));
+                    openEditSupplierModal(supplierId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const supplierId = parseInt(this.getAttribute('data-id'));
+                    openDeleteConfirmationModal(supplierId);
+                });
+            });
+        }
+
+        // Open add supplier modal
+        function openAddSupplierModal() {
+            document.getElementById('modalTitle').textContent = 'إضافة مورد جديد';
+            supplierForm.reset();
+            supplierId.value = '';
+            supplierLogoPreview.style.display = 'none';
+            document.querySelector('input[name="supplierStatus"][value="active"]').checked = true;
+            openModal(supplierModal);
+        }
+
+        // Open edit supplier modal
+        function openEditSupplierModal(id) {
+            const supplier = suppliers.find(supplier => supplier.id === id);
+            if (supplier) {
+                document.getElementById('modalTitle').textContent = 'تعديل المورد';
+                supplierId.value = supplier.id;
+                supplierName.value = supplier.name;
+                supplierContact.value = supplier.contact;
+                supplierPhone.value = supplier.phone;
+                supplierEmail.value = supplier.email || '';
+                supplierAddress.value = supplier.address || '';
+                supplierSpecialty.value = supplier.specialty;
+                document.querySelector(`input[name="supplierStatus"][value="${supplier.status}"]`).checked = true;
+                
+                if (supplier.logo) {
+                    supplierLogoPreview.src = supplier.logo;
+                    supplierLogoPreview.style.display = 'block';
+                } else {
+                    supplierLogoPreview.style.display = 'none';
+                }
+                
+                openModal(supplierModal);
+            }
+        }
+
+        // Open delete confirmation modal
+        function openDeleteConfirmationModal(id) {
+            deleteSupplierId.value = id;
+            openModal(deleteModal);
+        }
+
+        // Save supplier (add or update)
+        function saveSupplier() {
+            if (!supplierForm.checkValidity()) {
+                supplierForm.reportValidity();
+                return;
+            }
+            
+            const supplierData = {
+                name: supplierName.value,
+                contact: supplierContact.value,
+                phone: supplierPhone.value,
+                email: supplierEmail.value,
+                address: supplierAddress.value,
+                specialty: supplierSpecialty.value,
+                status: document.querySelector('input[name="supplierStatus"]:checked').value,
+                logo: supplierLogoPreview.src || 'https://via.placeholder.com/80x60?text=Logo',
+                description: `متخصصون في توريد ${supplierSpecialty.value}`
+            };
+            
+            if (supplierId.value) {
+                // Update existing supplier
+                const id = parseInt(supplierId.value);
+                const index = suppliers.findIndex(supplier => supplier.id === id);
+                if (index !== -1) {
+                    suppliers[index] = { ...suppliers[index], ...supplierData };
+                    showAlert('تم تحديث المورد بنجاح', 'success');
+                }
+            } else {
+                // Add new supplier
+                const newId = suppliers.length > 0 ? Math.max(...suppliers.map(supplier => supplier.id)) + 1 : 1;
+                suppliers.push({ id: newId, ...supplierData });
+                showAlert('تم إضافة المورد بنجاح', 'success');
+            }
+            
+            renderSuppliers(suppliers);
+            closeModal(supplierModal);
+        }
+
+        // Delete supplier
+        function deleteSupplier() {
+            const id = parseInt(deleteSupplierId.value);
+            suppliers = suppliers.filter(supplier => supplier.id !== id);
+            renderSuppliers(suppliers);
+            closeModal(deleteModal);
+            showAlert('تم حذف المورد بنجاح', 'success');
+        }
+
+        // Filter suppliers based on search input
+        function filterSuppliers() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredSuppliers = suppliers.filter(supplier => 
+                supplier.name.toLowerCase().includes(searchTerm) || 
+                supplier.contact.toLowerCase().includes(searchTerm) ||
+                supplier.phone.toLowerCase().includes(searchTerm) ||
+                supplier.specialty.toLowerCase().includes(searchTerm)
+            );
+            renderSuppliers(filteredSuppliers);
+        }
+
+        // Handle logo upload
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    supplierLogoPreview.src = e.target.result;
+                    supplierLogoPreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        // Open modal
+        function openModal(modal) {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeModal(modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الأصناف - نظام إدارة المخازن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #1abc9c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --white: #fff;
+            --gray: #95a5a6;
+            --border-radius: 5px;
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: #f5f6fa;
+            color: #333;
+            direction: rtl;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--dark-color);
+            color: var(--white);
+            transition: all 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+        }
+
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu li a:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding-right: 25px;
+        }
+
+        .sidebar-menu li a i {
+            margin-left: 10px;
+        }
+
+        .sidebar-menu li.active a {
+            background-color: var(--primary-color);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form Styles */
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -5px;
+            margin-left: -5px;
+        }
+
+        .col {
+            flex-basis: 0;
+            flex-grow: 1;
+            max-width: 100%;
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 8px 15px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-primary {
+            color: var(--white);
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-secondary {
+            color: var(--white);
+            background-color: var(--gray);
+            border-color: var(--gray);
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            border-color: #7f8c8d;
+        }
+
+        .btn-success {
+            color: var(--white);
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+            border-color: #27ae60;
+        }
+
+        .btn-danger {
+            color: var(--white);
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+
+        /* Badge Styles */
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 10px;
+        }
+
+        .badge-success {
+            color: var(--white);
+            background-color: var(--success-color);
+        }
+
+        .badge-warning {
+            color: var(--white);
+            background-color: var(--warning-color);
+        }
+
+        .badge-danger {
+            color: var(--white);
+            background-color: var(--danger-color);
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .item-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1050;
+            overflow: hidden;
+            outline: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-dialog {
+            max-width: 600px;
+            margin: 30px auto;
+        }
+
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            outline: 0;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .modal-body {
+            position: relative;
+            flex: 1 1 auto;
+            padding: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-start;
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .close {
+            float: left;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: 0.5;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            opacity: 0.75;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+            border-radius: var(--border-radius);
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .card-header > div {
+                margin-top: 10px;
+                width: 100%;
+            }
+            
+            .form-control {
+                width: 100%;
+            }
+        }
+
+        /* Custom Styles */
+        .img-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background-color: #d5dbdb;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .actions-column {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>نظام إدارة المخازن</h3>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> لوحة التحكم</a></li>
+                    <li><a href="warehouses.html"><i class="fas fa-warehouse"></i> إدارة المخازن</a></li>
+                    <li><a href="stockkeepers.html"><i class="fas fa-user-shield"></i> أمناء المخازن</a></li>
+                    <li class="active"><a href="items.html"><i class="fas fa-boxes"></i> إدارة الأصناف</a></li>
+                    <li><a href="categories.html"><i class="fas fa-tags"></i> إدارة الأقسام</a></li>
+                    <li><a href="suppliers.html"><i class="fas fa-truck"></i> إدارة الموردين</a></li>
+                    <li><a href="custody.html"><i class="fas fa-hand-holding"></i> إدارة العهدة</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
+                    <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
+                    <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                </ul>
+            </div>
+        </div>
+    
+        <div class="main-content">
+            <div class="header">
+                <h2>إدارة الأصناف</h2>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40" alt="User">
+                    <span>أمين المخزن</span>
+                </div>
+            </div>
+            
+            <div id="alertContainer"></div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>قائمة الأصناف</h3>
+                    <div>
+                        <input type="text" id="searchInput" class="form-control" placeholder="بحث..." style="width:200px;display:inline-block;">
+                        <button class="btn btn-primary" id="addItemBtn">إضافة صنف جديد</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="itemsTable">
+                            <thead>
+                                <tr>
+                                    <th>الصورة</th>
+                                    <th>كود الصنف</th>
+                                    <th>اسم الصنف</th>
+                                    <th>القسم</th>
+                                    <th>الحالة</th>
+                                    <th>المورد</th>
+                                    <th>السعر</th>
+                                    <th>الكمية</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsTableBody">
+                                <!-- Items will be loaded here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Item Modal -->
+    <div class="modal" id="itemModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">إضافة صنف جديد</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="itemForm">
+                        <input type="hidden" id="itemId">
+                        <div class="form-row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="itemCode">كود الصنف</label>
+                                    <input type="text" class="form-control" id="itemCode" required>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="itemName">اسم الصنف</label>
+                                    <input type="text" class="form-control" id="itemName" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="itemCategory">القسم</label>
+                                    <select class="form-control" id="itemCategory" required>
+                                        <option value="">اختر القسم</option>
+                                        <option value="أجهزة إلكترونية">أجهزة إلكترونية</option>
+                                        <option value="أثاث مكتبي">أثاث مكتبي</option>
+                                        <option value="قرطاسية">قرطاسية</option>
+                                        <option value="أدوات نظافة">أدوات نظافة</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="itemStatus">الحالة</label>
+                                    <select class="form-control" id="itemStatus" required>
+                                        <option value="جديد">جديد</option>
+                                        <option value="مستعمل">مستعمل</option>
+                                        <option value="تالف">تالف</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="itemSupplier">المورد</label>
+                                    <select class="form-control" id="itemSupplier" required>
+                                        <option value="">اختر المورد</option>
+                                        <option value="شركة التقنية">شركة التقنية</option>
+                                        <option value="مكتبة المعرفة">مكتبة المعرفة</option>
+                                        <option value="شركة الأثاث الحديث">شركة الأثاث الحديث</option>
+                                        <option value="شركة النظافة المتكاملة">شركة النظافة المتكاملة</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="itemPrice">السعر (ج.م)</label>
+                                    <input type="number" class="form-control" id="itemPrice" step="0.01" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="itemQuantity">الكمية</label>
+                                    <input type="number" class="form-control" id="itemQuantity" required>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="itemMinQuantity">الحد الأدنى للكمية</label>
+                                    <input type="number" class="form-control" id="itemMinQuantity">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="itemDescription">الوصف</label>
+                            <textarea class="form-control" id="itemDescription" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>صورة الصنف</label>
+                            <img id="itemImagePreview" class="img-preview">
+                            <label for="itemImage" class="file-input-label">
+                                <i class="fas fa-upload"></i> اختر صورة
+                            </label>
+                            <input type="file" class="file-input" id="itemImage" accept="image/*">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="saveItemBtn">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تأكيد الحذف</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>هل أنت متأكد أنك تريد حذف هذا الصنف؟ لا يمكن التراجع عن هذه العملية.</p>
+                    <input type="hidden" id="deleteItemId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let items = [
+            {
+                id: 1,
+                code: "ITM-1001",
+                name: "كمبيوتر محمول",
+                image: "https://via.placeholder.com/60",
+                category: "أجهزة إلكترونية",
+                status: "جديد",
+                supplier: "شركة التقنية",
+                price: 2500,
+                quantity: 15,
+                minQuantity: 5,
+                description: "كمبيوتر محمول بمواصفات عالية"
+            },
+            {
+                id: 2,
+                code: "ITM-1002",
+                name: "طابعة ليزر",
+                image: "https://via.placeholder.com/60",
+                category: "أجهزة إلكترونية",
+                status: "جديد",
+                supplier: "شركة التقنية",
+                price: 1200,
+                quantity: 8,
+                minQuantity: 3,
+                description: "طابعة ليزر ملونة"
+            },
+            {
+                id: 3,
+                code: "ITM-1003",
+                name: "كرسي مكتب",
+                image: "https://via.placeholder.com/60",
+                category: "أثاث مكتبي",
+                status: "مستعمل",
+                supplier: "شركة الأثاث الحديث",
+                price: 500,
+                quantity: 20,
+                minQuantity: 10,
+                description: "كرسي مكتب مريح"
+            }
+        ];
+
+        // DOM Elements
+        const itemsTableBody = document.getElementById('itemsTableBody');
+        const itemModal = document.getElementById('itemModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const itemForm = document.getElementById('itemForm');
+        const searchInput = document.getElementById('searchInput');
+        const alertContainer = document.getElementById('alertContainer');
+        
+        // Buttons
+        const addItemBtn = document.getElementById('addItemBtn');
+        const saveItemBtn = document.getElementById('saveItemBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        
+        // Form fields
+        const itemId = document.getElementById('itemId');
+        const itemCode = document.getElementById('itemCode');
+        const itemName = document.getElementById('itemName');
+        const itemCategory = document.getElementById('itemCategory');
+        const itemStatus = document.getElementById('itemStatus');
+        const itemSupplier = document.getElementById('itemSupplier');
+        const itemPrice = document.getElementById('itemPrice');
+        const itemQuantity = document.getElementById('itemQuantity');
+        const itemMinQuantity = document.getElementById('itemMinQuantity');
+        const itemDescription = document.getElementById('itemDescription');
+        const itemImage = document.getElementById('itemImage');
+        const itemImagePreview = document.getElementById('itemImagePreview');
+        const deleteItemId = document.getElementById('deleteItemId');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderItemsTable(items);
+            
+            // Event listeners
+            addItemBtn.addEventListener('click', openAddItemModal);
+            saveItemBtn.addEventListener('click', saveItem);
+            confirmDeleteBtn.addEventListener('click', deleteItem);
+            searchInput.addEventListener('input', filterItems);
+            itemImage.addEventListener('change', handleImageUpload);
+            
+            // Modal close buttons
+            document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target);
+                }
+            });
+        });
+
+        // Render items table
+        function renderItemsTable(itemsToRender) {
+            itemsTableBody.innerHTML = '';
+            
+            if (itemsToRender.length === 0) {
+                itemsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center;">لا توجد أصناف متاحة</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            itemsToRender.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${item.image}" class="item-img" alt="${item.name}"></td>
+                    <td>${item.code}</td>
+                    <td>${item.name}</td>
+                    <td>${item.category}</td>
+                    <td><span class="badge ${getStatusBadgeClass(item.status)}">${item.status}</span></td>
+                    <td>${item.supplier}</td>
+                    <td>${item.price.toLocaleString()} ج.م</td>
+                    <td>${item.quantity}</td>
+                    <td class="actions-column">
+                        <button class="btn btn-sm btn-primary edit-btn" data-id="${item.id}"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                itemsTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = parseInt(this.getAttribute('data-id'));
+                    openEditItemModal(itemId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = parseInt(this.getAttribute('data-id'));
+                    openDeleteConfirmationModal(itemId);
+                });
+            });
+        }
+
+        // Get badge class based on status
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'جديد': return 'badge-success';
+                case 'مستعمل': return 'badge-warning';
+                case 'تالف': return 'badge-danger';
+                default: return 'badge-secondary';
+            }
+        }
+
+        // Open add item modal
+        function openAddItemModal() {
+            document.getElementById('modalTitle').textContent = 'إضافة صنف جديد';
+            itemForm.reset();
+            itemId.value = '';
+            itemImagePreview.style.display = 'none';
+            openModal(itemModal);
+        }
+
+        // Open edit item modal
+        function openEditItemModal(id) {
+            const item = items.find(item => item.id === id);
+            if (item) {
+                document.getElementById('modalTitle').textContent = 'تعديل الصنف';
+                itemId.value = item.id;
+                itemCode.value = item.code;
+                itemName.value = item.name;
+                itemCategory.value = item.category;
+                itemStatus.value = item.status;
+                itemSupplier.value = item.supplier;
+                itemPrice.value = item.price;
+                itemQuantity.value = item.quantity;
+                itemMinQuantity.value = item.minQuantity;
+                itemDescription.value = item.description || '';
+                
+                if (item.image) {
+                    itemImagePreview.src = item.image;
+                    itemImagePreview.style.display = 'block';
+                } else {
+                    itemImagePreview.style.display = 'none';
+                }
+                
+                openModal(itemModal);
+            }
+        }
+
+        // Open delete confirmation modal
+        function openDeleteConfirmationModal(id) {
+            deleteItemId.value = id;
+            openModal(deleteModal);
+        }
+
+        // Save item (add or update)
+        function saveItem() {
+            if (!itemForm.checkValidity()) {
+                itemForm.reportValidity();
+                return;
+            }
+            
+            const itemData = {
+                code: itemCode.value,
+                name: itemName.value,
+                category: itemCategory.value,
+                status: itemStatus.value,
+                supplier: itemSupplier.value,
+                price: parseFloat(itemPrice.value),
+                quantity: parseInt(itemQuantity.value),
+                minQuantity: parseInt(itemMinQuantity.value) || 0,
+                description: itemDescription.value,
+                image: itemImagePreview.src || 'https://via.placeholder.com/60'
+            };
+            
+            if (itemId.value) {
+                // Update existing item
+                const id = parseInt(itemId.value);
+                const index = items.findIndex(item => item.id === id);
+                if (index !== -1) {
+                    items[index] = { ...items[index], ...itemData };
+                    showAlert('تم تحديث الصنف بنجاح', 'success');
+                }
+            } else {
+                // Add new item
+                const newId = items.length > 0 ? Math.max(...items.map(item => item.id)) + 1 : 1;
+                items.push({ id: newId, ...itemData });
+                showAlert('تم إضافة الصنف بنجاح', 'success');
+            }
+            
+            renderItemsTable(items);
+            closeModal(itemModal);
+        }
+
+        // Delete item
+        function deleteItem() {
+            const id = parseInt(deleteItemId.value);
+            items = items.filter(item => item.id !== id);
+            renderItemsTable(items);
+            closeModal(deleteModal);
+            showAlert('تم حذف الصنف بنجاح', 'success');
+        }
+
+        // Filter items based on search input
+        function filterItems() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredItems = items.filter(item => 
+                item.code.toLowerCase().includes(searchTerm) || 
+                item.name.toLowerCase().includes(searchTerm) ||
+                item.category.toLowerCase().includes(searchTerm) ||
+                item.supplier.toLowerCase().includes(searchTerm)
+            );
+            renderItemsTable(filteredItems);
+        }
+
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    itemImagePreview.src = e.target.result;
+                    itemImagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+
+        // Open modal
+        function openModal(modal) {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeModal(modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
