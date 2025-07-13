@@ -6,14 +6,428 @@
     <title>لوحة التحكم - نظام إدارة المخازن</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <style>
+        :root {
+            --primary: #3c8dbc;
+            --primary-dark: #367fa9;
+            --secondary: #00a65a;
+            --info: #00c0ef;
+            --warning: #f39c12;
+            --danger: #dd4b39;
+            --light: #f5f7fa;
+            --dark: #2c3e50;
+            --sidebar: #2c3e50;
+            --sidebar-dark: #1a252f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Sidebar Styles - Updated */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            right: 0;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: var(--sidebar-dark);
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+            overflow-y: auto;
+            height: calc(100vh - 60px);
+        }
+        
+        .sidebar-menu ul {
+            list-style: none;
+        }
+        
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: #b8c7ce;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .sidebar-menu li a:hover {
+            color: #fff;
+            background-color: #1e282c;
+        }
+        
+        .sidebar-menu li a i {
+            margin-left: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-menu li.active a {
+            color: #fff;
+            background-color: var(--primary);
+        }
+        
+        .sidebar-menu li.active a:before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: white;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-right: 250px;
+            transition: all 0.3s;
+        }
+        
+        .header {
+            padding: 15px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        /* Mobile Header Title */
+        .mobile-header-title {
+            display: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-right: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        /* Menu Toggle */
+        .menu-toggle-container {
+            display: none;
+            align-items: center;
+        }
+        
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            color: var(--primary);
+            border: none;
+            padding: 5px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-items: center;
+        }
+        
+        .sidebar-close {
+            display: none;
+            background: transparent;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Stats Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .stat-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+        }
+        
+        .stat-card .card-header h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .stat-card .card-header i {
+            font-size: 1.5rem;
+        }
+        
+        .stat-card .card-body {
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-card .card-body h2 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--dark);
+        }
+        
+        /* Card Styles */
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h3 {
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f9f9f9;
+            font-weight: 500;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        /* Badge Styles */
+        .badge {
+            display: inline-block;
+            padding: 3px 7px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            border-radius: 10px;
+        }
+        
+        .badge-success {
+            background-color: var(--secondary);
+        }
+        
+        /* Image Styles */
+        .item-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-right: 220px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+                width: 280px;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-right: 0;
+                width: 100%;
+            }
+            
+            .menu-toggle-container {
+                display: flex;
+                align-items: center;
+            }
+            
+            .mobile-header-title {
+                display: block;
+            }
+            
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .sidebar-close {
+                display: block;
+            }
+            
+            .header {
+                padding: 10px 15px;
+            }
+            
+            .card {
+                margin: 10px;
+            }
+            
+            .stats-cards {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 260px;
+            }
+            
+            .mobile-header-title {
+                font-size: 1rem;
+                margin-right: 10px;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-info span {
+                display: none;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="container">
         <!-- Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3>نظام إدارة المخازن</h3>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="sidebar-menu">
                 <ul>
@@ -35,7 +449,12 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="header">
-                <h2>لوحة التحكم</h2>
+                <div class="menu-toggle-container">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="mobile-header-title">لوحة التحكم</span>
+                </div>
                 <div class="user-info">
                     <img src="https://via.placeholder.com/40" alt="User">
                     <span>أمين المخزن</span>
@@ -52,7 +471,33 @@
                         <h2>5</h2>
                     </div>
                 </div>
-                <!-- Other stat cards... -->
+                <div class="stat-card">
+                    <div class="card-header" style="background: var(--secondary);">
+                        <h3>عدد الأصناف</h3>
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>120</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="card-header" style="background: var(--info);">
+                        <h3>عدد الموظفين</h3>
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>25</h2>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="card-header" style="background: var(--warning);">
+                        <h3>عهدة نشطة</h3>
+                        <i class="fas fa-hand-holding"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>18</h2>
+                    </div>
+                </div>
             </div>
             
             <div class="card">
@@ -81,6 +526,30 @@
                                 <td><span class="badge badge-success">جديد</span></td>
                                 <td>15</td>
                             </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/60" class="item-img"></td>
+                                <td>ITM-1002</td>
+                                <td>هاتف ذكي</td>
+                                <td>أجهزة إلكترونية</td>
+                                <td><span class="badge badge-success">جديد</span></td>
+                                <td>30</td>
+                            </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/60" class="item-img"></td>
+                                <td>ITM-2001</td>
+                                <td>طابعة</td>
+                                <td>أجهزة مكتبية</td>
+                                <td><span class="badge badge-success">جديد</span></td>
+                                <td>8</td>
+                            </tr>
+                            <tr>
+                                <td><img src="https://via.placeholder.com/60" class="item-img"></td>
+                                <td>ITM-3001</td>
+                                <td>طاولة مكتب</td>
+                                <td>أثاث</td>
+                                <td><span class="badge badge-success">جديد</span></td>
+                                <td>12</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -88,6 +557,54 @@
         </div>
     </div>
     
-    <script src="../../assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile sidebar elements
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            // Setup mobile sidebar functionality
+            function setupMobileSidebar() {
+                // Toggle sidebar
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.add('active');
+                    sidebarOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                // Close sidebar
+                sidebarClose.addEventListener('click', closeSidebar);
+                sidebarOverlay.addEventListener('click', closeSidebar);
+                
+                // Close sidebar when clicking on a menu item (for mobile)
+                document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (window.innerWidth <= 768) {
+                            closeSidebar();
+                        }
+                    });
+                });
+                
+                // Close sidebar when window is resized to desktop view
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        closeSidebar();
+                    }
+                });
+            }
+            
+            // Close sidebar function
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Initialize the page
+            setupMobileSidebar();
+        });
+    </script>
 </body>
 </html>

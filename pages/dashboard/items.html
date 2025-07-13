@@ -20,6 +20,8 @@
             --gray: #95a5a6;
             --border-radius: 5px;
             --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --sidebar: #2c3e50;
+            --sidebar-dark: #1a252f;
         }
 
         * {
@@ -33,29 +35,47 @@
             background-color: #f5f6fa;
             color: #333;
             direction: rtl;
+            overflow-x: hidden;
         }
 
         .container {
             display: flex;
             min-height: 100vh;
+            position: relative;
         }
 
         /* Sidebar Styles */
         .sidebar {
             width: 250px;
-            background-color: var(--dark-color);
-            color: var(--white);
-            transition: all 0.3s;
+            background: var(--sidebar);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            right: 0;
         }
 
         .sidebar-header {
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.2);
+            background: var(--sidebar-dark);
             text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.2rem;
         }
 
         .sidebar-menu {
             padding: 20px 0;
+            overflow-y: auto;
+            height: calc(100vh - 60px);
         }
 
         .sidebar-menu ul {
@@ -65,38 +85,63 @@
         .sidebar-menu li a {
             display: block;
             padding: 12px 20px;
-            color: var(--white);
+            color: #b8c7ce;
             text-decoration: none;
             transition: all 0.3s;
+            position: relative;
         }
 
         .sidebar-menu li a:hover {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding-right: 25px;
+            color: #fff;
+            background-color: #1e282c;
         }
 
         .sidebar-menu li a i {
             margin-left: 10px;
+            width: 20px;
+            text-align: center;
         }
 
         .sidebar-menu li.active a {
+            color: #fff;
             background-color: var(--primary-color);
+        }
+
+        .sidebar-menu li.active a:before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: white;
         }
 
         /* Main Content Styles */
         .main-content {
             flex: 1;
-            padding: 20px;
-            overflow-y: auto;
+            margin-right: 250px;
+            transition: all 0.3s;
         }
 
         .header {
+            padding: 15px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Mobile Header Title */
+        .mobile-header-title {
+            display: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-right: 15px;
         }
 
         .user-info {
@@ -108,7 +153,53 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        /* Menu Toggle */
+        .menu-toggle-container {
+            display: none;
+            align-items: center;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            color: var(--primary-color);
+            border: none;
+            padding: 5px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-items: center;
+        }
+
+        .sidebar-close {
+            display: none;
+            background: transparent;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         /* Card Styles */
@@ -116,7 +207,7 @@
             background-color: var(--white);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            margin-bottom: 20px;
+            margin: 20px;
         }
 
         .card-header {
@@ -390,32 +481,6 @@
             border-color: #f5c6cb;
         }
 
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-            }
-            
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .card-header > div {
-                margin-top: 10px;
-                width: 100%;
-            }
-            
-            .form-control {
-                width: 100%;
-            }
-        }
-
         /* Custom Styles */
         .img-preview {
             width: 100px;
@@ -446,13 +511,112 @@
         .actions-column {
             white-space: nowrap;
         }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-right: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+                width: 280px;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-right: 0;
+                width: 100%;
+            }
+            
+            .menu-toggle-container {
+                display: flex;
+                align-items: center;
+            }
+            
+            .mobile-header-title {
+                display: block;
+            }
+            
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .sidebar-close {
+                display: block;
+            }
+            
+            .header {
+                padding: 10px 15px;
+            }
+            
+            .card {
+                margin: 10px;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .card-header > div {
+                margin-top: 10px;
+                width: 100%;
+            }
+            
+            .form-control {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 260px;
+            }
+            
+            .mobile-header-title {
+                font-size: 1rem;
+                margin-right: 10px;
+            }
+            
+            .user-info span {
+                display: none;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .col {
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="container">
-        <div class="sidebar">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3>نظام إدارة المخازن</h3>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="sidebar-menu">
                 <ul>
@@ -471,9 +635,15 @@
             </div>
         </div>
     
+        <!-- Main Content -->
         <div class="main-content">
             <div class="header">
-                <h2>إدارة الأصناف</h2>
+                <div class="menu-toggle-container">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="mobile-header-title">إدارة الأصناف</span>
+                </div>
                 <div class="user-info">
                     <img src="https://via.placeholder.com/40" alt="User">
                     <span>أمين المخزن</span>
@@ -718,6 +888,12 @@
         const itemImagePreview = document.getElementById('itemImagePreview');
         const deleteItemId = document.getElementById('deleteItemId');
 
+        // Mobile sidebar elements
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarClose = document.getElementById('sidebarClose');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             renderItemsTable(items);
@@ -743,7 +919,41 @@
                     closeModal(event.target);
                 }
             });
+
+            // Mobile sidebar functionality
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close sidebar
+            sidebarClose.addEventListener('click', closeSidebar);
+            sidebarOverlay.addEventListener('click', closeSidebar);
+            
+            // Close sidebar when clicking on a menu item (for mobile)
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        closeSidebar();
+                    }
+                });
+            });
+            
+            // Close sidebar when window is resized to desktop view
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    closeSidebar();
+                }
+            });
         });
+
+        // Close sidebar function
+        function closeSidebar() {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
         // Render items table
         function renderItemsTable(itemsToRender) {

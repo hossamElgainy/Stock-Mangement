@@ -16,6 +16,8 @@
             --light: #ecf0f1;
             --dark: #2c3e50;
             --gray: #95a5a6;
+            --sidebar: #2c3e50;
+            --sidebar-dark: #1a252f;
         }
         
         * {
@@ -28,29 +30,47 @@
         body {
             background-color: #f5f7fa;
             color: #333;
+            overflow-x: hidden;
         }
         
         .container {
             display: flex;
             min-height: 100vh;
+            position: relative;
         }
         
-        /* Sidebar Styles */
+        /* Sidebar Styles - Updated for responsiveness */
         .sidebar {
             width: 250px;
-            background: var(--dark);
+            background: var(--sidebar);
             color: white;
-            transition: all 0.3s;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            right: 0;
         }
         
         .sidebar-header {
             padding: 20px;
-            background: rgba(0, 0, 0, 0.2);
+            background: var(--sidebar-dark);
             text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.2rem;
         }
         
         .sidebar-menu {
             padding: 20px 0;
+            overflow-y: auto;
+            height: calc(100vh - 60px);
         }
         
         .sidebar-menu ul {
@@ -60,28 +80,71 @@
         .sidebar-menu li a {
             display: block;
             padding: 12px 20px;
-            color: white;
+            color: #b8c7ce;
             text-decoration: none;
             transition: all 0.3s;
+            position: relative;
         }
         
         .sidebar-menu li a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            padding-right: 25px;
+            color: #fff;
+            background-color: #1e282c;
         }
         
         .sidebar-menu li a i {
             margin-left: 10px;
+            width: 20px;
+            text-align: center;
         }
         
         .sidebar-menu li.active a {
-            background: var(--primary);
+            color: #fff;
+            background-color: var(--primary);
         }
         
-        /* Main Content Styles */
+        .sidebar-menu li.active a:before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: white;
+        }
+        
+        /* Mobile sidebar close button */
+        .sidebar-close {
+            display: none;
+            background: transparent;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Main Content Styles - Updated for responsive sidebar */
         .main-content {
             flex: 1;
-            padding: 20px;
+            margin-right: 250px;
             transition: all 0.3s;
         }
         
@@ -90,8 +153,20 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding-bottom: 15px;
+            padding: 15px 20px;
+            background-color: #fff;
             border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        /* Mobile Header Title */
+        .mobile-header-title {
+            display: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-right: 15px;
         }
         
         .user-info {
@@ -100,8 +175,28 @@
         }
         
         .user-info img {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             margin-left: 10px;
+        }
+        
+        /* Menu Toggle for mobile */
+        .menu-toggle-container {
+            display: none;
+            align-items: center;
+        }
+        
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            color: var(--primary);
+            border: none;
+            padding: 5px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-items: center;
         }
         
         /* Card Styles */
@@ -223,21 +318,22 @@
             display: none;
             position: fixed;
             top: 0;
-            left: 0;
+            right: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            animation: fadeIn 0.3s;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            justify-content: center;
+            align-items: center;
         }
         
-        .modal-dialog {
+        .modal-content {
             background: white;
-            margin: 5% auto;
-            width: 600px;
-            max-width: 90%;
             border-radius: 5px;
-            overflow: hidden;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         .modal-header {
@@ -247,11 +343,6 @@
             padding: 15px 20px;
             background: var(--primary);
             color: white;
-        }
-        
-        .modal-header .close {
-            font-size: 24px;
-            cursor: pointer;
         }
         
         .modal-body {
@@ -325,14 +416,50 @@
             margin-left: 10px;
         }
         
-        /* Responsive */
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-right: 220px;
+            }
+        }
+        
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
+            .sidebar {
+                transform: translateX(100%);
+                width: 280px;
             }
             
-            .sidebar {
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-right: 0;
                 width: 100%;
+            }
+            
+            .menu-toggle-container {
+                display: flex;
+                align-items: center;
+            }
+            
+            .mobile-header-title {
+                display: block;
+            }
+            
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .sidebar-close {
+                display: block;
+            }
+            
+            .header {
+                padding: 10px 15px;
             }
             
             .warehouses-grid {
@@ -345,19 +472,33 @@
             }
         }
         
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 260px;
+            }
+            
+            .mobile-header-title {
+                font-size: 1rem;
+                margin-right: 10px;
+            }
+            
+            .user-info span {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="container">
         <!-- Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3>نظام إدارة المخازن</h3>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="sidebar-menu">
                 <ul>
@@ -379,7 +520,12 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="header">
-                <h2>إدارة المخازن</h2>
+                <div class="menu-toggle-container">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="mobile-header-title">إدارة المخازن</span>
+                </div>
                 <div class="user-info">
                     <img src="https://via.placeholder.com/40" alt="User">
                     <span>أمين المخزن</span>
@@ -404,70 +550,66 @@
     
     <!-- Add/Edit Warehouse Modal -->
     <div id="warehouseModal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 id="modalTitle">إضافة مخزن جديد</h4>
-                    <span class="close">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <form id="warehouseForm">
-                        <input type="hidden" id="warehouseId">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalTitle">إضافة مخزن جديد</h4>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="warehouseForm">
+                    <input type="hidden" id="warehouseId">
+                    <div class="form-group">
+                        <label for="warehouseName">اسم المخزن</label>
+                        <input type="text" id="warehouseName" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="warehouseName">اسم المخزن</label>
-                            <input type="text" id="warehouseName" class="form-control" required>
+                            <label for="warehouseLocation">الموقع</label>
+                            <input type="text" id="warehouseLocation" class="form-control" required>
                         </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="warehouseLocation">الموقع</label>
-                                <input type="text" id="warehouseLocation" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="warehouseCode">كود المخزن</label>
-                                <input type="text" id="warehouseCode" class="form-control" required>
-                            </div>
-                        </div>
-                        
                         <div class="form-group">
-                            <label for="warehouseDescription">الوصف (اختياري)</label>
-                            <textarea id="warehouseDescription" class="form-control" rows="3"></textarea>
+                            <label for="warehouseCode">كود المخزن</label>
+                            <input type="text" id="warehouseCode" class="form-control" required>
                         </div>
-                        
-                        <div class="manager-selection">
-                            <h5>أمناء المخزن</h5>
-                            <div class="form-group">
-                                <input type="text" id="managerSearch" class="form-control" placeholder="ابحث عن الموظفين...">
-                            </div>
-                            <div class="manager-list" id="managerList">
-                                <!-- Managers will be loaded here dynamically -->
-                            </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="warehouseDescription">الوصف (اختياري)</label>
+                        <textarea id="warehouseDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="manager-selection">
+                        <h5>أمناء المخزن</h5>
+                        <div class="form-group">
+                            <input type="text" id="managerSearch" class="form-control" placeholder="ابحث عن الموظفين...">
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="saveWarehouseBtn" class="btn btn-primary">حفظ</button>
-                    <button type="button" id="cancelWarehouseBtn" class="btn btn-danger">إلغاء</button>
-                </div>
+                        <div class="manager-list" id="managerList">
+                            <!-- Managers will be loaded here dynamically -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveWarehouseBtn" class="btn btn-primary">حفظ</button>
+                <button type="button" id="cancelWarehouseBtn" class="btn btn-danger">إلغاء</button>
             </div>
         </div>
     </div>
     
     <!-- Confirmation Modal -->
     <div id="confirmModal" class="modal">
-        <div class="modal-dialog" style="max-width: 400px;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4>تأكيد الحذف</h4>
-                    <span class="close">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <p id="confirmMessage">هل أنت متأكد من حذف هذا المخزن؟ سيتم حذف جميع البيانات المرتبطة به.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">حذف</button>
-                    <button type="button" id="cancelDeleteBtn" class="btn btn-secondary">إلغاء</button>
-                </div>
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h4>تأكيد الحذف</h4>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">هل أنت متأكد من حذف هذا المخزن؟ سيتم حذف جميع البيانات المرتبطة به.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">حذف</button>
+                <button type="button" id="cancelDeleteBtn" class="btn btn-secondary">إلغاء</button>
             </div>
         </div>
     </div>
@@ -485,6 +627,12 @@
             const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
             const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
             const closeButtons = document.querySelectorAll('.close');
+            
+            // Mobile sidebar elements
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
             
             // Sample Data (in a real app, this would come from an API)
             let employees = [
@@ -532,6 +680,44 @@
                 renderWarehouses();
                 loadManagers();
                 setupEventListeners();
+                setupMobileSidebar();
+            }
+            
+            // Setup mobile sidebar functionality
+            function setupMobileSidebar() {
+                // Toggle sidebar
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.add('active');
+                    sidebarOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                // Close sidebar
+                sidebarClose.addEventListener('click', closeSidebar);
+                sidebarOverlay.addEventListener('click', closeSidebar);
+                
+                // Close sidebar when clicking on a menu item (for mobile)
+                document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (window.innerWidth <= 768) {
+                            closeSidebar();
+                        }
+                    });
+                });
+                
+                // Close sidebar when window is resized to desktop view
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        closeSidebar();
+                    }
+                });
+            }
+
+            // Close sidebar function
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
             }
             
             // Render warehouses grid
@@ -632,9 +818,9 @@
                 // Close buttons
                 closeButtons.forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (warehouseModal.style.display === 'block') {
+                        if (warehouseModal.style.display === 'flex') {
                             closeWarehouseModal();
-                        } else if (confirmModal.style.display === 'block') {
+                        } else if (confirmModal.style.display === 'flex') {
                             closeConfirmModal();
                         }
                     });
@@ -681,16 +867,13 @@
                 document.getElementById('warehouseCode').value = 
                     `WH-${(warehouses.length + 1).toString().padStart(3, '0')}`;
                 
-                // Set today's date as default
-                document.getElementById('warehouseCreatedAt').valueAsDate = new Date();
-                
                 // Uncheck all managers
                 document.querySelectorAll('#managerList input[type="checkbox"]').forEach(checkbox => {
                     checkbox.checked = false;
                 });
                 
                 // Show modal
-                warehouseModal.style.display = 'block';
+                warehouseModal.style.display = 'flex';
             }
             
             // Open modal for editing a warehouse
@@ -713,7 +896,7 @@
                 });
                 
                 // Show modal
-                warehouseModal.style.display = 'block';
+                warehouseModal.style.display = 'flex';
             }
             
             // Open confirmation modal for deletion
@@ -724,7 +907,7 @@
                 document.getElementById('confirmMessage').textContent = 
                     `هل أنت متأكد من حذف المخزن "${warehouse.name}"؟ سيتم حذف جميع البيانات المرتبطة به.`;
                 
-                confirmModal.style.display = 'block';
+                confirmModal.style.display = 'flex';
             }
             
             // Close warehouse modal
