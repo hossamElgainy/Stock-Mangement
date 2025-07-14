@@ -5,346 +5,368 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إدارة العهدة - نظام إدارة المخازن</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Base Styles */
         :root {
-            --primary: #3498db;
-            --secondary: #2ecc71;
-            --danger: #e74c3c;
-            --warning: #f39c12;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --gray: #95a5a6;
-            --sidebar: #2c3e50;
-            --sidebar-dark: #1a252f;
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #14b8a6;
+            --light-color: #f9fafb;
+            --dark-color: #1f2937;
+            --white: #ffffff;
+            --gray: #6b7280;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --sidebar: #111827;
+            --sidebar-dark: #0b1120;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Tajawal', sans-serif;
         }
-        
+
         body {
-            background-color: #f5f7fa;
-            color: #333;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            direction: rtl;
             overflow-x: hidden;
         }
-        
+
         .container {
             display: flex;
             min-height: 100vh;
             position: relative;
         }
-        
+
         /* Sidebar Styles */
         .sidebar {
-            width: 250px;
-            background: var(--sidebar);
-            color: white;
+            width: 260px;
+            background-color: var(--sidebar);
+            color: var(--white);
             position: fixed;
             height: 100vh;
             z-index: 1000;
             transition: transform 0.3s ease-in-out;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
             right: 0;
         }
-        
+
         .sidebar-header {
             padding: 20px;
-            background: var(--sidebar-dark);
+            background-color: var(--sidebar-dark);
             text-align: center;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .sidebar-header h3 {
             margin: 0;
-            font-weight: 700;
-            font-size: 1.2rem;
+            font-weight: 800;
+            font-size: 1.3rem;
         }
-        
+
         .sidebar-menu {
             padding: 20px 0;
             overflow-y: auto;
             height: calc(100vh - 60px);
         }
-        
+
         .sidebar-menu ul {
             list-style: none;
         }
-        
+
         .sidebar-menu li a {
-            display: block;
-            padding: 12px 20px;
-            color: #ddd;
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: #d1d5db;
             text-decoration: none;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
             position: relative;
+            border-radius: 0 8px 8px 0;
         }
-        
+
         .sidebar-menu li a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            color: var(--white);
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
         }
-        
+
         .sidebar-menu li a i {
-            margin-left: 10px;
-            width: 20px;
+            margin-left: 12px;
+            width: 24px;
             text-align: center;
         }
-        
+
         .sidebar-menu li.active a {
-            background: var(--primary);
-            color: white;
+            color: var(--white);
+            background-color: var(--primary-color);
+            font-weight: 700;
         }
-        
+
         .sidebar-menu li.active a:before {
             content: "";
             position: absolute;
             right: 0;
             top: 0;
             height: 100%;
-            width: 4px;
-            background: white;
+            width: 5px;
+            background: var(--white);
         }
-        
-        /* Main Content Styles */
-        .main-content {
-            flex: 1;
-            margin-right: 250px;
-            transition: all 0.3s;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px 20px;
-            border-bottom: 1px solid #ddd;
-            background: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-        
-        .user-info img {
-            border-radius: 50%;
-            margin-left: 10px;
-            width: 40px;
-            height: 40px;
-        }
-        
-        /* Mobile Header Title */
-        .mobile-header-title {
-            display: none;
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-right: 15px;
-        }
-        
-        /* Menu Toggle */
-        .menu-toggle-container {
-            display: none;
-            align-items: center;
-        }
-        
-        .menu-toggle {
-            display: none;
-            background: transparent;
-            color: var(--primary);
-            border: none;
-            padding: 5px;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s;
-            align-items: center;
-        }
-        
+
         .sidebar-close {
             display: none;
             background: transparent;
-            color: white;
+            color: var(--white);
             border: none;
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
-        
-        /* Overlay for mobile sidebar */
+
+        .sidebar-close:hover {
+            color: var(--primary-color);
+        }
+
         .sidebar-overlay {
             position: fixed;
             top: 0;
             right: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 999;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
         }
-        
+
         .sidebar-overlay.active {
             opacity: 1;
             visibility: visible;
         }
-        
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-right: 260px;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .mobile-header-title {
+            display: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-right: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+        }
+
+        .menu-toggle-container {
+            display: none;
+            align-items: center;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            color: var(--primary-color);
+            border: none;
+            padding: 8px;
+            font-size: 26px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            color: var(--secondary-color);
+        }
+
         /* Card Styles */
         .card {
-            background: white;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-            margin-bottom: 20px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 25px;
+            transition: transform 0.2s ease;
         }
-        
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e5e7eb;
+            background: var(--white);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
         }
-        
+
         .card-body {
-            padding: 20px;
+            padding: 25px;
         }
-        
+
         /* Button Styles */
         .btn {
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 4px;
-            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            transition: all 0.2s ease;
             cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
+            border: none;
         }
-        
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #2980b9;
-        }
-        
-        .btn-success {
-            background: var(--secondary);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: #27ae60;
-        }
-        
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-        
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-        
-        .btn-warning:hover {
-            background: #d35400;
-        }
-        
+
         .btn-sm {
-            padding: 5px 10px;
-            font-size: 12px;
+            padding: 8px 12px;
+            font-size: 13px;
         }
-        
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
         /* Table Styles */
         .table-responsive {
             overflow-x: auto;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         th, td {
-            padding: 12px 15px;
+            padding: 15px;
             text-align: right;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e5e7eb;
         }
-        
+
         th {
-            background-color: #f8f9fa;
-            font-weight: 500;
+            background-color: #f3f4f6;
+            font-weight: 600;
+            font-size: 15px;
         }
-        
+
         tr:hover {
-            background-color: #f5f5f5;
+            background-color: #f9fafb;
         }
-        
+
         /* Status Indicators */
         .custody-status {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            margin-left: 5px;
+            margin-left: 8px;
         }
-        
+
         .status-active {
-            background-color: var(--secondary);
+            background-color: var(--success-color);
         }
-        
+
         .status-returned {
-            background-color: var(--primary);
+            background-color: var(--primary-color);
         }
-        
+
         .status-overdue {
-            background-color: var(--danger);
+            background-color: var(--danger-color);
         }
-        
+
         /* Tabs */
         .tabs {
             display: flex;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 20px;
         }
-        
+
         .tab {
-            padding: 12px 20px;
+            padding: 14px 25px;
             cursor: pointer;
             position: relative;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray);
+            transition: all 0.2s ease;
         }
-        
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
         .tab.active {
-            color: var(--primary);
-            font-weight: 500;
+            color: var(--primary-color);
+            font-weight: 700;
         }
-        
+
         .tab.active:after {
             content: "";
             position: absolute;
             bottom: -1px;
             right: 0;
             width: 100%;
-            height: 2px;
-            background: var(--primary);
+            height: 3px;
+            background: var(--primary-color);
         }
-        
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -353,273 +375,471 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            animation: fadeIn 0.3s;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1050;
+            transition: opacity 0.3s ease;
         }
-        
+
         .modal-dialog {
-            background: white;
-            margin: 5% auto;
+            background: var(--white);
+            margin: 40px auto;
             width: 700px;
             max-width: 90%;
-            border-radius: 5px;
-            overflow: hidden;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50px);
+            transition: transform 0.3s ease;
         }
-        
+
+        .modal.show .modal-dialog {
+            transform: translateY(0);
+        }
+
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: var(--primary);
-            color: white;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e5e7eb;
+            background: var(--white);
         }
-        
-        .modal-header .close {
-            font-size: 24px;
-            cursor: pointer;
+
+        .modal-header h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
         }
-        
+
         .modal-body {
-            padding: 20px;
+            padding: 25px;
             max-height: 70vh;
             overflow-y: auto;
         }
-        
+
         .modal-footer {
-            padding: 15px 20px;
-            background: #f9f9f9;
-            text-align: left;
+            padding: 20px 25px;
+            border-top: 1px solid #e5e7eb;
             display: flex;
             justify-content: flex-end;
             gap: 10px;
         }
-        
+
+        .close {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--dark-color);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
         /* Form Styles */
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        
+
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 15px;
         }
-        
+
         .form-control {
             width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 12px 15px;
+            font-size: 15px;
+            color: var(--dark-color);
+            background-color: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: var(--border-radius);
+            transition: all 0.2s ease;
         }
-        
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background-color: var(--white);
+        }
+
         .form-row {
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
         }
-        
+
         .form-row .form-group {
             flex: 1;
+            min-width: 200px;
         }
-        
+
         /* Item Selection */
         .item-selection {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            padding: 20px;
             margin-top: 20px;
+            background: var(--white);
         }
-        
+
         .item-list {
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
-            margin-top: 10px;
-            border: 1px solid #eee;
-            border-radius: 5px;
+            margin-top: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--border-radius);
         }
-        
+
         .item-checkbox {
             display: flex;
             align-items: center;
-            padding: 8px 15px;
-            border-bottom: 1px solid #eee;
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
         }
-        
+
         .item-checkbox:last-child {
             border-bottom: none;
         }
-        
+
         .item-checkbox input {
-            margin-left: 10px;
+            margin-left: 12px;
         }
-        
+
+        /* Additional Items */
+        .additional-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            background: #f9fafb;
+        }
+
+        .additional-item select,
+        .additional-item input {
+            margin-left: 10px;
+            flex: 1;
+        }
+
         /* Returned Items Styles */
         .returned-item {
             display: flex;
             align-items: center;
-            padding: 10px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            background: #f9fafb;
         }
-        
+
         .returned-item-info {
             flex: 1;
         }
-        
+
         .returned-item-status {
+            min-width: 220px;
             margin-right: 15px;
-            min-width: 200px;
         }
-        
+
         .returned-item-status select {
-            padding: 5px;
-            border-radius: 3px;
-            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            border: 1px solid #d1d5db;
             width: 100%;
+            font-size: 14px;
         }
-        
+
         .item-status-badge {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: 500;
-            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--white);
         }
-        
+
         /* Item Condition Statuses */
-        .status-new {
-            background-color: #2ecc71; /* Green */
+        .status-excellent { background-color: #059669; }
+        .status-very-good { background-color: #10b981; }
+        .status-good { background-color: #3498db; }
+        .status-fair { background-color: #f59e0b; }
+        .status-damaged { background-color: #ef4444; }
+        .status-assigned { background-color: var(--primary-color); }
+
+        /* Installments Display */
+        .installments-info {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            background: #f9fafb;
         }
-        
-        .status-excellent {
-            background-color: #27ae60; /* Darker Green */
+
+        .installments-info table {
+            width: 100%;
+            margin-top: 10px;
         }
-        
-        .status-good {
-            background-color: #3498db; /* Blue */
+
+        .installments-info th, .installments-info td {
+            padding: 10px;
+            font-size: 14px;
         }
-        
-        .status-fair {
-            background-color: #f39c12; /* Orange */
+
+        /* Alert Styles */
+        .alert {
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
         }
-        
-        .status-poor {
-            background-color: #e74c3c; /* Red */
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
         }
-        
-        .status-damaged {
-            background-color: #d35400; /* Dark Orange */
+
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #f87171;
         }
-        
-        .status-lost {
-            background-color: #7f8c8d; /* Gray */
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
         }
-        
-        /* Responsive */
+
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e5e7eb;
+        }
+
+        .pagination-info {
+            font-size: 15px;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-size-selector label {
+            font-size: 15px;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .page-size-selector select {
+            padding: 10px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: var(--border-radius);
+            font-size: 15px;
+            cursor: pointer;
+            background-color: #f9fafb;
+        }
+
+        .page-size-selector select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e5e7eb;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 50px;
+            background: var(--white);
+            color: var(--dark-color);
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background-color: var(--primary-color);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+
+        .pagination-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+        }
+
+        .pagination-btn:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .pagination-btn i {
+            margin-left: 5px;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Responsive Styles */
         @media (max-width: 992px) {
             .sidebar {
-                width: 220px;
+                width: 240px;
             }
             .main-content {
-                margin-right: 220px;
+                margin-right: 240px;
             }
         }
-        
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(100%);
-                width: 280px;
+                width: 300px;
             }
-            
+
             .sidebar.active {
                 transform: translateX(0);
             }
-            
+
             .main-content {
                 margin-right: 0;
-                width: 100%;
+                padding: 15px;
             }
-            
+
             .menu-toggle-container {
                 display: flex;
                 align-items: center;
             }
-            
+
             .mobile-header-title {
                 display: block;
             }
-            
+
             .menu-toggle {
                 display: flex;
             }
-            
+
             .sidebar-close {
                 display: block;
             }
-            
+
             .header {
-                padding: 10px 15px;
+                padding: 12px 15px;
             }
-            
+
             .card {
                 margin: 10px;
             }
-            
+
             .card-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .card-header h3 {
-                margin-bottom: 10px;
+                margin-bottom: 15px;
             }
-            
+
             .form-row {
                 flex-direction: column;
                 gap: 0;
             }
-            
-            .returned-item {
+
+            .returned-item,
+            .additional-item {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .returned-item-status {
                 margin-right: 0;
-                margin-top: 10px;
+                margin-top: 15px;
                 width: 100%;
             }
+
+            .pagination-container {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 10px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
         }
-        
+
         @media (max-width: 576px) {
             .sidebar {
-                width: 260px;
+                width: 280px;
             }
-            
+
             .mobile-header-title {
-                font-size: 1rem;
+                font-size: 1.1rem;
                 margin-right: 10px;
             }
-            
+
             .user-info span {
                 display: none;
             }
-            
+
             th, td {
-                padding: 8px 10px;
+                padding: 10px;
                 font-size: 14px;
             }
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+            .pagination-btn {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .page-size-selector select {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -638,7 +858,7 @@
             <div class="sidebar-menu">
                 <ul>
                     <li><a href="index.html"><i class="fas fa-home"></i> لوحة التحكم</a></li>
-                    <li><a href="warehouses.html"><i class="fas fa-warehouse"></i> إدارة المخازن</a></li> 
+                    <li><a href="warehouses.html"><i class="fas fa-warehouse"></i> إدارة المخازن</a></li>
                     <li><a href="stockkeepers.html"><i class="fas fa-user-shield"></i> أمناء المخازن</a></li>
                     <li><a href="items.html"><i class="fas fa-boxes"></i> إدارة الأصناف</a></li>
                     <li><a href="categories.html"><i class="fas fa-tags"></i> إدارة الأقسام</a></li>
@@ -647,11 +867,12 @@
                     <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
                     <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
                     <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="transactions.html"><i class="fas fa-history"></i> سجل المعاملات</a></li>
                     <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
                 </ul>
             </div>
         </div>
-        
+
         <!-- Main Content -->
         <div class="main-content">
             <div class="header">
@@ -666,25 +887,39 @@
                     <span>أمين المخزن</span>
                 </div>
             </div>
-            
+
+            <div id="alertContainer"></div>
+
             <div class="card">
-                <div class="tabs">
-                    <div class="tab active" data-tab="active">العهد النشطة</div>
-                    <div class="tab" data-tab="returned">العهد المرجعة</div>
-                </div>
-                
                 <div class="card-header">
                     <h3 id="custodyTitle">العهد النشطة</h3>
                     <button class="btn btn-primary" id="assignCustodyBtn">
                         <i class="fas fa-plus"></i> تسليم عهدة جديدة
                     </button>
                 </div>
-                
+
                 <div class="card-body">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="active">العهد النشطة</div>
+                        <div class="tab" data-tab="returned">العهد المرجعة</div>
+                    </div>
+                    <div class="pagination-container">
+                        <div class="page-size-selector">
+                            <label>عدد السجلات لكل صفحة:</label>
+                            <select id="pageSize">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        <div class="pagination-info" id="paginationInfo"></div>
+                    </div>
                     <div class="table-responsive">
                         <table id="custodyTable">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>كود العهدة</th>
                                     <th>الصنف</th>
                                     <th>المستلم</th>
@@ -695,42 +930,44 @@
                                 </tr>
                             </thead>
                             <tbody id="custodyTableBody">
-                                <!-- Data will be loaded here dynamically -->
+                                <tr><td colspan="8" class="loading">جاري التحميل...</td></tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="pagination-controls">
+                        <div class="pagination" id="pagination"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Assign Custody Modal -->
     <div id="assignCustodyModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4>تسليم عهدة جديدة</h4>
-                    <span class="close">&times;</span>
+                    <button class="close">×</button>
                 </div>
                 <div class="modal-body">
                     <form id="custodyForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="employeeSelect">الموظف</label>
+                                <label for="employeeSelect">الموظف <span style="color: var(--danger-color);">*</span></label>
                                 <select id="employeeSelect" class="form-control" required>
                                     <option value="">اختر الموظف</option>
-                                    <!-- Employees will be loaded here dynamically -->
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="assignDate">تاريخ التسليم</label>
+                                <label for="assignDate">تاريخ التسليم <span style="color: var(--danger-color);">*</span></label>
                                 <input type="date" id="assignDate" class="form-control" required>
                             </div>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="returnDate">تاريخ الاستلام المتوقع</label>
+                                <label for="returnDate">تاريخ الاستلام المتوقع <span style="color: var(--danger-color);">*</span></label>
                                 <input type="date" id="returnDate" class="form-control" required>
                             </div>
                             <div class="form-group">
@@ -738,15 +975,23 @@
                                 <input type="text" id="custodyNotes" class="form-control">
                             </div>
                         </div>
-                        
+
                         <div class="item-selection">
                             <h5>الأصناف المطلوبة</h5>
                             <div class="form-group">
                                 <input type="text" id="itemSearch" class="form-control" placeholder="ابحث عن الأصناف...">
                             </div>
-                            <div class="item-list" id="itemList">
-                                <!-- Items will be loaded here dynamically -->
+                            <div class="item-list" id="itemList"></div>
+                        </div>
+
+                        <div class="item-selection" id="additionalItemsSection">
+                            <h5>الأصناف الإضافية</h5>
+                            <div class="form-group">
+                                <button type="button" id="addAdditionalItemBtn" class="btn btn-success btn-sm">
+                                    <i class="fas fa-plus"></i> إضافة صنف إضافي
+                                </button>
                             </div>
+                            <div id="additionalItemsList"></div>
                         </div>
                     </form>
                 </div>
@@ -757,33 +1002,31 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Return Custody Modal -->
     <div id="returnCustodyModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 id="returnModalTitle">استلام العهدة</h4>
-                    <span class="close">&times;</span>
+                    <button class="close">×</button>
                 </div>
                 <div class="modal-body">
                     <form id="returnCustodyForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="actualReturnDate">تاريخ الاستلام الفعلي</label>
+                                <label for="actualReturnDate">تاريخ الاستلام الفعلي <span style="color: var(--danger-color);">*</span></label>
                                 <input type="date" id="actualReturnDate" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="returnNotes">ملاحظات الاستلام</label>
-                                <textarea id="returnNotes" class="form-control" rows="2"></textarea>
+                                <textarea id="returnNotes" class="form-control" rows="3"></textarea>
                             </div>
                         </div>
-                        
+
                         <div id="returnedItemsContainer">
                             <h5>الأصناف المرجعة</h5>
-                            <div id="returnedItemsList">
-                                <!-- Items will be loaded here dynamically with status selection -->
-                            </div>
+                            <div id="returnedItemsList"></div>
                         </div>
                     </form>
                 </div>
@@ -794,14 +1037,14 @@
             </div>
         </div>
     </div>
-    
+
     <!-- View Custody Details Modal -->
     <div id="viewCustodyModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 id="viewModalTitle">تفاصيل العهدة</h4>
-                    <span class="close">&times;</span>
+                    <button class="close">×</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-row">
@@ -814,7 +1057,7 @@
                             <p id="viewEmployee" class="form-control-static"></p>
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label>تاريخ التسليم:</label>
@@ -825,7 +1068,7 @@
                             <p id="viewExpectedReturnDate" class="form-control-static"></p>
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label>تاريخ الاستلام الفعلي:</label>
@@ -836,22 +1079,25 @@
                             <p id="viewCustodyStatus" class="form-control-static"></p>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>ملاحظات التسليم:</label>
                         <p id="viewCustodyNotes" class="form-control-static"></p>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>ملاحظات الاستلام:</label>
                         <p id="viewReturnNotes" class="form-control-static"></p>
                     </div>
-                    
+
                     <div class="item-selection">
                         <h5>الأصناف</h5>
-                        <div id="viewItemsList">
-                            <!-- Items will be loaded here dynamically -->
-                        </div>
+                        <div id="viewItemsList"></div>
+                    </div>
+
+                    <div class="installments-info" id="installmentsInfo">
+                        <h5>الأصناف الإضافية والأقساط</h5>
+                        <div id="additionalItemsListView"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -860,7 +1106,7 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // DOM Elements
@@ -880,113 +1126,150 @@
             const closeButtons = document.querySelectorAll('.close');
             const custodyTitle = document.getElementById('custodyTitle');
             const returnedItemsList = document.getElementById('returnedItemsList');
-            
+            const alertContainer = document.getElementById('alertContainer');
+            const itemSearch = document.getElementById('itemSearch');
+            const addAdditionalItemBtn = document.getElementById('addAdditionalItemBtn');
+            const additionalItemsList = document.getElementById('additionalItemsList');
+            const pageSizeSelect = document.getElementById('pageSize');
+            const paginationInfo = document.getElementById('paginationInfo');
+            const paginationNav = document.getElementById('pagination');
+
             // Mobile sidebar elements
             const menuToggle = document.getElementById('menuToggle');
             const sidebar = document.getElementById('sidebar');
             const sidebarClose = document.getElementById('sidebarClose');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
-            
-            // Sample Data (in a real app, this would come from an API)
+
+            // Sample Data
             let employees = [
                 { id: 1, name: 'أحمد محمد', department: 'IT' },
                 { id: 2, name: 'محمد علي', department: 'المالية' },
                 { id: 3, name: 'سارة عبدالله', department: 'الموارد البشرية' }
             ];
-            
+
             let items = [
-                { id: 1, code: 'ITM-1001', name: 'كمبيوتر محمول', category: 'أجهزة إلكترونية', available: 5, condition: 'new' },
-                { id: 2, code: 'ITM-1002', name: 'هاتف ذكي', category: 'أجهزة إلكترونية', available: 10, condition: 'excellent' },
+                { id: 1, code: 'ITM-1001', name: 'كمبيوتر محمول', category: 'أجهزة إلكترونية', available: 5, condition: 'excellent' },
+                { id: 2, code: 'ITM-1002', name: 'هاتف ذكي', category: 'أجهزة إلكترونية', available: 10, condition: 'very-good' },
                 { id: 3, code: 'ITM-2001', name: 'طابعة', category: 'أجهزة مكتبية', available: 3, condition: 'good' },
                 { id: 4, code: 'ITM-3001', name: 'طاولة مكتب', category: 'أثاث', available: 8, condition: 'fair' },
-                { id: 5, code: 'ITM-3002', name: 'كرسي مكتب', category: 'أثاث', available: 12, condition: 'poor' }
+                { id: 5, code: 'ITM-3002', name: 'كرسي مكتب', category: 'أثاث', available: 12, condition: 'damaged' }
             ];
-            
+
+            let additionalItemsOptions = [
+                { id: 1, name: 'تيشيرت إضافي', code: 'ADD-1001', cost: 100 },
+                { id: 2, name: 'قبعة إضافية', code: 'ADD-1002', cost: 50 },
+                { id: 3, name: 'حقيبة إضافية', code: 'ADD-1003', cost: 150 }
+            ];
+
             let custodyRecords = [
-                { 
-                    id: 1, 
-                    code: 'CST-2001', 
-                    employeeId: 1, 
+                {
+                    id: 1,
+                    code: 'CST-2001',
+                    employeeId: 1,
                     items: [
-                        { 
-                            id: 1, 
-                            code: 'ITM-1001', 
+                        {
+                            id: 1,
+                            code: 'ITM-1001',
                             name: 'كمبيوتر محمول',
-                            initialCondition: 'new',
+                            initialCondition: 'excellent',
                             currentCondition: 'assigned',
                             returnCondition: null,
                             returnNotes: ''
                         }
-                    ], 
-                    assignDate: '2023-05-15', 
-                    expectedReturnDate: '2023-08-15', 
-                    actualReturnDate: null, 
-                    status: 'active', 
-                    notes: 'تسليم لموظف جديد', 
+                    ],
+                    additionalItems: [
+                        {
+                            id: 1,
+                            name: 'تيشيرت إضافي',
+                            code: 'ADD-1001',
+                            monthlyDeduction: 10,
+                            totalInstallments: 12,
+                            paidInstallments: 3,
+                            remainingInstallments: 9,
+                            totalCost: 100
+                        }
+                    ],
+                    assignDate: '2023-05-15',
+                    expectedReturnDate: '2023-08-15',
+                    actualReturnDate: null,
+                    status: 'active',
+                    notes: 'تسليم لموظف جديد',
                     returnCondition: null,
                     returnNotes: null
                 },
-                { 
-                    id: 2, 
-                    code: 'CST-2002', 
-                    employeeId: 2, 
+                {
+                    id: 2,
+                    code: 'CST-2002',
+                    employeeId: 2,
                     items: [
-                        { 
-                            id: 3, 
-                            code: 'ITM-2001', 
+                        {
+                            id: 3,
+                            code: 'ITM-2001',
                             name: 'طابعة',
                             initialCondition: 'good',
                             currentCondition: 'returned',
                             returnCondition: 'excellent',
                             returnNotes: 'تم الاستلام في حالة ممتازة بعد الصيانة'
                         },
-                        { 
-                            id: 5, 
-                            code: 'ITM-3002', 
+                        {
+                            id: 5,
+                            code: 'ITM-3002',
                             name: 'كرسي مكتب',
-                            initialCondition: 'poor',
+                            initialCondition: 'damaged',
                             currentCondition: 'returned',
                             returnCondition: 'damaged',
                             returnNotes: 'تم الاستلام مع تلف في الظهر'
                         }
-                    ], 
-                    assignDate: '2023-06-01', 
-                    expectedReturnDate: '2023-09-01', 
-                    actualReturnDate: '2023-09-05', 
-                    status: 'returned', 
-                    notes: 'تسليم لمشروع مؤقت', 
+                    ],
+                    additionalItems: [
+                        {
+                            id: 2,
+                            name: 'قبعة إضافية',
+                            code: 'ADD-1002',
+                            monthlyDeduction: 5,
+                            totalInstallments: 12,
+                            paidInstallments: 12,
+                            remainingInstallments: 0,
+                            totalCost: 50
+                        }
+                    ],
+                    assignDate: '2023-06-01',
+                    expectedReturnDate: '2023-09-01',
+                    actualReturnDate: '2023-09-05',
+                    status: 'returned',
+                    notes: 'تسليم لمشروع مؤقت',
                     returnCondition: 'partially_damaged',
                     returnNotes: 'تم استلام بعض الأصناف بحالة تالفة'
                 }
             ];
-            
+
             // Current state
             let currentTab = 'active';
             let currentCustodyId = null;
-            
+            let additionalItemCounter = 0;
+            let itemsPerPage = parseInt(pageSizeSelect.value);
+            let currentPage = 1;
+
             // Initialize the app
             function init() {
                 loadEmployees();
                 loadItems();
-                renderCustodyTable();
+                setTimeout(() => renderCustodyTable(), 500);
                 setupEventListeners();
                 setupMobileSidebar();
             }
-            
+
             // Setup mobile sidebar functionality
             function setupMobileSidebar() {
-                // Toggle sidebar
                 menuToggle.addEventListener('click', function() {
                     sidebar.classList.add('active');
                     sidebarOverlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 });
-                
-                // Close sidebar
+
                 sidebarClose.addEventListener('click', closeSidebar);
                 sidebarOverlay.addEventListener('click', closeSidebar);
-                
-                // Close sidebar when clicking on a menu item (for mobile)
+
                 document.querySelectorAll('.sidebar-menu a').forEach(link => {
                     link.addEventListener('click', function() {
                         if (window.innerWidth <= 768) {
@@ -994,27 +1277,26 @@
                         }
                     });
                 });
-                
-                // Close sidebar when window is resized to desktop view
+
                 window.addEventListener('resize', function() {
                     if (window.innerWidth > 768) {
                         closeSidebar();
                     }
                 });
             }
-            
+
             // Close sidebar function
             function closeSidebar() {
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
                 document.body.style.overflow = '';
             }
-            
+
             // Load employees into select dropdown
             function loadEmployees() {
                 const select = document.getElementById('employeeSelect');
                 select.innerHTML = '<option value="">اختر الموظف</option>';
-                
+
                 employees.forEach(employee => {
                     const option = document.createElement('option');
                     option.value = employee.id;
@@ -1022,12 +1304,12 @@
                     select.appendChild(option);
                 });
             }
-            
+
             // Load available items
             function loadItems() {
                 const itemList = document.getElementById('itemList');
                 itemList.innerHTML = '';
-                
+
                 items.forEach(item => {
                     if (item.available > 0) {
                         const div = document.createElement('div');
@@ -1045,238 +1327,400 @@
                     }
                 });
             }
-            
-            // Render custody table based on current tab
-            function renderCustodyTable() {
-                custodyTableBody.innerHTML = '';
-                
-                const filteredRecords = custodyRecords.filter(record => {
-                    if (currentTab === 'active') return record.status === 'active';
-                    if (currentTab === 'returned') return record.status === 'returned';
-                    return true;
+
+            // Load additional items options
+            function loadAdditionalItems() {
+                const select = document.createElement('select');
+                select.className = 'form-control';
+                select.innerHTML = '<option value="">اختر الصنف الإضافي</option>';
+
+                additionalItemsOptions.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = `${item.name} (${item.code}) - التكلفة: ${item.cost} ريال`;
+                    select.appendChild(option);
                 });
-                
-                if (filteredRecords.length === 0) {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td colspan="7" style="text-align: center;">لا توجد سجلات</td>`;
-                    custodyTableBody.appendChild(tr);
-                    return;
-                }
-                
-                filteredRecords.forEach(record => {
-                    const employee = employees.find(e => e.id === record.employeeId);
-                    const tr = document.createElement('tr');
-                    
-                    // Basic info
-                    tr.innerHTML = `
-                        <td>${record.code}</td>
-                        <td>
-                            ${record.items.map(item => `${item.name} (${item.code})`).join('<br>')}
-                        </td>
-                        <td>${employee ? employee.name : 'غير معروف'}</td>
-                        <td>${formatDate(record.assignDate)}</td>
-                        <td>${record.expectedReturnDate ? formatDate(record.expectedReturnDate) : '-'}</td>
-                        <td>
-                            <span class="custody-status ${getStatusClass(record)}"></span>
-                            ${getStatusText(record)}
-                        </td>
-                        <td>
-                            ${record.status === 'active' ? 
-                                `<button class="btn btn-sm btn-success return-btn" data-id="${record.id}">استلام</button>` : 
-                                `<button class="btn btn-sm btn-primary view-btn" data-id="${record.id}">عرض</button>`}
-                        </td>
-                    `;
-                    
-                    custodyTableBody.appendChild(tr);
-                });
+
+                return select;
             }
-            
+
+            // Render custody table with pagination
+            function renderCustodyTable() {
+                custodyTableBody.innerHTML = '<tr><td colspan="8" class="loading">جاري التحميل...</td></tr>';
+
+                setTimeout(() => {
+                    custodyTableBody.innerHTML = '';
+
+                    const filteredRecords = custodyRecords.filter(record => {
+                        if (currentTab === 'active') return record.status === 'active';
+                        if (currentTab === 'returned') return record.status === 'returned';
+                        return true;
+                    });
+
+                    if (filteredRecords.length === 0) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td colspan="8" class="loading">لا توجد سجلات</td>`;
+                        custodyTableBody.appendChild(tr);
+                        renderPagination(0);
+                        paginationInfo.textContent = 'عرض 0 إلى 0 من 0 سجل';
+                        return;
+                    }
+
+                    // Pagination
+                    const totalItems = filteredRecords.length;
+                    const totalPages = Math.ceil(totalItems / itemsPerPage);
+                    currentPage = Math.min(currentPage, totalPages || 1);
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
+                    const paginatedRecords = filteredRecords.slice(startIndex, endIndex);
+
+                    // Update pagination info
+                    paginationInfo.textContent = `عرض ${startIndex + 1} إلى ${Math.min(endIndex, totalItems)} من ${totalItems} سجل`;
+
+                    paginatedRecords.forEach((record, index) => {
+                        const employee = employees.find(e => e.id === record.employeeId);
+                        const tr = document.createElement('tr');
+
+                        tr.innerHTML = `
+                            <td>${startIndex + index + 1}</td>
+                            <td>${record.code}</td>
+                            <td>
+                                ${record.items.map(item => `${item.name} (${item.code})`).join('<br>')}
+                                ${record.additionalItems.length > 0 ? '<br><strong>إضافي:</strong> ' + record.additionalItems.map(item => `${item.name} (${item.code})`).join('<br>') : ''}
+                            </td>
+                            <td>${employee ? employee.name : 'غير معروف'}</td>
+                            <td>${formatDate(record.assignDate)}</td>
+                            <td>${record.expectedReturnDate ? formatDate(record.expectedReturnDate) : '-'}</td>
+                            <td>
+                                <span class="custody-status ${getStatusClass(record)}"></span>
+                                ${getStatusText(record)}
+                            </td>
+                            <td>
+                                ${record.status === 'active' ?
+                                    `<button class="btn btn-sm btn-success return-btn" data-id="${record.id}"><i class="fas fa-undo"></i> استلام</button>` :
+                                    `<button class="btn btn-sm btn-primary view-btn" data-id="${record.id}"><i class="fas fa-eye"></i> عرض</button>`}
+                            </td>
+                        `;
+
+                        custodyTableBody.appendChild(tr);
+                    });
+
+                    renderPagination(totalPages);
+                }, 500);
+            }
+
+            // Render pagination controls
+            function renderPagination(totalPages) {
+                paginationNav.innerHTML = '';
+
+                // Ensure at least one page is shown
+                const effectiveTotalPages = Math.max(1, totalPages);
+
+                // First page button
+                const firstBtn = document.createElement('button');
+                firstBtn.className = 'pagination-btn';
+                firstBtn.innerHTML = '<i class="fas fa-angle-double-right"></i>';
+                firstBtn.disabled = currentPage === 1;
+                firstBtn.addEventListener('click', () => {
+                    currentPage = 1;
+                    renderCustodyTable();
+                });
+                paginationNav.appendChild(firstBtn);
+
+                // Previous button
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'pagination-btn';
+                prevBtn.innerHTML = '<i class="fas fa-angle-right"></i>';
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderCustodyTable();
+                    }
+                });
+                paginationNav.appendChild(prevBtn);
+
+                // Page numbers
+                const maxPagesToShow = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+                let endPage = Math.min(effectiveTotalPages, startPage + maxPagesToShow - 1);
+
+                if (endPage - startPage < maxPagesToShow - 1) {
+                    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        renderCustodyTable();
+                    });
+                    paginationNav.appendChild(pageBtn);
+                }
+
+                // Next button
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'pagination-btn';
+                nextBtn.innerHTML = '<i class="fas fa-angle-left"></i>';
+                nextBtn.disabled = currentPage === effectiveTotalPages;
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < effectiveTotalPages) {
+                        currentPage++;
+                        renderCustodyTable();
+                    }
+                });
+                paginationNav.appendChild(nextBtn);
+
+                // Last page button
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'pagination-btn';
+                lastBtn.innerHTML = '<i class="fas fa-angle-double-left"></i>';
+                lastBtn.disabled = currentPage === effectiveTotalPages;
+                lastBtn.addEventListener('click', () => {
+                    currentPage = effectiveTotalPages;
+                    renderCustodyTable();
+                });
+                paginationNav.appendChild(lastBtn);
+            }
+
             // Format date for display
             function formatDate(dateString) {
                 if (!dateString) return '-';
                 const date = new Date(dateString);
                 return date.toLocaleDateString('ar-EG');
             }
-            
+
             // Get status class for styling
             function getStatusClass(record) {
                 if (record.status === 'returned') return 'status-returned';
-                
+
                 const today = new Date();
                 const returnDate = new Date(record.expectedReturnDate);
                 if (today > returnDate) return 'status-overdue';
-                
+
                 return 'status-active';
             }
-            
+
             // Get status text
             function getStatusText(record) {
                 if (record.status === 'returned') return 'مرجعة';
-                
+
                 const today = new Date();
                 const returnDate = new Date(record.expectedReturnDate);
                 if (today > returnDate) return 'متأخرة';
-                
+
                 return 'نشطة';
             }
-            
+
             // Get condition text
             function getConditionText(condition) {
-                switch(condition) {
-                    case 'new': return 'جديدة';
+                switch (condition) {
                     case 'excellent': return 'ممتازة';
-                    case 'good': return 'جيدة';
-                    case 'fair': return 'مقبولة';
-                    case 'poor': return 'ضعيفة';
-                    case 'damaged': return 'تالفة';
-                    case 'lost': return 'مفقودة';
+                    case 'very-good': return 'جيد جدا';
+                    case 'good': return 'جيد';
+                    case 'fair': return 'مقبول';
+                    case 'damaged': return 'تالف';
                     case 'assigned': return 'مسلمة';
                     default: return 'غير معروف';
                 }
             }
-            
+
             // Get condition class
             function getConditionClass(condition) {
-                switch(condition) {
-                    case 'new': return 'status-new';
+                switch (condition) {
                     case 'excellent': return 'status-excellent';
+                    case 'very-good': return 'status-very-good';
                     case 'good': return 'status-good';
                     case 'fair': return 'status-fair';
-                    case 'poor': return 'status-poor';
                     case 'damaged': return 'status-damaged';
-                    case 'lost': return 'status-lost';
-                    case 'assigned': return 'status-active';
+                    case 'assigned': return 'status-assigned';
                     default: return '';
                 }
             }
-            
+
             // Setup event listeners
             function setupEventListeners() {
-                // Tabs
                 tabs.forEach(tab => {
                     tab.addEventListener('click', function() {
                         tabs.forEach(t => t.classList.remove('active'));
                         this.classList.add('active');
                         currentTab = this.dataset.tab;
                         custodyTitle.textContent = this.textContent;
+                        currentPage = 1;
                         renderCustodyTable();
                     });
                 });
-                
-                // Assign custody button
+
                 assignCustodyBtn.addEventListener('click', openAssignCustodyModal);
-                
-                // Save custody button
                 saveCustodyBtn.addEventListener('click', saveCustody);
-                
-                // Cancel custody button
                 cancelCustodyBtn.addEventListener('click', closeAssignCustodyModal);
-                
-                // Confirm return button
                 confirmReturnBtn.addEventListener('click', returnCustody);
-                
-                // Cancel return button
                 cancelReturnBtn.addEventListener('click', closeReturnCustodyModal);
-                
-                // Close view button
                 closeViewBtn.addEventListener('click', closeViewCustodyModal);
-                
-                // Close buttons
+                addAdditionalItemBtn.addEventListener('click', addAdditionalItem);
+
                 closeButtons.forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (assignCustodyModal.style.display === 'block') {
-                            closeAssignCustodyModal();
-                        } else if (returnCustodyModal.style.display === 'block') {
-                            closeReturnCustodyModal();
-                        } else if (viewCustodyModal.style.display === 'block') {
-                            closeViewCustodyModal();
-                        }
+                        const modal = btn.closest('.modal');
+                        closeModal(modal);
                     });
                 });
-                
-                // Table actions (delegated)
+
                 custodyTableBody.addEventListener('click', function(e) {
-                    // Return button
-                    if (e.target.classList.contains('return-btn') || 
-                        e.target.parentElement.classList.contains('return-btn')) {
-                        const btn = e.target.classList.contains('return-btn') ? 
-                            e.target : e.target.parentElement;
+                    if (e.target.closest('.return-btn')) {
+                        const btn = e.target.closest('.return-btn');
                         currentCustodyId = parseInt(btn.dataset.id);
                         openReturnCustodyModal(currentCustodyId);
-                    }
-                    
-                    // View button
-                    else if (e.target.classList.contains('view-btn') || 
-                             e.target.parentElement.classList.contains('view-btn')) {
-                        const btn = e.target.classList.contains('view-btn') ? 
-                            e.target : e.target.parentElement;
+                    } else if (e.target.closest('.view-btn')) {
+                        const btn = e.target.closest('.view-btn');
                         currentCustodyId = parseInt(btn.dataset.id);
                         openViewCustodyModal(currentCustodyId);
                     }
                 });
-                
-                // Close modals when clicking outside
+
                 window.addEventListener('click', function(e) {
-                    if (e.target === assignCustodyModal) {
-                        closeAssignCustodyModal();
-                    } else if (e.target === returnCustodyModal) {
-                        closeReturnCustodyModal();
-                    } else if (e.target === viewCustodyModal) {
-                        closeViewCustodyModal();
+                    if (e.target.classList.contains('modal')) {
+                        closeModal(e.target);
+                    }
+                });
+
+                itemSearch.addEventListener('input', debounce(filterItems, 300));
+
+                additionalItemsList.addEventListener('click', function(e) {
+                    if (e.target.closest('.remove-additional-item')) {
+                        e.target.closest('.additional-item').remove();
+                    }
+                });
+
+                pageSizeSelect.addEventListener('change', function() {
+                    itemsPerPage = parseInt(this.value);
+                    currentPage = 1;
+                    renderCustodyTable();
+                });
+
+                assignCustodyModal.addEventListener('transitionend', function() {
+                    if (assignCustodyModal.style.display === 'block') {
+                        assignCustodyModal.classList.add('show');
+                    }
+                });
+
+                returnCustodyModal.addEventListener('transitionend', function() {
+                    if (returnCustodyModal.style.display === 'block') {
+                        returnCustodyModal.classList.add('show');
+                    }
+                });
+
+                viewCustodyModal.addEventListener('transitionend', function() {
+                    if (viewCustodyModal.style.display === 'block') {
+                        viewCustodyModal.classList.add('show');
                     }
                 });
             }
-            
+
+            // Debounce function for search
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            // Filter items based on search input
+            function filterItems() {
+                const searchTerm = itemSearch.value.toLowerCase();
+                const itemList = document.getElementById('itemList');
+                itemList.innerHTML = '';
+
+                const filteredItems = items.filter(item =>
+                    item.available > 0 &&
+                    (item.name.toLowerCase().includes(searchTerm) ||
+                     item.code.toLowerCase().includes(searchTerm) ||
+                     item.category.toLowerCase().includes(searchTerm))
+                );
+
+                if (filteredItems.length === 0) {
+                    itemList.innerHTML = '<div class="loading">لا توجد أصناف متاحة</div>';
+                    return;
+                }
+
+                filteredItems.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'item-checkbox';
+                    div.innerHTML = `
+                        <input type="checkbox" id="item-${item.id}" value="${item.id}">
+                        <label for="item-${item.id}">
+                            ${item.name} (${item.code}) - ${item.category} - متاح: ${item.available}
+                            <span class="item-status-badge ${getConditionClass(item.condition)}">
+                                ${getConditionText(item.condition)}
+                            </span>
+                        </label>
+                    `;
+                    itemList.appendChild(div);
+                });
+            }
+
+            // Add additional item field
+            function addAdditionalItem() {
+                additionalItemCounter++;
+                const div = document.createElement('div');
+                div.className = 'additional-item';
+                div.setAttribute('data-additional-item-id', additionalItemCounter);
+                div.innerHTML = `
+                    ${loadAdditionalItems().outerHTML}
+                    <input type="number" class="form-control monthly-deduction" placeholder="القسط الشهري (ريال)" min="0" step="0.01">
+                    <button type="button" class="btn btn-danger btn-sm remove-additional-item">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                additionalItemsList.appendChild(div);
+            }
+
             // Open assign custody modal
             function openAssignCustodyModal() {
-                // Reset form
                 custodyForm.reset();
                 document.getElementById('assignDate').valueAsDate = new Date();
-                
-                // Set default return date (today + 3 months)
                 const returnDate = new Date();
                 returnDate.setMonth(returnDate.getMonth() + 3);
                 document.getElementById('returnDate').valueAsDate = returnDate;
-                
-                // Show modal
-                assignCustodyModal.style.display = 'block';
+                itemSearch.value = '';
+                additionalItemsList.innerHTML = '';
+                additionalItemCounter = 0;
+                loadItems();
+                openModal(assignCustodyModal);
             }
-            
-            // Close assign custody modal
-            function closeAssignCustodyModal() {
-                assignCustodyModal.style.display = 'none';
-            }
-            
+
             // Open return custody modal
             function openReturnCustodyModal(custodyId) {
                 const record = custodyRecords.find(r => r.id === custodyId);
                 if (!record) return;
-                
-                // Set today's date as default return date
+
                 document.getElementById('actualReturnDate').valueAsDate = new Date();
-                
-                // Reset form
                 returnCustodyForm.reset();
-                
-                // Load items to be returned with status selection
-                const returnedItemsList = document.getElementById('returnedItemsList');
+
                 returnedItemsList.innerHTML = '';
-                
+
                 record.items.forEach(item => {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'returned-item';
-                    
+
                     itemDiv.innerHTML = `
                         <div class="returned-item-info">
                             <strong>${item.name} (${item.code})</strong>
                             <div>
-                                الحالة الأصلية: 
+                                الحالة الأصلية:
                                 <span class="item-status-badge ${getConditionClass(item.initialCondition)}">
                                     ${getConditionText(item.initialCondition)}
                                 </span>
                             </div>
                             <div>
-                                الحالة الحالية: 
+                                الحالة الحالية:
                                 <span class="item-status-badge ${getConditionClass(item.currentCondition)}">
                                     ${getConditionText(item.currentCondition)}
                                 </span>
@@ -1286,114 +1730,128 @@
                             <label>حالة الاستلام:</label>
                             <select class="item-condition-select" data-item-id="${item.id}">
                                 <option value="excellent">ممتازة</option>
-                                <option value="good">جيدة</option>
-                                <option value="fair">مقبولة</option>
-                                <option value="poor">ضعيفة</option>
-                                <option value="damaged">تالفة</option>
-                                <option value="lost">مفقودة</option>
+                                <option value="very-good">جيد جدا</option>
+                                <option value="good">جيد</option>
+                                <option value="fair">مقبول</option>
+                                <option value="damaged">تالف</option>
                             </select>
-                            <div class="form-group" style="margin-top: 5px;">
-                                <input type="text" class="form-control item-return-notes" 
+                            <div class="form-group" style="margin-top: 8px;">
+                                <input type="text" class="form-control item-return-notes"
                                     placeholder="ملاحظات عن الصنف" data-item-id="${item.id}"
                                     value="${item.returnNotes || ''}">
                             </div>
                         </div>
                     `;
-                    
+
                     returnedItemsList.appendChild(itemDiv);
                 });
-                
-                // Update modal title
-                document.getElementById('returnModalTitle').textContent = 
-                    `استلام العهدة ${record.code}`;
-                
-                // Show modal
-                returnCustodyModal.style.display = 'block';
+
+                document.getElementById('returnModalTitle').textContent = `استلام العهدة ${record.code}`;
+                openModal(returnCustodyModal);
             }
-            
-            // Close return custody modal
-            function closeReturnCustodyModal() {
-                returnCustodyModal.style.display = 'none';
-                currentCustodyId = null;
-            }
-            
+
             // Open view custody modal
             function openViewCustodyModal(custodyId) {
                 const record = custodyRecords.find(r => r.id === custodyId);
                 if (!record) return;
-                
+
                 const employee = employees.find(e => e.id === record.employeeId);
-                
-                // Set basic info
+
                 document.getElementById('viewCustodyCode').textContent = record.code;
-                document.getElementById('viewEmployee').textContent = 
+                document.getElementById('viewEmployee').textContent =
                     `${employee ? employee.name : 'غير معروف'} (${employee ? employee.department : ''})`;
                 document.getElementById('viewAssignDate').textContent = formatDate(record.assignDate);
                 document.getElementById('viewExpectedReturnDate').textContent = formatDate(record.expectedReturnDate);
-                document.getElementById('viewActualReturnDate').textContent = 
+                document.getElementById('viewActualReturnDate').textContent =
                     record.actualReturnDate ? formatDate(record.actualReturnDate) : '-';
                 document.getElementById('viewCustodyStatus').textContent = getStatusText(record);
                 document.getElementById('viewCustodyNotes').textContent = record.notes || 'لا يوجد';
                 document.getElementById('viewReturnNotes').textContent = record.returnNotes || 'لا يوجد';
-                
-                // Load items
+
                 const viewItemsList = document.getElementById('viewItemsList');
                 viewItemsList.innerHTML = '';
-                
+
                 record.items.forEach(item => {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'item-checkbox';
-                    itemDiv.style.padding = '10px';
-                    itemDiv.style.marginBottom = '5px';
-                    itemDiv.style.border = '1px solid #eee';
-                    itemDiv.style.borderRadius = '4px';
-                    
+                    itemDiv.style.padding = '12px';
+                    itemDiv.style.marginBottom = '10px';
+                    itemDiv.style.border = '1px solid #e5e7eb';
+                    itemDiv.style.borderRadius = 'var(--border-radius)';
+
                     itemDiv.innerHTML = `
                         <div><strong>${item.name} (${item.code})</strong></div>
-                        <div>الحالة الأصلية: 
+                        <div>الحالة الأصلية:
                             <span class="item-status-badge ${getConditionClass(item.initialCondition)}">
                                 ${getConditionText(item.initialCondition)}
                             </span>
                         </div>
-                        <div>الحالة الحالية: 
+                        <div>الحالة الحالية:
                             <span class="item-status-badge ${getConditionClass(item.currentCondition)}">
                                 ${getConditionText(item.currentCondition)}
                             </span>
                         </div>
                         ${item.returnNotes ? `<div>ملاحظات: ${item.returnNotes}</div>` : ''}
                     `;
-                    
+
                     viewItemsList.appendChild(itemDiv);
                 });
-                
-                // Update modal title
-                document.getElementById('viewModalTitle').textContent = 
-                    `تفاصيل العهدة ${record.code}`;
-                
-                // Show modal
-                viewCustodyModal.style.display = 'block';
+
+                const additionalItemsListView = document.getElementById('additionalItemsListView');
+                additionalItemsListView.innerHTML = '';
+
+                if (record.additionalItems && record.additionalItems.length > 0) {
+                    const table = document.createElement('table');
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>الصنف</th>
+                                <th>الكود</th>
+                                <th>التكلفة الكلية</th>
+                                <th>القسط الشهري</th>
+                                <th>الأقساط المدفوعة</th>
+                                <th>الأقساط المتبقية</th>
+                                <th>الإجمالي المدفوع</th>
+                                <th>الإجمالي المتبقي</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${record.additionalItems.map(item => `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.code}</td>
+                                    <td>${item.totalCost} ريال</td>
+                                    <td>${item.monthlyDeduction} ريال</td>
+                                    <td>${item.paidInstallments}</td>
+                                    <td>${item.remainingInstallments}</td>
+                                    <td>${(item.paidInstallments * item.monthlyDeduction).toFixed(2)} ريال</td>
+                                    <td>${(item.remainingInstallments * item.monthlyDeduction).toFixed(2)} ريال</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    `;
+                    additionalItemsListView.appendChild(table);
+                } else {
+                    additionalItemsListView.innerHTML = '<div class="loading">لا توجد أصناف إضافية</div>';
+                }
+
+                document.getElementById('viewModalTitle').textContent = `تفاصيل العهدة ${record.code}`;
+                openModal(viewCustodyModal);
             }
-            
-            // Close view custody modal
-            function closeViewCustodyModal() {
-                viewCustodyModal.style.display = 'none';
-                currentCustodyId = null;
-            }
-            
+
             // Save new custody assignment
             function saveCustody() {
+                if (!custodyForm.checkValidity()) {
+                    custodyForm.reportValidity();
+                    showAlert('يرجى ملء جميع الحقول المطلوبة بشكل صحيح', 'danger');
+                    return;
+                }
+
                 const employeeId = parseInt(document.getElementById('employeeSelect').value);
                 const assignDate = document.getElementById('assignDate').value;
                 const returnDate = document.getElementById('returnDate').value;
                 const notes = document.getElementById('custodyNotes').value;
-                
-                // Validate form
-                if (!employeeId || !assignDate || !returnDate) {
-                    alert('الرجاء إدخال جميع الحقول المطلوبة');
-                    return;
-                }
-                
-                // Get selected items
+
                 const selectedItems = [];
                 document.querySelectorAll('#itemList input[type="checkbox"]:checked').forEach(checkbox => {
                     const itemId = parseInt(checkbox.value);
@@ -1410,110 +1868,170 @@
                         });
                     }
                 });
-                
+
                 if (selectedItems.length === 0) {
-                    alert('الرجاء اختيار صنف واحد على الأقل');
+                    showAlert('الرجاء اختيار صنف واحد على الأقل', 'danger');
                     return;
                 }
-                
-                // Create new custody record
-                const newRecord = {
-                    id: custodyRecords.length > 0 ? Math.max(...custodyRecords.map(r => r.id)) + 1 : 1,
-                    code: `CST-${new Date().getFullYear()}${(custodyRecords.length + 1).toString().padStart(3, '0')}`,
-                    employeeId,
-                    items: selectedItems,
-                    assignDate,
-                    expectedReturnDate: returnDate,
-                    actualReturnDate: null,
-                    status: 'active',
-                    notes,
-                    returnCondition: null,
-                    returnNotes: null
-                };
-                
-                // Add to records
-                custodyRecords.push(newRecord);
-                
-                // Update UI
-                renderCustodyTable();
-                closeAssignCustodyModal();
-                
-                alert('تم تسليم العهدة بنجاح');
+
+                const additionalItems = [];
+                document.querySelectorAll('#additionalItemsList .additional-item').forEach(div => {
+                    const itemId = parseInt(div.querySelector('select').value);
+                    const monthlyDeduction = parseFloat(div.querySelector('.monthly-deduction').value);
+                    if (itemId && !isNaN(monthlyDeduction) && monthlyDeduction > 0) {
+                        const item = additionalItemsOptions.find(i => i.id === itemId);
+                        if (item) {
+                            const totalInstallments = 12; // Fixed for simplicity
+                            additionalItems.push({
+                                id: item.id,
+                                name: item.name,
+                                code: item.code,
+                                monthlyDeduction,
+                                totalInstallments,
+                                paidInstallments: 0,
+                                remainingInstallments: totalInstallments,
+                                totalCost: item.cost
+                            });
+                        }
+                    }
+                });
+
+                custodyTableBody.innerHTML = '<tr><td colspan="8" class="loading">جاري الحفظ...</td></tr>';
+
+                setTimeout(() => {
+                    const newRecord = {
+                        id: custodyRecords.length > 0 ? Math.max(...custodyRecords.map(r => r.id)) + 1 : 1,
+                        code: `CST-${new Date().getFullYear()}${(custodyRecords.length + 1).toString().padStart(3, '0')}`,
+                        employeeId,
+                        items: selectedItems,
+                        additionalItems,
+                        assignDate,
+                        expectedReturnDate: returnDate,
+                        actualReturnDate: null,
+                        status: 'active',
+                        notes,
+                        returnCondition: null,
+                        returnNotes: null
+                    };
+
+                    custodyRecords.push(newRecord);
+                    renderCustodyTable();
+                    closeModal(assignCustodyModal);
+                    showAlert('تم تسليم العهدة بنجاح', 'success');
+                }, 500);
             }
-            
+
             // Return custody items
             function returnCustody() {
-                const actualReturnDate = document.getElementById('actualReturnDate').value;
-                const returnNotes = document.getElementById('returnNotes').value;
-                
-                // Validate form
-                if (!actualReturnDate) {
-                    alert('الرجاء إدخال تاريخ الاستلام الفعلي');
+                if (!returnCustodyForm.checkValidity()) {
+                    returnCustodyForm.reportValidity();
+                    showAlert('يرجى ملء جميع الحقول المطلوبة بشكل صحيح', 'danger');
                     return;
                 }
-                
-                // Find the record
+
+                const actualReturnDate = document.getElementById('actualReturnDate').value;
+                const returnNotes = document.getElementById('returnNotes').value;
+
                 const recordIndex = custodyRecords.findIndex(r => r.id === currentCustodyId);
                 if (recordIndex === -1) return;
-                
-                // Get condition for each item
+
                 const itemConditions = {};
                 const itemReturnNotes = {};
                 let hasDamaged = false;
-                let hasLost = false;
-                
+
                 document.querySelectorAll('.item-condition-select').forEach(select => {
                     const itemId = parseInt(select.dataset.itemId);
                     itemConditions[itemId] = select.value;
                     if (select.value === 'damaged') hasDamaged = true;
-                    if (select.value === 'lost') hasLost = true;
                 });
-                
+
                 document.querySelectorAll('.item-return-notes').forEach(input => {
                     const itemId = parseInt(input.dataset.itemId);
                     itemReturnNotes[itemId] = input.value;
                 });
-                
-                // Update items in the record
-                const updatedItems = custodyRecords[recordIndex].items.map(item => {
-                    return {
-                        ...item,
-                        currentCondition: itemConditions[item.id] || item.currentCondition,
-                        returnCondition: itemConditions[item.id] || item.returnCondition,
-                        returnNotes: itemReturnNotes[item.id] || item.returnNotes
+
+                custodyTableBody.innerHTML = '<tr><td colspan="8" class="loading">جاري الاستلام...</td></tr>';
+
+                setTimeout(() => {
+                    const updatedItems = custodyRecords[recordIndex].items.map(item => {
+                        return {
+                            ...item,
+                            currentCondition: itemConditions[item.id] || item.currentCondition,
+                            returnCondition: itemConditions[item.id] || item.returnCondition,
+                            returnNotes: itemReturnNotes[item.id] || item.returnNotes
+                        };
+                    });
+
+                    let returnCondition = 'good';
+                    if (hasDamaged) returnCondition = 'partially_damaged';
+
+                    custodyRecords[recordIndex] = {
+                        ...custodyRecords[recordIndex],
+                        items: updatedItems,
+                        actualReturnDate,
+                        status: 'returned',
+                        returnCondition,
+                        returnNotes
                     };
-                });
-                
-                // Determine overall return condition
-                let returnCondition = 'good';
-                if (hasLost) returnCondition = 'partially_lost';
-                else if (hasDamaged) returnCondition = 'partially_damaged';
-                
-                // Update record
-                custodyRecords[recordIndex] = {
-                    ...custodyRecords[recordIndex],
-                    items: updatedItems,
-                    actualReturnDate,
-                    status: 'returned',
-                    returnCondition,
-                    returnNotes
-                };
-                
-                // Update original items conditions
-                updatedItems.forEach(item => {
-                    const originalItem = items.find(i => i.id === item.id);
-                    if (originalItem && item.currentCondition !== 'lost') {
-                        originalItem.condition = item.currentCondition;
-                    }
-                });
-                
-                // Update UI
-                renderCustodyTable();
-                closeReturnCustodyModal();
-                
-                alert('تم استلام العهدة بنجاح');
+
+                    updatedItems.forEach(item => {
+                        const originalItem = items.find(i => i.id === item.id);
+                        if (originalItem) {
+                            originalItem.condition = item.currentCondition;
+                        }
+                    });
+
+                    renderCustodyTable();
+                    closeModal(returnCustodyModal);
+                    showAlert('تم استلام العهدة بنجاح', 'success');
+                }, 500);
             }
-            
+
+            // Open modal
+            function openModal(modal) {
+                modal.style.display = 'block';
+                setTimeout(() => modal.classList.add('show'), 10);
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Close modal
+            function closeModal(modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }, 300);
+                currentCustodyId = null;
+            }
+
+            // Close assign custody modal
+            function closeAssignCustodyModal() {
+                closeModal(assignCustodyModal);
+            }
+
+            // Close return custody modal
+            function closeReturnCustodyModal() {
+                closeModal(returnCustodyModal);
+            }
+
+            // Close view custody modal
+            function closeViewCustodyModal() {
+                closeModal(viewCustodyModal);
+            }
+
+            // Show alert message
+            function showAlert(message, type) {
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+                alertContainer.appendChild(alert);
+
+                setTimeout(() => {
+                    alert.style.animation = 'slideOut 0.3s ease forwards';
+                    setTimeout(() => alert.remove(), 300);
+                }, 3000);
+            }
+
             // Initialize the app
             init();
         });

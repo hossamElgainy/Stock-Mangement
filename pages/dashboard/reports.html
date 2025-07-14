@@ -6,6 +6,7 @@
     <title>التقارير - نظام إدارة المخازن</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #3c8dbc;
@@ -131,7 +132,6 @@
             z-index: 100;
         }
         
-        /* Mobile Header Title */
         .mobile-header-title {
             display: none;
             font-size: 1.2rem;
@@ -151,7 +151,6 @@
             margin-right: 10px;
         }
         
-        /* Menu Toggle */
         .menu-toggle-container {
             display: none;
             align-items: center;
@@ -178,7 +177,6 @@
             cursor: pointer;
         }
         
-        /* Overlay for mobile sidebar */
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -197,7 +195,6 @@
             visibility: visible;
         }
         
-        /* Card Styles */
         .card {
             background-color: #fff;
             border-radius: 5px;
@@ -221,7 +218,6 @@
             padding: 20px;
         }
         
-        /* Table Styles */
         .table-responsive {
             overflow-x: auto;
         }
@@ -242,7 +238,6 @@
             font-weight: 500;
         }
         
-        /* Button Styles */
         .btn {
             padding: 8px 15px;
             border-radius: 4px;
@@ -261,64 +256,15 @@
             background-color: var(--primary-dark);
         }
         
-        .btn-success {
+        .btn-secondary {
             background-color: var(--secondary);
             color: #fff;
         }
         
-        .btn-success:hover {
+        .btn-secondary:hover {
             background-color: #008d4c;
         }
         
-        .btn-danger {
-            background-color: var(--danger);
-            color: #fff;
-        }
-        
-        .btn-danger:hover {
-            background-color: #d33724;
-        }
-        
-        .btn-info {
-            background-color: var(--info);
-            color: #fff;
-        }
-        
-        .btn-info:hover {
-            background-color: #00acd0;
-        }
-        
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-        
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-right: -5px;
-            margin-left: -5px;
-        }
-        
-        .col {
-            flex: 1;
-            padding: 0 5px;
-        }
-
-        /* Reports Specific Styles */
         .report-filters {
             background: white;
             padding: 20px;
@@ -338,11 +284,58 @@
             min-width: 200px;
         }
         
-        .report-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .report-tabs {
             margin: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .tabs-nav {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tabs-nav input[type="radio"] {
+            display: none;
+        }
+        
+        .tabs-nav label {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--dark);
+            transition: all 0.3s;
+        }
+        
+        .tabs-nav label:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .tabs-nav input[type="radio"]:checked + label {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            font-weight: 700;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+        
+        .tab-content.active {
+            display: block;
         }
         
         .report-card {
@@ -350,6 +343,7 @@
             border-radius: 5px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow: hidden;
+            margin-bottom: 20px;
         }
         
         .report-card-header {
@@ -368,17 +362,6 @@
             height: 250px;
             position: relative;
             margin-bottom: 15px;
-        }
-        
-        .chart-placeholder {
-            width: 100%;
-            height: 100%;
-            background: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #777;
-            border-radius: 4px;
         }
         
         .report-table {
@@ -413,7 +396,6 @@
             margin-left: 5px;
         }
         
-        /* Status Badges */
         .badge {
             display: inline-block;
             padding: 3px 7px;
@@ -435,11 +417,6 @@
             background-color: var(--warning);
         }
         
-        .badge-danger {
-            background-color: var(--danger);
-        }
-        
-        /* Responsive Styles */
         @media (max-width: 992px) {
             .sidebar {
                 width: 220px;
@@ -485,7 +462,7 @@
                 padding: 10px 15px;
             }
             
-            .card, .report-filters {
+            .card, .report-filters, .report-tabs {
                 margin: 10px;
             }
             
@@ -494,9 +471,14 @@
                 gap: 10px;
             }
             
-            .report-cards {
-                grid-template-columns: 1fr;
-                margin: 10px;
+            .tabs-nav {
+                flex-wrap: wrap;
+            }
+            
+            .tabs-nav label {
+                flex: 1 1 33.33%;
+                padding: 10px;
+                font-size: 14px;
             }
         }
         
@@ -519,12 +501,8 @@
                 font-size: 14px;
             }
             
-            .form-row {
-                flex-direction: column;
-            }
-            
-            .col {
-                margin-bottom: 10px;
+            .tabs-nav label {
+                flex: 1 1 50%;
             }
         }
     </style>
@@ -553,6 +531,7 @@
                     <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
                     <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
                     <li class="active"><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="transactions.html"><i class="fas fa-history"></i> سجل المعاملات</a></li>
                     <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
                 </ul>
             </div>
@@ -577,16 +556,6 @@
                 <h3 style="margin-bottom: 20px;">تصفية التقارير</h3>
                 <div class="filter-row">
                     <div class="filter-group">
-                        <label>نوع التقرير</label>
-                        <select class="form-control" id="reportType">
-                            <option value="items">تقرير حركة الأصناف</option>
-                            <option value="inventory">تقرير المخزون</option>
-                            <option value="custody">تقرير العهدة</option>
-                            <option value="invoices">تقرير الفواتير</option>
-                            <option value="suppliers">تقرير الموردين</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
                         <label>الفترة الزمنية</label>
                         <select class="form-control" id="timePeriod">
                             <option value="today">اليوم</option>
@@ -597,20 +566,6 @@
                             <option value="custom">مخصص</option>
                         </select>
                     </div>
-                </div>
-                
-                <div class="filter-row" id="customDateRange" style="display:none;">
-                    <div class="filter-group">
-                        <label>من تاريخ</label>
-                        <input type="date" class="form-control" id="fromDate">
-                    </div>
-                    <div class="filter-group">
-                        <label>إلى تاريخ</label>
-                        <input type="date" class="form-control" id="toDate">
-                    </div>
-                </div>
-                
-                <div class="filter-row">
                     <div class="filter-group">
                         <label>المخزن</label>
                         <select class="form-control" id="warehouse">
@@ -631,6 +586,17 @@
                     </div>
                 </div>
                 
+                <div class="filter-row" id="customDateRange" style="display:none;">
+                    <div class="filter-group">
+                        <label>من تاريخ</label>
+                        <input type="date" class="form-control" id="fromDate">
+                    </div>
+                    <div class="filter-group">
+                        <label>إلى تاريخ</label>
+                        <input type="date" class="form-control" id="toDate">
+                    </div>
+                </div>
+                
                 <div style="margin-top: 20px;">
                     <button class="btn btn-primary" id="applyFilters">
                         <i class="fas fa-filter"></i> تطبيق الفلتر
@@ -641,139 +607,414 @@
                 </div>
             </div>
             
-            <div class="report-cards">
-                <!-- Report Card 1 - Items Movement -->
-                <div class="report-card" id="itemsReport">
-                    <div class="report-card-header">
-                        <h4>حركة الأصناف</h4>
-                        <div class="export-options">
-                            <button class="export-btn btn-primary">
-                                <i class="fas fa-file-excel"></i> Excel
-                            </button>
-                            <button class="export-btn btn-secondary">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </button>
-                        </div>
-                    </div>
-                    <div class="report-card-body">
-                        <div class="chart-container">
-                            <div class="chart-placeholder" id="itemsChart">
-                                <i class="fas fa-chart-bar" style="font-size: 24px; margin-left: 10px;"></i>
-                                رسم بياني لحركة الأصناف
+            <div class="report-tabs">
+                <div class="tabs-nav">
+                    <input type="radio" name="report-tab" id="tab-items" checked>
+                    <label for="tab-items">حركة الأصناف</label>
+                    <input type="radio" name="report-tab" id="tab-inventory">
+                    <label for="tab-inventory">المخزون</label>
+                    <input type="radio" name="report-tab" id="tab-custody">
+                    <label for="tab-custody">العهدة</label>
+                    <input type="radio" name="report-tab" id="tab-installments">
+                    <label for="tab-installments">الأقساط</label>
+                    <input type="radio" name="report-tab" id="tab-invoices">
+                    <label for="tab-invoices">الفواتير</label>
+                    <input type="radio" name="report-tab" id="tab-suppliers">
+                    <label for="tab-suppliers">الموردين</label>
+                </div>
+                
+                <!-- Items Tab -->
+                <div class="tab-content" id="items-content">
+                    <div class="report-card" id="itemsReport">
+                        <div class="report-card-header">
+                            <h4>حركة الأصناف</h4>
+                            <div class="export-options">
+                                <button class="export-btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                                <button class="export-btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
                             </div>
                         </div>
-                        <div class="table-responsive" style="margin-top: 15px;">
-                            <table class="report-table">
-                                <thead>
-                                    <tr>
-                                        <th>الصنف</th>
-                                        <th>الكمية الداخلة</th>
-                                        <th>الكمية الخارجة</th>
-                                        <th>صافي الحركة</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="itemsTableBody">
-                                    <!-- Items will be loaded dynamically -->
-                                </tbody>
-                            </table>
+                        <div class="report-card-body">
+                            <div class="chart-container">
+                                <canvas id="itemsChart"></canvas>
+                            </div>
+                            <div class="table-responsive" style="margin-top: 15px;">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>الصنف</th>
+                                            <th>الكمية الداخلة</th>
+                                            <th>الكمية الخارجة</th>
+                                            <th>صافي الحركة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemsTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>تقرير حركة الأصناف التفصيلي</h4>
+                            <div class="export-options">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> تصدير لإكسل
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> تصدير لPDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="report-table" id="itemsDetailedTable">
+                                    <thead>
+                                        <tr>
+                                            <th>الصنف</th>
+                                            <th>الكمية الداخلة</th>
+                                            <th>الكمية الخارجة</th>
+                                            <th>صافي الحركة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemsDetailedBody">
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Report Card 2 - Inventory Status -->
-                <div class="report-card" id="inventoryReport">
-                    <div class="report-card-header">
-                        <h4>حالة المخزون</h4>
-                        <div class="export-options">
-                            <button class="export-btn btn-primary">
-                                <i class="fas fa-file-excel"></i> Excel
-                            </button>
-                        </div>
-                    </div>
-                    <div class="report-card-body">
-                        <div class="chart-container">
-                            <div class="chart-placeholder" id="inventoryChart">
-                                <i class="fas fa-chart-pie" style="font-size: 24px; margin-left: 10px;"></i>
-                                رسم بياني لحالة المخزون
+                <!-- Inventory Tab -->
+                <div class="tab-content" id="inventory-content">
+                    <div class="report-card" id="inventoryReport">
+                        <div class="report-card-header">
+                            <h4>حالة المخزون</h4>
+                            <div class="export-options">
+                                <button class="export-btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
                             </div>
                         </div>
-                        <div class="table-responsive" style="margin-top: 15px;">
-                            <table class="report-table">
-                                <thead>
-                                    <tr>
-                                        <th>القسم</th>
-                                        <th>عدد الأصناف</th>
-                                        <th>إجمالي الكمية</th>
-                                        <th>قيمة المخزون</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inventoryTableBody">
-                                    <!-- Inventory data will be loaded dynamically -->
-                                </tbody>
-                            </table>
+                        <div class="report-card-body">
+                            <div class="chart-container">
+                                <canvas id="inventoryChart"></canvas>
+                            </div>
+                            <div class="table-responsive" style="margin-top: 15px;">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>القسم</th>
+                                            <th>عدد الأصناف</th>
+                                            <th>إجمالي الكمية</th>
+                                            <th>قيمة المخزون</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inventoryTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>تقرير المخزون التفصيلي</h4>
+                            <div class="export-options">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> تصدير لإكسل
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> تصدير لPDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="report-table" id="inventoryDetailedTable">
+                                    <thead>
+                                        <tr>
+                                            <th>القسم</th>
+                                            <th>عدد الأصناف</th>
+                                            <th>إجمالي الكمية</th>
+                                            <th>قيمة المخزون</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inventoryDetailedBody">
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Report Card 3 - Active Custody -->
-                <div class="report-card" id="custodyReport">
-                    <div class="report-card-header">
-                        <h4>العهد النشطة</h4>
-                        <div class="export-options">
-                            <button class="export-btn btn-primary">
-                                <i class="fas fa-file-excel"></i> Excel
-                            </button>
-                        </div>
-                    </div>
-                    <div class="report-card-body">
-                        <div class="chart-container">
-                            <div class="chart-placeholder" id="custodyChart">
-                                <i class="fas fa-chart-line" style="font-size: 24px; margin-left: 10px;"></i>
-                                رسم بياني للعهد النشطة
+                <!-- Custody Tab -->
+                <div class="tab-content" id="custody-content">
+                    <div class="report-card" id="custodyReport">
+                        <div class="report-card-header">
+                            <h4>العهد النشطة</h4>
+                            <div class="export-options">
+                                <button class="export-btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
                             </div>
                         </div>
-                        <div class="table-responsive" style="margin-top: 15px;">
-                            <table class="report-table">
-                                <thead>
-                                    <tr>
-                                        <th>القسم</th>
-                                        <th>عدد العهد</th>
-                                        <th>قيمة العهد</th>
-                                        <th>متوسط المدة</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="custodyTableBody">
-                                    <!-- Custody data will be loaded dynamically -->
-                                </tbody>
-                            </table>
+                        <div class="report-card-body">
+                            <div class="chart-container">
+                                <canvas id="custodyChart"></canvas>
+                            </div>
+                            <div class="table-responsive" style="margin-top: 15px;">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>القسم</th>
+                                            <th>عدد العهد</th>
+                                            <th>قيمة العهد</th>
+                                            <th>متوسط المدة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="custodyTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>تقرير العهدة التفصيلي</h4>
+                            <div class="export-options">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> تصدير لإكسل
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> تصدير لPDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="report-table" id="custodyDetailedTable">
+                                    <thead>
+                                        <tr>
+                                            <th>القسم</th>
+                                            <th>عدد العهد</th>
+                                            <th>قيمة العهد</th>
+                                            <th>متوسط المدة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="custodyDetailedBody">
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Detailed Reports Table -->
-            <div class="card" id="detailedReport">
-                <div class="card-header">
-                    <h4 id="detailedReportTitle">تقرير الفواتير</h4>
-                    <div class="export-options">
-                        <button class="btn btn-primary" id="exportExcel">
-                            <i class="fas fa-file-excel"></i> تصدير لإكسل
-                        </button>
-                        <button class="btn btn-secondary" id="exportPDF" style="margin-right: 10px;">
-                            <i class="fas fa-file-pdf"></i> تصدير لPDF
-                        </button>
+                
+                <!-- Installments Tab -->
+                <div class="tab-content" id="installments-content">
+                    <div class="report-card" id="installmentsReport">
+                        <div class="report-card-header">
+                            <h4>الأقساط</h4>
+                            <div class="export-options">
+                                <button class="export-btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                                <button class="export-btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-card-body">
+                            <div class="chart-container">
+                                <canvas id="installmentsChart"></canvas>
+                            </div>
+                            <div class="table-responsive" style="margin-top: 15px;">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>الموظف</th>
+                                            <th>عدد الأقساط النشطة</th>
+                                            <th>إجمالي القيمة</th>
+                                            <th>القيمة المدفوعة</th>
+                                            <th>القيمة المتبقية</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="installmentsTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>تقرير الأقساط التفصيلي</h4>
+                            <div class="export-options">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> تصدير لإكسل
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> تصدير لPDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="report-table" id="installmentsDetailedTable">
+                                    <thead>
+                                        <tr>
+                                            <th>كود العهدة</th>
+                                            <th>الموظف</th>
+                                            <th>الصنف</th>
+                                            <th>الكود</th>
+                                            <th>التكلفة الكلية</th>
+                                            <th>القسط الشهري</th>
+                                            <th>الأقساط المدفوعة</th>
+                                            <th>الأقساط المتبقية</th>
+                                            <th>الإجمالي المدفوع</th>
+                                            <th>الإجمالي المتبقي</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="installmentsDetailedBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="report-table" id="detailedReportTable">
-                            <thead id="detailedReportHeader">
-                                <!-- Headers will be loaded dynamically -->
-                            </thead>
-                            <tbody id="detailedReportBody">
-                                <!-- Data will be loaded dynamically -->
-                            </tbody>
-                        </table>
+                
+                <!-- Invoices Tab -->
+                <div class="tab-content" id="invoices-content">
+                    <div class="report-card" id="invoicesReport">
+                        <div class="report-card-header">
+                            <h4>الفواتير</h4>
+                            <div class="export-options">
+                                <button class="export-btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                                <button class="export-btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-card-body">
+                            <div class="chart-container">
+                                <canvas id="invoicesChart"></canvas>
+                            </div>
+                            <div class="table-responsive" style="margin-top: 15px;">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>رقم الفاتورة</th>
+                                            <th>التاريخ</th>
+                                            <th>المستلم</th>
+                                            <th>عدد الأصناف</th>
+                                            <th>الإجمالي</th>
+                                            <th>حالة الدفع</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invoicesTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>تقرير الفواتير التفصيلي</h4>
+                            <div class="export-options">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> تصدير لإكسل
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> تصدير لPDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="report-table" id="invoicesDetailedTable">
+                                    <thead>
+                                        <tr>
+                                            <th>رقم الفاتورة</th>
+                                            <th>التاريخ</th>
+                                            <th>المستلم</th>
+                                            <th>عدد الأصناف</th>
+                                            <th>الإجمالي</th>
+                                            <th>حالة الدفع</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invoicesDetailedBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Suppliers Tab -->
+                <div class="tab-content" id="suppliers-content">
+                    <div class="report-card" id="suppliersReport">
+                        <div class="report-card-header">
+                            <h4>الموردين</h4>
+                            <div class="export-options">
+                                <button class="export-btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> Excel
+                                </button>
+                                <button class="export-btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="report-card-body">
+                            <div class="chart-container">
+                                <canvas id="suppliersChart"></canvas>
+                            </div>
+                            <div class="table-responsive" style="margin-top: 15px;">
+                                <table class="report-table">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم المورد</th>
+                                            <th>عدد الأصناف</th>
+                                            <th>آخر توصيل</th>
+                                            <th>القيمة الإجمالية</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="suppliersTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>تقرير الموردين التفصيلي</h4>
+                            <div class="export-options">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> تصدير لإكسل
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-file-pdf"></i> تصدير لPDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="report-table" id="suppliersDetailedTable">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم المورد</th>
+                                            <th>عدد الأصناف</th>
+                                            <th>آخر توصيل</th>
+                                            <th>القيمة الإجمالية</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="suppliersDetailedBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -793,7 +1034,10 @@
             const customDateRange = document.getElementById('customDateRange');
             const applyFiltersBtn = document.getElementById('applyFilters');
             const resetFiltersBtn = document.getElementById('resetFilters');
-            const reportTypeSelect = document.getElementById('reportType');
+            const tabInputs = document.querySelectorAll('.tabs-nav input[type="radio"]');
+            
+            // Chart instances
+            let chartInstances = {};
             
             // Sample data for demonstration
             const sampleData = {
@@ -804,24 +1048,66 @@
                     { name: 'شاشة LCD', incoming: 8, outgoing: 3, net: 5 }
                 ],
                 inventory: [
-                    { category: 'أجهزة إلكترونية', itemsCount: 25, totalQuantity: 120, value: '250,000 ج.م' },
-                    { category: 'أجهزة مكتبية', itemsCount: 18, totalQuantity: 75, value: '85,000 ج.م' },
-                    { category: 'أثاث', itemsCount: 12, totalQuantity: 45, value: '120,000 ج.م' }
+                    { category: 'أجهزة إلكترونية', itemsCount: 25, totalQuantity: 120, value: '250,000 ريال' },
+                    { category: 'أجهزة مكتبية', itemsCount: 18, totalQuantity: 75, value: '85,000 ريال' },
+                    { category: 'أثاث', itemsCount: 12, totalQuantity: 45, value: '120,000 ريال' }
                 ],
                 custody: [
-                    { category: 'أجهزة إلكترونية', activeCount: 12, value: '75,000 ج.م', avgDuration: '45 يوم' },
-                    { category: 'أجهزة مكتبية', activeCount: 8, value: '15,000 ج.م', avgDuration: '30 يوم' },
-                    { category: 'أثاث', activeCount: 5, value: '25,000 ج.م', avgDuration: '60 يوم' }
+                    { category: 'أجهزة إلكترونية', activeCount: 12, value: '75,000 ريال', avgDuration: '45 يوم' },
+                    { category: 'أجهزة مكتبية', activeCount: 8, value: '15,000 ريال', avgDuration: '30 يوم' },
+                    { category: 'أثاث', activeCount: 5, value: '25,000 ريال', avgDuration: '60 يوم' }
+                ],
+                installments: [
+                    {
+                        employee: 'أحمد محمد - IT',
+                        activeCount: 1,
+                        totalValue: '100 ريال',
+                        paidValue: '30 ريال',
+                        remainingValue: '70 ريال'
+                    },
+                    {
+                        employee: 'محمد علي - المالية',
+                        activeCount: 1,
+                        totalValue: '50 ريال',
+                        paidValue: '50 ريال',
+                        remainingValue: '0 ريال'
+                    }
+                ],
+                detailedInstallments: [
+                    {
+                        custodyCode: 'CST-2023001',
+                        employee: 'أحمد محمد - IT',
+                        itemName: 'تيشيرت إضافي',
+                        itemCode: 'ADD-1001',
+                        totalCost: '100 ريال',
+                        monthlyDeduction: '10 ريال',
+                        paidInstallments: 3,
+                        remainingInstallments: 9,
+                        paidTotal: '30 ريال',
+                        remainingTotal: '70 ريال'
+                    },
+                    {
+                        custodyCode: 'CST-2023002',
+                        employee: 'محمد علي - المالية',
+                        itemName: 'قبعة إضافية',
+                        itemCode: 'ADD-1002',
+                        totalCost: '50 ريال',
+                        monthlyDeduction: '5 ريال',
+                        paidInstallments: 12,
+                        remainingInstallments: 0,
+                        paidTotal: '50 ريال',
+                        remainingTotal: '0 ريال'
+                    }
                 ],
                 invoices: [
-                    { number: 'INV-2023-1001', date: '15/05/2023', recipient: 'أحمد محمد', itemsCount: 5, total: '12,500 ج.م', status: 'تم الدفع' },
-                    { number: 'INV-2023-1002', date: '18/05/2023', recipient: 'محمود علي', itemsCount: 3, total: '8,200 ج.م', status: 'بانتظار الدفع' },
-                    { number: 'INV-2023-1003', date: '20/05/2023', recipient: 'سامي خالد', itemsCount: 7, total: '15,750 ج.م', status: 'تم الدفع' }
+                    { number: 'INV-2023-1001', date: '15/05/2023', recipient: 'أحمد محمد', itemsCount: 5, total: '12,500 ريال', status: 'تم الدفع' },
+                    { number: 'INV-2023-1002', date: '18/05/2023', recipient: 'محمود علي', itemsCount: 3, total: '8,200 ريال', status: 'بانتظار الدفع' },
+                    { number: 'INV-2023-1003', date: '20/05/2023', recipient: 'سامي خالد', itemsCount: 7, total: '15,750 ريال', status: 'تم الدفع' }
                 ],
                 suppliers: [
-                    { name: 'شركة التقنية', itemsSupplied: 25, lastDelivery: '10/05/2023', totalValue: '120,000 ج.م' },
-                    { name: 'مكتبة المعرفة', itemsSupplied: 18, lastDelivery: '15/05/2023', totalValue: '45,000 ج.م' },
-                    { name: 'شركة الأثاث', itemsSupplied: 12, lastDelivery: '05/05/2023', totalValue: '75,000 ج.م' }
+                    { name: 'شركة التقنية', itemsSupplied: 25, lastDelivery: '10/05/2023', totalValue: '120,000 ريال' },
+                    { name: 'مكتبة المعرفة', itemsSupplied: 18, lastDelivery: '15/05/2023', totalValue: '45,000 ريال' },
+                    { name: 'شركة الأثاث', itemsSupplied: 12, lastDelivery: '05/05/2023', totalValue: '75,000 ريال' }
                 ]
             };
             
@@ -829,6 +1115,7 @@
             function init() {
                 setupMobileSidebar();
                 setupReportFilters();
+                setupTabs();
                 loadInitialReport();
                 
                 // Set default date range
@@ -839,18 +1126,15 @@
             
             // Setup mobile sidebar functionality
             function setupMobileSidebar() {
-                // Toggle sidebar
                 menuToggle.addEventListener('click', function() {
                     sidebar.classList.add('active');
                     sidebarOverlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 });
                 
-                // Close sidebar
                 sidebarClose.addEventListener('click', closeSidebar);
                 sidebarOverlay.addEventListener('click', closeSidebar);
                 
-                // Close sidebar when clicking on a menu item (for mobile)
                 document.querySelectorAll('.sidebar-menu a').forEach(link => {
                     link.addEventListener('click', function() {
                         if (window.innerWidth <= 768) {
@@ -859,7 +1143,6 @@
                     });
                 });
                 
-                // Close sidebar when window is resized to desktop view
                 window.addEventListener('resize', function() {
                     if (window.innerWidth > 768) {
                         closeSidebar();
@@ -867,38 +1150,25 @@
                 });
             }
             
-            // Close sidebar function
             function closeSidebar() {
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
                 document.body.style.overflow = '';
             }
             
-            // Setup report filters functionality
             function setupReportFilters() {
-                // Show/hide custom date range
                 timePeriodSelect.addEventListener('change', function() {
-                    if(this.value === 'custom') {
-                        customDateRange.style.display = 'flex';
-                    } else {
-                        customDateRange.style.display = 'none';
-                    }
+                    customDateRange.style.display = this.value === 'custom' ? 'flex' : 'none';
                 });
                 
-                // Apply filters button
-                applyFiltersBtn.addEventListener('click', function() {
-                    generateReport();
-                });
+                applyFiltersBtn.addEventListener('click', generateReport);
                 
-                // Reset filters button
                 resetFiltersBtn.addEventListener('click', function() {
-                    reportTypeSelect.value = 'items';
                     timePeriodSelect.value = 'today';
                     customDateRange.style.display = 'none';
                     document.getElementById('warehouse').value = 'all';
                     document.getElementById('category').value = 'all';
                     
-                    // Reset dates to today
                     const today = new Date();
                     document.getElementById('fromDate').valueAsDate = today;
                     document.getElementById('toDate').valueAsDate = today;
@@ -906,83 +1176,79 @@
                     generateReport();
                 });
                 
-                // Export buttons
-                document.getElementById('exportExcel').addEventListener('click', function() {
-                    alert('تم تصدير البيانات إلى ملف Excel');
+                document.querySelectorAll('.export-btn.btn-primary').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        alert('تم تصدير البيانات إلى ملف Excel');
+                    });
                 });
                 
-                document.getElementById('exportPDF').addEventListener('click', function() {
-                    alert('تم تصدير البيانات إلى ملف PDF');
+                document.querySelectorAll('.export-btn.btn-secondary').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        alert('تم تصدير البيانات إلى ملف PDF');
+                    });
                 });
             }
             
-            // Load initial report data
+            function setupTabs() {
+                tabInputs.forEach(input => {
+                    input.addEventListener('change', function() {
+                        const reportType = this.id.replace('tab-', '');
+                        generateReport(reportType);
+                    });
+                });
+                
+                // CSS-based tab switching
+                document.querySelectorAll('.tabs-nav input[type="radio"]').forEach(input => {
+                    input.addEventListener('change', function() {
+                        document.querySelectorAll('.tab-content').forEach(content => {
+                            content.classList.remove('active');
+                        });
+                        document.getElementById(`${this.id.replace('tab-', '')}-content`).classList.add('active');
+                    });
+                });
+            }
+            
             function loadInitialReport() {
-                // Show items report by default
-                document.getElementById('itemsReport').style.display = 'block';
-                document.getElementById('inventoryReport').style.display = 'block';
-                document.getElementById('custodyReport').style.display = 'block';
-                
-                // Load sample data
-                generateReport();
+                document.getElementById('items-content').classList.add('active');
+                generateReport('items');
             }
             
-            // Generate report based on selected filters
-            function generateReport() {
-                const reportType = reportTypeSelect.value;
-                
-                // Update detailed report title
-                document.getElementById('detailedReportTitle').textContent = 
-                    `تقرير ${getReportTypeName(reportType)}`;
-                
-                // Show/hide report cards based on report type
-                if (reportType === 'items') {
-                    document.getElementById('itemsReport').style.display = 'block';
-                    document.getElementById('inventoryReport').style.display = 'block';
-                    document.getElementById('custodyReport').style.display = 'block';
-                } else {
-                    document.getElementById('itemsReport').style.display = 'none';
-                    document.getElementById('inventoryReport').style.display = 'none';
-                    document.getElementById('custodyReport').style.display = 'none';
-                }
-                
-                // Load data for the selected report type
-                loadReportData(reportType);
+            function generateReport(type) {
+                loadReportData(type);
             }
             
-            // Get report type name
-            function getReportTypeName(type) {
-                const names = {
-                    'items': 'حركة الأصناف',
-                    'inventory': 'المخزون',
-                    'custody': 'العهدة',
-                    'invoices': 'الفواتير',
-                    'suppliers': 'الموردين'
-                };
-                return names[type] || '';
-            }
-            
-            // Load report data
             function loadReportData(type) {
-                // In a real application, this would fetch data from the server
-                // For this demo, we'll use the sample data
-                
-                // Update the detailed report table
+                updateSummaryReport(type);
                 updateDetailedReport(type);
-                
-                // Update the summary cards if this is the items report
-                if (type === 'items') {
-                    updateItemsReport();
-                    updateInventoryReport();
-                    updateCustodyReport();
+                updateChart(type);
+            }
+            
+            function updateSummaryReport(type) {
+                switch(type) {
+                    case 'items':
+                        updateItemsReport();
+                        break;
+                    case 'inventory':
+                        updateInventoryReport();
+                        break;
+                    case 'custody':
+                        updateCustodyReport();
+                        break;
+                    case 'installments':
+                        updateInstallmentsReport();
+                        break;
+                    case 'invoices':
+                        updateInvoicesReport();
+                        break;
+                    case 'suppliers':
+                        updateSuppliersReport();
+                        break;
                 }
             }
             
-            // Update items report
             function updateItemsReport() {
                 const tbody = document.getElementById('itemsTableBody');
                 tbody.innerHTML = '';
-                
                 sampleData.items.forEach(item => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -995,11 +1261,9 @@
                 });
             }
             
-            // Update inventory report
             function updateInventoryReport() {
                 const tbody = document.getElementById('inventoryTableBody');
                 tbody.innerHTML = '';
-                
                 sampleData.inventory.forEach(item => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -1012,11 +1276,9 @@
                 });
             }
             
-            // Update custody report
             function updateCustodyReport() {
                 const tbody = document.getElementById('custodyTableBody');
                 tbody.innerHTML = '';
-                
                 sampleData.custody.forEach(item => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -1029,22 +1291,88 @@
                 });
             }
             
-            // Update detailed report table
-            function updateDetailedReport(type) {
-                const thead = document.getElementById('detailedReportHeader');
-                const tbody = document.getElementById('detailedReportBody');
-                
-                // Clear existing content
-                thead.innerHTML = '';
+            function updateInstallmentsReport() {
+                const tbody = document.getElementById('installmentsTableBody');
                 tbody.innerHTML = '';
-                
-                // Set headers based on report type
-                let headers = [];
-                let data = [];
-                
+                sampleData.installments.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.employee}</td>
+                        <td>${item.activeCount}</td>
+                        <td>${item.totalValue}</td>
+                        <td>${item.paidValue}</td>
+                        <td>${item.remainingValue}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            
+            function updateInvoicesReport() {
+                const tbody = document.getElementById('invoicesTableBody');
+                tbody.innerHTML = '';
+                sampleData.invoices.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.number}</td>
+                        <td>${item.date}</td>
+                        <td>${item.recipient}</td>
+                        <td>${item.itemsCount}</td>
+                        <td>${item.total}</td>
+                        <td>${item.status === 'تم الدفع' ? '<span class="badge badge-success">تم الدفع</span>' : '<span class="badge badge-warning">بانتظار الدفع</span>'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            
+            function updateSuppliersReport() {
+                const tbody = document.getElementById('suppliersTableBody');
+                tbody.innerHTML = '';
+                sampleData.suppliers.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.name}</td>
+                        <td>${item.itemsSupplied}</td>
+                        <td>${item.lastDelivery}</td>
+                        <td>${item.totalValue}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            
+            function updateDetailedReport(type) {
+                let thead, tbody;
                 switch(type) {
                     case 'items':
-                        headers = ['الصنف', 'الكمية الداخلة', 'الكمية الخارجة', 'صافي الحركة'];
+                        thead = document.getElementById('itemsDetailedTable').querySelector('thead');
+                        tbody = document.getElementById('itemsDetailedBody');
+                        break;
+                    case 'inventory':
+                        thead = document.getElementById('inventoryDetailedTable').querySelector('thead');
+                        tbody = document.getElementById('inventoryDetailedBody');
+                        break;
+                    case 'custody':
+                        thead = document.getElementById('custodyDetailedTable').querySelector('thead');
+                        tbody = document.getElementById('custodyDetailedBody');
+                        break;
+                    case 'installments':
+                        thead = document.getElementById('installmentsDetailedTable').querySelector('thead');
+                        tbody = document.getElementById('installmentsDetailedBody');
+                        break;
+                    case 'invoices':
+                        thead = document.getElementById('invoicesDetailedTable').querySelector('thead');
+                        tbody = document.getElementById('invoicesDetailedBody');
+                        break;
+                    case 'suppliers':
+                        thead = document.getElementById('suppliersDetailedTable').querySelector('thead');
+                        tbody = document.getElementById('suppliersDetailedBody');
+                        break;
+                }
+                
+                tbody.innerHTML = '';
+                
+                let data = [];
+                switch(type) {
+                    case 'items':
                         data = sampleData.items.map(item => [
                             item.name, 
                             item.incoming, 
@@ -1053,7 +1381,6 @@
                         ]);
                         break;
                     case 'inventory':
-                        headers = ['القسم', 'عدد الأصناف', 'إجمالي الكمية', 'قيمة المخزون'];
                         data = sampleData.inventory.map(item => [
                             item.category, 
                             item.itemsCount, 
@@ -1062,7 +1389,6 @@
                         ]);
                         break;
                     case 'custody':
-                        headers = ['القسم', 'عدد العهد', 'قيمة العهد', 'متوسط المدة'];
                         data = sampleData.custody.map(item => [
                             item.category, 
                             item.activeCount, 
@@ -1070,8 +1396,21 @@
                             item.avgDuration
                         ]);
                         break;
+                    case 'installments':
+                        data = sampleData.detailedInstallments.map(item => [
+                            item.custodyCode,
+                            item.employee,
+                            item.itemName,
+                            item.itemCode,
+                            item.totalCost,
+                            item.monthlyDeduction,
+                            item.paidInstallments,
+                            item.remainingInstallments,
+                            item.paidTotal,
+                            item.remainingTotal
+                        ]);
+                        break;
                     case 'invoices':
-                        headers = ['رقم الفاتورة', 'التاريخ', 'المستلم', 'عدد الأصناف', 'الإجمالي', 'حالة الدفع'];
                         data = sampleData.invoices.map(item => [
                             item.number,
                             item.date,
@@ -1084,7 +1423,6 @@
                         ]);
                         break;
                     case 'suppliers':
-                        headers = ['اسم المورد', 'عدد الأصناف', 'آخر توصيل', 'القيمة الإجمالية'];
                         data = sampleData.suppliers.map(item => [
                             item.name,
                             item.itemsSupplied,
@@ -1094,16 +1432,6 @@
                         break;
                 }
                 
-                // Create header row
-                const headerRow = document.createElement('tr');
-                headers.forEach(headerText => {
-                    const th = document.createElement('th');
-                    th.innerHTML = headerText;
-                    headerRow.appendChild(th);
-                });
-                thead.appendChild(headerRow);
-                
-                // Create data rows
                 data.forEach(rowData => {
                     const row = document.createElement('tr');
                     rowData.forEach(cellData => {
@@ -1115,7 +1443,272 @@
                 });
             }
             
-            // Initialize the page
+            function updateChart(type) {
+                // Destroy existing chart if it exists
+                if (chartInstances[type]) {
+                    chartInstances[type].destroy();
+                }
+                
+                const ctx = document.getElementById(`${type}Chart`).getContext('2d');
+                let config = {};
+                
+                switch(type) {
+                    case 'items':
+                        config = {
+                            type: 'bar',
+                            data: {
+                                labels: sampleData.items.map(item => item.name),
+                                datasets: [
+                                    {
+                                        label: 'الكمية الداخلة',
+                                        data: sampleData.items.map(item => item.incoming),
+                                        backgroundColor: 'rgba(60, 141, 188, 0.8)', // --primary
+                                        borderColor: 'rgba(60, 141, 188, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'الكمية الخارجة',
+                                        data: sampleData.items.map(item => item.outgoing),
+                                        backgroundColor: 'rgba(221, 75, 57, 0.8)', // --danger
+                                        borderColor: 'rgba(221, 75, 57, 1)',
+                                        borderWidth: 1
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'الكمية'
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            font: {
+                                                family: "'Tajawal', sans-serif"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                    case 'inventory':
+                        config = {
+                            type: 'pie',
+                            data: {
+                                labels: sampleData.inventory.map(item => item.category),
+                                datasets: [{
+                                    data: sampleData.inventory.map(item => item.totalQuantity),
+                                    backgroundColor: [
+                                        'rgba(60, 141, 188, 0.8)', // --primary
+                                        'rgba(0, 166, 90, 0.8)',  // --secondary
+                                        'rgba(0, 192, 239, 0.8)'  // --info
+                                    ],
+                                    borderColor: [
+                                        'rgba(60, 141, 188, 1)',
+                                        'rgba(0, 166, 90, 1)',
+                                        'rgba(0, 192, 239, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            font: {
+                                                family: "'Tajawal', sans-serif"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                    case 'custody':
+                        config = {
+                            type: 'bar',
+                            data: {
+                                labels: sampleData.custody.map(item => item.category),
+                                datasets: [{
+                                    label: 'قيمة العهد',
+                                    data: sampleData.custody.map(item => parseFloat(item.value.replace(' ريال', '').replace(',', ''))),
+                                    backgroundColor: 'rgba(0, 166, 90, 0.8)', // --secondary
+                                    borderColor: 'rgba(0, 166, 90, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'القيمة (ريال)'
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            font: {
+                                                family: "'Tajawal', sans-serif"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                    case 'installments':
+                        config = {
+                            type: 'bar',
+                            data: {
+                                labels: sampleData.installments.map(item => item.employee),
+                                datasets: [
+                                    {
+                                        label: 'إجمالي القيمة',
+                                        data: sampleData.installments.map(item => parseFloat(item.totalValue.replace(' ريال', ''))),
+                                        backgroundColor: 'rgba(60, 141, 188, 0.8)', // --primary
+                                        borderColor: 'rgba(60, 141, 188, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'القيمة المدفوعة',
+                                        data: sampleData.installments.map(item => parseFloat(item.paidValue.replace(' ريال', ''))),
+                                        backgroundColor: 'rgba(0, 166, 90, 0.8)', // --secondary
+                                        borderColor: 'rgba(0, 166, 90, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'القيمة المتبقية',
+                                        data: sampleData.installments.map(item => parseFloat(item.remainingValue.replace(' ريال', ''))),
+                                        backgroundColor: 'rgba(243, 156, 18, 0.8)', // --warning
+                                        borderColor: 'rgba(243, 156, 18, 1)',
+                                        borderWidth: 1
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'القيمة (ريال)'
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            font: {
+                                                family: "'Tajawal', sans-serif"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                    case 'invoices':
+                        config = {
+                            type: 'bar',
+                            data: {
+                                labels: sampleData.invoices.map(item => item.number),
+                                datasets: [{
+                                    label: 'الإجمالي',
+                                    data: sampleData.invoices.map(item => parseFloat(item.total.replace(' ريال', '').replace(',', ''))),
+                                    backgroundColor: 'rgba(0, 192, 239, 0.8)', // --info
+                                    borderColor: 'rgba(0, 192, 239, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'الإجمالي (ريال)'
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            font: {
+                                                family: "'Tajawal', sans-serif"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                    case 'suppliers':
+                        config = {
+                            type: 'bar',
+                            data: {
+                                labels: sampleData.suppliers.map(item => item.name),
+                                datasets: [{
+                                    label: 'القيمة الإجمالية',
+                                    data: sampleData.suppliers.map(item => parseFloat(item.totalValue.replace(' ريال', '').replace(',', ''))),
+                                    backgroundColor: 'rgba(60, 141, 188, 0.8)', // --primary
+                                    borderColor: 'rgba(60, 141, 188, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'القيمة (ريال)'
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            font: {
+                                                family: "'Tajawal', sans-serif"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        break;
+                }
+                
+                chartInstances[type] = new Chart(ctx, config);
+            }
+            
             init();
         });
     </script>

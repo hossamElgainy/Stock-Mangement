@@ -40,7 +40,6 @@
             position: relative;
         }
 
-        /* Sidebar Styles */
         .sidebar {
             width: 250px;
             background: var(--sidebar);
@@ -112,7 +111,6 @@
             background: white;
         }
 
-        /* Main Content Styles */
         .main-content {
             flex: 1;
             margin-right: 250px;
@@ -143,7 +141,6 @@
             margin-right: 10px;
         }
 
-        /* Mobile Header Title */
         .mobile-header-title {
             display: none;
             font-size: 1.2rem;
@@ -151,7 +148,6 @@
             margin-right: 15px;
         }
 
-        /* Card Styles */
         .card {
             background: white;
             border-radius: 5px;
@@ -171,7 +167,6 @@
             padding: 20px;
         }
 
-        /* Button Styles */
         .btn {
             padding: 8px 15px;
             border-radius: 4px;
@@ -207,7 +202,6 @@
             font-size: 12px;
         }
 
-        /* Form Styles */
         .form-group {
             margin-bottom: 15px;
         }
@@ -230,7 +224,6 @@
             min-height: 100px;
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -282,64 +275,30 @@
             text-align: left;
         }
 
-        /* Category Tree Styles */
-        .category-tree {
-            list-style: none;
-            padding-right: 20px;
+        .table-responsive {
+            overflow-x: auto;
         }
 
-        .category-tree li {
-            margin-bottom: 10px;
-            position: relative;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .category-tree li:before {
-            content: "";
-            position: absolute;
-            right: -15px;
-            top: 10px;
-            width: 10px;
-            height: 1px;
-            background: #777;
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
         }
 
-        .category-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 15px;
-            background: white;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
+        th {
+            background-color: #f8f9fc;
+            font-weight: 700;
         }
 
-        .category-item i {
-            margin-left: 10px;
-            color: var(--primary);
+        tr:hover {
+            background-color: #f5f5f5;
         }
 
-        .category-children {
-            margin-right: 30px;
-            margin-top: 10px;
-            border-right: 1px dashed #ddd;
-            display: none;
-        }
-
-        .category-badge {
-            background: var(--light);
-            color: var(--dark);
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-            margin-right: auto;
-        }
-
-        .actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        /* Overlay for mobile sidebar */
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -358,7 +317,6 @@
             visibility: visible;
         }
 
-        /* Mobile Menu Toggle */
         .menu-toggle {
             display: none;
             background: transparent;
@@ -376,7 +334,25 @@
             align-items: center;
         }
 
-        /* Responsive Styles */
+        .alert {
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
         @media (max-width: 992px) {
             .sidebar {
                 width: 220px;
@@ -424,16 +400,6 @@
             .card-header h3 {
                 margin-bottom: 10px;
             }
-            
-            .category-item {
-                flex-wrap: wrap;
-            }
-            
-            .category-badge {
-                margin-right: 0;
-                margin-top: 5px;
-                width: 100%;
-            }
         }
 
         @media (max-width: 576px) {
@@ -455,15 +421,6 @@
                 margin: 10px;
             }
             
-            .category-children {
-                margin-right: 15px;
-            }
-            
-            .category-tree li:before {
-                right: -10px;
-                width: 5px;
-            }
-            
             .sidebar {
                 width: 260px;
             }
@@ -472,9 +429,13 @@
                 font-size: 1rem;
                 margin-right: 10px;
             }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
         }
 
-        /* Close button for mobile sidebar */
         .sidebar-close {
             display: none;
             background: transparent;
@@ -490,7 +451,6 @@
             }
         }
 
-        /* Smooth transitions */
         .main-content, .sidebar {
             transition: all 0.3s ease;
         }
@@ -500,7 +460,6 @@
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="container">
-        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h3>نظام إدارة المخازن</h3>
@@ -520,19 +479,19 @@
                     <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
                     <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
                     <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="transactions.html"><i class="fas fa-history"></i> سجل المعاملات</a></li>
                     <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
                 </ul>
             </div>
         </div>
         
-        <!-- Main Content -->
         <div class="main-content">
             <div class="header">
                 <div class="menu-toggle-container">
                     <button class="menu-toggle" id="menuToggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <span class="mobile-header-title">نظام إدارة المخازن</span>
+                    <span class="mobile-header-title">إدارة الأقسام</span>
                 </div>
                 <div class="user-info">
                     <img src="https://via.placeholder.com/40" alt="User">
@@ -540,162 +499,129 @@
                 </div>
             </div>
             
+            <div id="alertContainer"></div>
+            
             <div class="card">
                 <div class="card-header">
-                    <h3>هيكل الأقسام</h3>
-                    <button class="btn btn-primary" id="addCategoryBtn">
-                        <i class="fas fa-plus"></i> إضافة قسم جديد
-                    </button>
+                    <h3>قائمة الأقسام</h3>
+                    <div>
+                        <input type="text" id="searchInput" class="form-control" placeholder="بحث..." style="width:200px;display:inline-block;">
+                        <button class="btn btn-primary" id="addCategoryBtn">
+                            <i class="fas fa-plus"></i> إضافة قسم جديد
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <ul class="category-tree">
-                        <!-- Main Category -->
-                        <li>
-                            <div class="category-item">
-                                <i class="fas fa-folder-open"></i>
-                                <span>أجهزة إلكترونية</span>
-                                <span class="category-badge">25 صنف</span>
-                                <div class="actions">
-                                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <ul class="category-children">
-                                <!-- Subcategory 1 -->
-                                <li>
-                                    <div class="category-item">
-                                        <i class="fas fa-folder"></i>
-                                        <span>حواسيب محمولة</span>
-                                        <span class="category-badge">12 صنف</span>
-                                        <div class="actions">
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </div>
-                                </li>
-                                <!-- Subcategory 2 -->
-                                <li>
-                                    <div class="category-item">
-                                        <i class="fas fa-folder"></i>
-                                        <span>هواتف ذكية</span>
-                                        <span class="category-badge">8 أصناف</span>
-                                        <div class="actions">
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                        
-                        <!-- Main Category -->
-                        <li>
-                            <div class="category-item">
-                                <i class="fas fa-folder-open"></i>
-                                <span>أجهزة مكتبية</span>
-                                <span class="category-badge">18 صنف</span>
-                                <div class="actions">
-                                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                            <ul class="category-children">
-                                <!-- Subcategory -->
-                                <li>
-                                    <div class="category-item">
-                                        <i class="fas fa-folder"></i>
-                                        <span>طابعات</span>
-                                        <span class="category-badge">7 أصناف</span>
-                                        <div class="actions">
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                        
-                        <!-- Main Category -->
-                        <li>
-                            <div class="category-item">
-                                <i class="fas fa-folder"></i>
-                                <span>أثاث</span>
-                                <span class="category-badge">32 صنف</span>
-                                <div class="actions">
-                                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                    <div class="table-responsive">
+                        <table id="categoriesTable">
+                            <thead>
+                                <tr>
+                                    <th>اسم القسم</th>
+                                    <th>الوصف</th>
+                                    <th>عدد الأصناف</th>
+                                    <th>إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Add Category Modal -->
-    <div id="addCategoryModal" class="modal" style="display:none;">
+    <div id="categoryModal" class="modal" style="display:none;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4>إضافة قسم جديد</h4>
-                    <span class="close">&times;</span>
+                    <h4 id="modalTitle">إضافة قسم جديد</h4>
+                    <span class="close" data-dismiss="modal">×</span>
                 </div>
                 <div class="modal-body">
                     <form id="categoryForm">
+                        <input type="hidden" id="categoryId">
                         <div class="form-group">
-                            <label>اسم القسم</label>
-                            <input type="text" class="form-control" required>
+                            <label for="categoryName">اسم القسم</label>
+                            <input type="text" class="form-control" id="categoryName" required>
                         </div>
                         <div class="form-group">
-                            <label>القسم الرئيسي</label>
-                            <select class="form-control">
-                                <option value="">لا يوجد (قسم رئيسي)</option>
-                                <option>أجهزة إلكترونية</option>
-                                <option>أجهزة مكتبية</option>
-                                <option>أثاث</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>وصف القسم (اختياري)</label>
-                            <textarea class="form-control" rows="3"></textarea>
+                            <label for="categoryDescription">وصف القسم (اختياري)</label>
+                            <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" form="categoryForm" class="btn btn-primary">حفظ</button>
-                    <button class="btn btn-danger" id="cancelCategoryBtn">إلغاء</button>
+                    <button type="button" class="btn btn-danger" id="cancelCategoryBtn" data-dismiss="modal">إلغاء</button>
+                    <button type="submit" form="categoryForm" class="btn btn-primary" id="saveCategoryBtn">حفظ</button>
                 </div>
             </div>
         </div>
     </div>
     
+    <div id="deleteModal" class="modal" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>تأكيد الحذف</h4>
+                    <span class="close" data-dismiss="modal">×</span>
+                </div>
+                <div class="modal-body">
+                    <p>هل أنت متأكد أنك تريد حذف هذا القسم؟ لا يمكن التراجع عن هذه العملية.</p>
+                    <input type="hidden" id="deleteCategoryId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="cancelDeleteBtn" data-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="confirmDeleteBtn">حذف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let categories = [
+            { id: 1, name: "أجهزة إلكترونية", description: "تشمل الحواسيب والهواتف الذكية", itemCount: 25 },
+            { id: 2, name: "أجهزة مكتبية", description: "تشمل الطابعات وآلات التصوير", itemCount: 18 },
+            { id: 3, name: "أثاث", description: "تشمل المكاتب والكراسي", itemCount: 32 }
+        ];
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile sidebar functionality
             const menuToggle = document.getElementById('menuToggle');
             const sidebar = document.getElementById('sidebar');
             const sidebarClose = document.getElementById('sidebarClose');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
-            
-            // Toggle sidebar
+            const categoryModal = document.getElementById('categoryModal');
+            const deleteModal = document.getElementById('deleteModal');
+            const addCategoryBtn = document.getElementById('addCategoryBtn');
+            const saveCategoryBtn = document.getElementById('saveCategoryBtn');
+            const cancelCategoryBtn = document.getElementById('cancelCategoryBtn');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+            const categoryForm = document.getElementById('categoryForm');
+            const searchInput = document.getElementById('searchInput');
+            const alertContainer = document.getElementById('alertContainer');
+            const categoryId = document.getElementById('categoryId');
+            const categoryName = document.getElementById('categoryName');
+            const categoryDescription = document.getElementById('categoryDescription');
+            const deleteCategoryId = document.getElementById('deleteCategoryId');
+
+            renderCategoriesTable(categories);
+
             menuToggle.addEventListener('click', function() {
                 sidebar.classList.add('active');
                 sidebarOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
             });
-            
-            // Close sidebar
+
             function closeSidebar() {
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
                 document.body.style.overflow = '';
             }
-            
+
             sidebarClose.addEventListener('click', closeSidebar);
             sidebarOverlay.addEventListener('click', closeSidebar);
-            
-            // Close sidebar when clicking on a menu item (for mobile)
+
             document.querySelectorAll('.sidebar-menu a').forEach(link => {
                 link.addEventListener('click', function() {
                     if (window.innerWidth <= 768) {
@@ -703,73 +629,162 @@
                     }
                 });
             });
-            
-            // Modal functionality
-            const modal = document.getElementById('addCategoryModal');
-            const addBtn = document.getElementById('addCategoryBtn');
-            const closeBtn = document.querySelector('.close');
-            const cancelBtn = document.getElementById('cancelCategoryBtn');
-            
-            addBtn.onclick = function() {
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-            }
-            
-            closeBtn.onclick = function() {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-            
-            cancelBtn.onclick = function() {
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
-            }
-            
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = '';
-                }
-            }
-            
-            // Expand/Collapse categories
-            document.querySelectorAll('.category-item').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I') {
-                        const children = this.parentElement.querySelector('.category-children');
-                        if(children) {
-                            const isHidden = children.style.display === 'none';
-                            children.style.display = isHidden ? 'block' : 'none';
-                            const icon = this.querySelector('i');
-                            if(icon) {
-                                icon.className = isHidden ? 
-                                    'fas fa-folder-open' : 'fas fa-folder';
-                            }
-                        }
-                    }
-                });
-            });
-            
-            // Initialize children visibility
-            document.querySelectorAll('.category-children').forEach(children => {
-                children.style.display = 'none';
-            });
-            
-            // Form submission
-            document.getElementById('categoryForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('تم حفظ القسم بنجاح');
-                modal.style.display = 'none';
-                document.body.style.overflow = '';
-                this.reset();
-            });
-            
-            // Close sidebar when window is resized to desktop view
+
             window.addEventListener('resize', function() {
                 if (window.innerWidth > 768) {
                     closeSidebar();
                 }
             });
+
+            addCategoryBtn.addEventListener('click', openAddCategoryModal);
+            saveCategoryBtn.addEventListener('click', saveCategory);
+            confirmDeleteBtn.addEventListener('click', deleteCategory);
+            searchInput.addEventListener('input', filterCategories);
+
+            document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target);
+                }
+            });
+
+            function renderCategoriesTable(categoriesToRender) {
+                const categoriesTableBody = document.getElementById('categoriesTableBody');
+                categoriesTableBody.innerHTML = '';
+
+                if (categoriesToRender.length === 0) {
+                    categoriesTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center;">لا توجد أقسام متاحة</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                categoriesToRender.forEach(category => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${category.name}</td>
+                        <td>${category.description || '-'}</td>
+                        <td>${category.itemCount}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary edit-btn" data-id="${category.id}"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${category.id}"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    categoriesTableBody.appendChild(row);
+                });
+
+                document.querySelectorAll('.edit-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        openEditCategoryModal(id);
+                    });
+                });
+
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        openDeleteConfirmationModal(id);
+                    });
+                });
+            }
+
+            function openAddCategoryModal() {
+                document.getElementById('modalTitle').textContent = 'إضافة قسم جديد';
+                categoryForm.reset();
+                categoryId.value = '';
+                openModal(categoryModal);
+            }
+
+            function openEditCategoryModal(id) {
+                const category = categories.find(cat => cat.id === id);
+                if (category) {
+                    document.getElementById('modalTitle').textContent = 'تعديل القسم';
+                    categoryId.value = category.id;
+                    categoryName.value = category.name;
+                    categoryDescription.value = category.description || '';
+                    openModal(categoryModal);
+                }
+            }
+
+            function openDeleteConfirmationModal(id) {
+                deleteCategoryId.value = id;
+                openModal(deleteModal);
+            }
+
+            function saveCategory() {
+                if (!categoryForm.checkValidity()) {
+                    categoryForm.reportValidity();
+                    return;
+                }
+
+                const categoryData = {
+                    name: categoryName.value,
+                    description: categoryDescription.value,
+                    itemCount: 0 // Default item count for new categories
+                };
+
+                if (categoryId.value) {
+                    const id = parseInt(categoryId.value);
+                    const index = categories.findIndex(cat => cat.id === id);
+                    if (index !== -1) {
+                        categories[index] = { ...categories[index], ...categoryData };
+                        showAlert('تم تحديث القسم بنجاح', 'success');
+                    }
+                } else {
+                    const newId = categories.length > 0 ? Math.max(...categories.map(cat => cat.id)) + 1 : 1;
+                    categories.push({ id: newId, ...categoryData });
+                    showAlert('تم إضافة القسم بنجاح', 'success');
+                }
+
+                renderCategoriesTable(categories);
+                closeModal(categoryModal);
+            }
+
+            function deleteCategory() {
+                const id = parseInt(deleteCategoryId.value);
+                categories = categories.filter(cat => cat.id !== id);
+                renderCategoriesTable(categories);
+                closeModal(deleteModal);
+                showAlert('تم حذف القسم بنجاح', 'success');
+            }
+
+            function filterCategories() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredCategories = categories.filter(category =>
+                    category.name.toLowerCase().includes(searchTerm) ||
+                    (category.description && category.description.toLowerCase().includes(searchTerm))
+                );
+                renderCategoriesTable(filteredCategories);
+            }
+
+            function showAlert(message, type) {
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                alertContainer.appendChild(alert);
+
+                setTimeout(() => {
+                    alert.remove();
+                }, 3000);
+            }
+
+            function openModal(modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal(modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
         });
     </script>
 </body>

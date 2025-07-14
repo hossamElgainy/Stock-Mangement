@@ -39,7 +39,6 @@
             position: relative;
         }
         
-        /* Sidebar Styles */
         .sidebar {
             width: 250px;
             background: var(--sidebar);
@@ -112,7 +111,6 @@
             background: white;
         }
         
-        /* Main Content Styles */
         .main-content {
             flex: 1;
             margin-right: 250px;
@@ -131,7 +129,6 @@
             z-index: 100;
         }
         
-        /* Mobile Header Title */
         .mobile-header-title {
             display: none;
             font-size: 1.2rem;
@@ -151,7 +148,6 @@
             margin-right: 10px;
         }
         
-        /* Menu Toggle */
         .menu-toggle-container {
             display: none;
             align-items: center;
@@ -178,7 +174,6 @@
             cursor: pointer;
         }
         
-        /* Overlay for mobile sidebar */
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -197,7 +192,6 @@
             visibility: visible;
         }
         
-        /* Card Styles */
         .card {
             background-color: #fff;
             border-radius: 5px;
@@ -221,7 +215,6 @@
             padding: 20px;
         }
         
-        /* Table Styles */
         .table-responsive {
             overflow-x: auto;
         }
@@ -242,7 +235,6 @@
             font-weight: 500;
         }
         
-        /* Button Styles */
         .btn {
             padding: 8px 15px;
             border-radius: 4px;
@@ -259,6 +251,11 @@
         
         .btn-primary:hover {
             background-color: var(--primary-dark);
+        }
+        
+        .btn-primary.active {
+            background-color: var(--primary-dark);
+            font-weight: bold;
         }
         
         .btn-success {
@@ -288,12 +285,20 @@
             background-color: #00acd0;
         }
         
+        .btn-warning {
+            background-color: var(--warning);
+            color: #fff;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e08e0b;
+        }
+        
         .btn-sm {
             padding: 5px 10px;
             font-size: 12px;
         }
         
-        /* Form Styles */
         .form-group {
             margin-bottom: 15px;
         }
@@ -318,7 +323,6 @@
             padding: 0 5px;
         }
         
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -366,13 +370,11 @@
             cursor: pointer;
         }
         
-        /* Invoice Item Actions */
         .item-actions {
             display: flex;
             gap: 5px;
         }
         
-        /* Filter Section */
         .filter-section {
             background: #fff;
             padding: 15px;
@@ -392,7 +394,6 @@
             margin-left: 10px;
         }
         
-        /* Status Badges */
         .badge {
             display: inline-block;
             padding: 3px 7px;
@@ -418,7 +419,28 @@
             background-color: var(--danger);
         }
         
-        /* Responsive Styles */
+        .badge-info {
+            background-color: var(--info);
+        }
+        
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pagination-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
         @media (max-width: 992px) {
             .sidebar {
                 width: 220px;
@@ -467,6 +489,11 @@
             .card {
                 margin: 10px;
             }
+            
+            .pagination-container {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
         
         @media (max-width: 576px) {
@@ -476,7 +503,7 @@
             
             .mobile-header-title {
                 font-size: 1rem;
-                margin-right: 10px;
+                margin-right: personalbar;
             }
             
             .user-info span {
@@ -522,6 +549,7 @@
                     <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
                     <li class="active"><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
                     <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="transactions.html"><i class="fas fa-history"></i> سجل المعاملات</a></li>
                     <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
                 </ul>
             </div>
@@ -599,6 +627,20 @@
                         </div>
                     </div>
                     
+                    <!-- Pagination Controls -->
+                    <div class="pagination-container">
+                        <div class="pagination-controls">
+                            <label for="pageSizeSelect">عدد السجلات لكل صفحة:</label>
+                            <select id="pageSizeSelect" class="form-control" style="width: 100px;">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        <div class="pagination-info" id="paginationInfo"></div>
+                    </div>
+                    
                     <!-- Invoices Table -->
                     <div class="table-responsive">
                         <table class="table">
@@ -610,6 +652,7 @@
                                     <th>التاريخ</th>
                                     <th>المجموع</th>
                                     <th>الحالة</th>
+                                    <th>حالة الإرجاع</th>
                                     <th>إجراءات</th>
                                 </tr>
                             </thead>
@@ -620,15 +663,10 @@
                     </div>
                     
                     <!-- Pagination -->
-                    <div style="display: flex; justify-content: center; margin-top: 20px;">
+                    <div class="pagination-container">
                         <nav>
-                            <ul style="display: flex; list-style: none; padding: 0; margin: 0;">
-                                <li style="margin: 0 5px;"><button class="btn btn-sm btn-primary"><i class="fas fa-angle-double-right"></i></button></li>
-                                <li style="margin: 0 5px;"><button class="btn btn-sm btn-primary"><i class="fas fa-angle-right"></i></button></li>
-                                <li style="margin: 0 5px;"><button class="btn btn-sm btn-primary">1</button></li>
-                                <li style="margin: 0 5px;"><button class="btn btn-sm btn-primary">2</button></li>
-                                <li style="margin: 0 5px;"><button class="btn btn-sm btn-primary"><i class="fas fa-angle-left"></i></button></li>
-                                <li style="margin: 0 5px;"><button class="btn btn-sm btn-primary"><i class="fas fa-angle-double-left"></i></button></li>
+                            <ul id="paginationNav" style="display: flex; list-style: none; padding: 0; margin: 0; justify-content: center;">
+                                <!-- Pagination buttons will be added dynamically -->
                             </ul>
                         </nav>
                     </div>
@@ -642,7 +680,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="invoiceModalTitle">فاتورة جديدة</h3>
-                <span class="close">&times;</span>
+                <span class="close" data-dismiss="modal">×</span>
             </div>
             <div class="modal-body">
                 <div class="invoice-header">
@@ -750,6 +788,47 @@
         </div>
     </div>
     
+    <!-- Return Invoice Modal -->
+    <div class="modal" id="returnInvoiceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="returnInvoiceModalTitle">إرجاع الفاتورة</h3>
+                <span class="close" data-dismiss="modal">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="returnAll"> إرجاع الفاتورة بالكامل
+                    </label>
+                </div>
+                <div class="table-responsive" id="returnItemsTableContainer" style="margin-top: 20px;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الصنف</th>
+                                <th>الكمية الأصلية</th>
+                                <th>الكمية المرتجعة</th>
+                                <th>كمية الإرجاع</th>
+                            </tr>
+                        </thead>
+                        <tbody id="returnItemsTable">
+                            <!-- Return items will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="returnNotes">ملاحظات الإرجاع</label>
+                    <textarea id="returnNotes" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="cancelReturnBtn">إلغاء</button>
+                <button class="btn btn-primary" id="saveReturnBtn">حفظ الإرجاع</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Mobile sidebar elements
@@ -761,13 +840,24 @@
             // Invoice elements
             const createInvoiceBtn = document.getElementById('createInvoiceBtn');
             const invoiceModal = document.getElementById('invoiceModal');
-            const closeModalBtn = document.querySelector('.close');
+            const closeModalBtn = document.querySelector('#invoiceModal .close');
             const addItemBtn = document.getElementById('addItemBtn');
             const invoiceItemsTable = document.getElementById('invoiceItems');
             const cancelInvoiceBtn = document.getElementById('cancelInvoiceBtn');
             const saveInvoiceBtn = document.getElementById('saveInvoiceBtn');
             const applyFilterBtn = document.getElementById('applyFilterBtn');
             const resetFilterBtn = document.getElementById('resetFilterBtn');
+            const pageSizeSelect = document.getElementById('pageSizeSelect');
+            const paginationNav = document.getElementById('paginationNav');
+            const paginationInfo = document.getElementById('paginationInfo');
+            
+            // Return elements
+            const returnInvoiceModal = document.getElementById('returnInvoiceModal');
+            const returnAllCheckbox = document.getElementById('returnAll');
+            const returnItemsTable = document.getElementById('returnItemsTable');
+            const cancelReturnBtn = document.getElementById('cancelReturnBtn');
+            const saveReturnBtn = document.getElementById('saveReturnBtn');
+            const returnNotes = document.getElementById('returnNotes');
             
             // Invoice data
             let invoiceItems = [];
@@ -775,6 +865,9 @@
             let currentInvoiceNumber = 1001;
             let isEditing = false;
             let currentEditId = null;
+            let currentReturnId = null;
+            let currentPage = 1;
+            let pageSize = parseInt(pageSizeSelect.value);
             
             // Sample data for demonstration
             const sampleInvoices = [
@@ -782,34 +875,49 @@
                     id: 1,
                     number: 'INV-2023-1001',
                     supplier: 'شركة التقنية الحديثة',
+                    supplierId: '1',
                     date: '2023-05-25',
                     total: 5000,
                     status: 'paid',
+                    returnStatus: null,
+                    returnedItems: [],
                     items: [
                         { id: 1, name: 'كمبيوتر محمول', quantity: 2, price: 2500, total: 5000 }
-                    ]
+                    ],
+                    warehouse: '1',
+                    notes: ''
                 },
                 {
                     id: 2,
                     number: 'INV-2023-1002',
                     supplier: 'شركة الأجهزة الإلكترونية',
+                    supplierId: '2',
                     date: '2023-05-20',
                     total: 7500,
                     status: 'pending',
+                    returnStatus: null,
+                    returnedItems: [],
                     items: [
                         { id: 2, name: 'هاتف ذكي', quantity: 3, price: 2500, total: 7500 }
-                    ]
+                    ],
+                    warehouse: '2',
+                    notes: ''
                 },
                 {
                     id: 3,
                     number: 'INV-2023-1003',
                     supplier: 'مورد الأثاث المكتبي',
+                    supplierId: '3',
                     date: '2023-05-15',
                     total: 3600,
                     status: 'cancelled',
+                    returnStatus: null,
+                    returnedItems: [],
                     items: [
                         { id: 4, name: 'طاولة مكتب', quantity: 3, price: 1200, total: 3600 }
-                    ]
+                    ],
+                    warehouse: '3',
+                    notes: ''
                 }
             ];
             
@@ -817,6 +925,8 @@
             function init() {
                 setupMobileSidebar();
                 setupInvoice();
+                setupReturn();
+                setupPagination();
                 loadInvoices();
                 
                 // Set current date
@@ -826,18 +936,15 @@
             
             // Setup mobile sidebar functionality
             function setupMobileSidebar() {
-                // Toggle sidebar
                 menuToggle.addEventListener('click', function() {
                     sidebar.classList.add('active');
                     sidebarOverlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 });
                 
-                // Close sidebar
                 sidebarClose.addEventListener('click', closeSidebar);
                 sidebarOverlay.addEventListener('click', closeSidebar);
                 
-                // Close sidebar when clicking on a menu item (for mobile)
                 document.querySelectorAll('.sidebar-menu a').forEach(link => {
                     link.addEventListener('click', function() {
                         if (window.innerWidth <= 768) {
@@ -846,7 +953,6 @@
                     });
                 });
                 
-                // Close sidebar when window is resized to desktop view
                 window.addEventListener('resize', function() {
                     if (window.innerWidth > 768) {
                         closeSidebar();
@@ -854,7 +960,6 @@
                 });
             }
             
-            // Close sidebar function
             function closeSidebar() {
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
@@ -863,7 +968,6 @@
             
             // Setup invoice functionality
             function setupInvoice() {
-                // New invoice button
                 createInvoiceBtn.addEventListener('click', function() {
                     isEditing = false;
                     currentEditId = null;
@@ -872,19 +976,17 @@
                     invoiceModal.style.display = 'flex';
                 });
                 
-                // Close modal button
                 closeModalBtn.addEventListener('click', function() {
                     invoiceModal.style.display = 'none';
                 });
                 
-                // Cancel invoice button
                 cancelInvoiceBtn.addEventListener('click', function() {
-                    if (confirm('هل أنت متأكد من إلغاء الفاتورة؟ سيتم حذف جميع الأصناف المضاف')) {
+                    if (confirm('هل أنت متأكد من إلغاء الفاتورة؟ سيتم حذف جميع الأصناف المضافة')) {
                         invoiceModal.style.display = 'none';
+                        resetInvoiceForm();
                     }
                 });
                 
-                // Add item to invoice
                 addItemBtn.addEventListener('click', function() {
                     const itemSelect = document.getElementById('item');
                     const quantityInput = document.getElementById('quantity');
@@ -895,19 +997,16 @@
                     const quantity = parseInt(quantityInput.value);
                     const price = parseFloat(priceInput.value);
                     
-                    if (!itemId || !quantity || !price) {
-                        alert('يرجى إدخال جميع بيانات الصنف');
+                    if (!itemId || isNaN(quantity) || quantity < 1 || isNaN(price) || price < 0) {
+                        alert('يرجى إدخال جميع بيانات الصنف بشكل صحيح');
                         return;
                     }
                     
-                    // Check if item already exists in invoice
                     const existingItemIndex = invoiceItems.findIndex(item => item.id === itemId);
                     if (existingItemIndex !== -1) {
-                        // Update existing item
                         invoiceItems[existingItemIndex].quantity += quantity;
                         invoiceItems[existingItemIndex].total = invoiceItems[existingItemIndex].quantity * price;
                     } else {
-                        // Add new item
                         invoiceItems.push({
                             id: itemId,
                             name: itemName,
@@ -919,13 +1018,11 @@
                     
                     renderInvoiceItems();
                     
-                    // Reset form
                     itemSelect.value = '';
                     quantityInput.value = '1';
                     priceInput.value = '';
                 });
                 
-                // Save invoice
                 saveInvoiceBtn.addEventListener('click', function() {
                     const supplier = document.getElementById('supplier').value;
                     const warehouse = document.getElementById('warehouse').value;
@@ -955,26 +1052,24 @@
                         items: invoiceItems,
                         notes: document.getElementById('notes').value,
                         total: calculateTotal(),
-                        status: 'pending'
+                        status: 'pending',
+                        returnStatus: null,
+                        returnedItems: []
                     };
                     
                     if (isEditing) {
-                        // Update existing invoice
                         const index = invoices.findIndex(inv => inv.id === currentEditId);
                         if (index !== -1) {
                             invoices[index] = invoiceData;
                         }
                     } else {
-                        // Add new invoice
                         invoices.push(invoiceData);
                         currentInvoiceNumber++;
                     }
                     
-                    // Update the invoice number for next invoice
                     const today = new Date();
                     document.getElementById('invoiceNumber').textContent = `INV-${today.getFullYear()}-${currentInvoiceNumber}`;
                     
-                    // Save to localStorage (for demo purposes)
                     localStorage.setItem('invoices', JSON.stringify(invoices));
                     localStorage.setItem('currentInvoiceNumber', currentInvoiceNumber);
                     
@@ -983,21 +1078,20 @@
                     loadInvoices();
                 });
                 
-                // Apply filters
                 applyFilterBtn.addEventListener('click', function() {
+                    currentPage = 1;
                     loadInvoices();
                 });
                 
-                // Reset filters
                 resetFilterBtn.addEventListener('click', function() {
                     document.getElementById('filterSupplier').value = '';
                     document.getElementById('filterInvoiceNo').value = '';
                     document.getElementById('filterFromDate').value = '';
                     document.getElementById('filterToDate').value = '';
+                    currentPage = 1;
                     loadInvoices();
                 });
                 
-                // Close modal when clicking outside
                 window.addEventListener('click', function(event) {
                     if (event.target === invoiceModal) {
                         invoiceModal.style.display = 'none';
@@ -1005,34 +1099,138 @@
                 });
             }
             
-            // Load invoices with filters
+            // Setup return functionality
+            function setupReturn() {
+                document.querySelector('#returnInvoiceModal .close').addEventListener('click', function() {
+                    returnInvoiceModal.style.display = 'none';
+                });
+                
+                cancelReturnBtn.addEventListener('click', function() {
+                    returnInvoiceModal.style.display = 'none';
+                });
+                
+                returnAllCheckbox.addEventListener('change', function() {
+                    const inputs = returnItemsTable.querySelectorAll('input[type="number"]');
+                    inputs.forEach(input => {
+                        input.disabled = this.checked;
+                        if (this.checked) {
+                            const maxQuantity = parseInt(input.getAttribute('max'));
+                            input.value = maxQuantity;
+                        } else {
+                            input.value = '0';
+                        }
+                    });
+                });
+                
+                saveReturnBtn.addEventListener('click', function() {
+                    const returnQuantities = [];
+                    let totalReturnedQuantity = 0;
+                    let totalOriginalQuantity = 0;
+                    
+                    if (returnAllCheckbox.checked) {
+                        const invoice = invoices.find(inv => inv.id === currentReturnId);
+                        invoice.items.forEach(item => {
+                            returnQuantities.push({
+                                id: item.id,
+                                name: item.name,
+                                quantity: item.quantity
+                            });
+                            totalReturnedQuantity += item.quantity;
+                            totalOriginalQuantity += item.quantity;
+                        });
+                    } else {
+                        const inputs = returnItemsTable.querySelectorAll('input[type="number"]');
+                        inputs.forEach(input => {
+                            const itemId = input.getAttribute('data-item-id');
+                            const quantity = parseInt(input.value) || 0;
+                            const maxQuantity = parseInt(input.getAttribute('max'));
+                            if (quantity > maxQuantity) {
+                                alert(`الكمية المرتجعة للصنف ${input.closest('tr').querySelector('td:nth-child(2)').textContent} تتجاوز الكمية الأصلية`);
+                                return;
+                            }
+                            if (quantity > 0) {
+                                returnQuantities.push({
+                                    id: itemId,
+                                    name: input.closest('tr').querySelector('td:nth-child(2)').textContent,
+                                    quantity: quantity
+                                });
+                            }
+                            totalReturnedQuantity += quantity;
+                            totalOriginalQuantity += maxQuantity;
+                        });
+                    }
+                    
+                    if (totalReturnedQuantity === 0) {
+                        alert('يرجى تحديد كمية للإرجاع');
+                        return;
+                    }
+                    
+                    const invoice = invoices.find(inv => inv.id === currentReturnId);
+                    if (invoice) {
+                        invoice.returnedItems = returnQuantities;
+                        invoice.returnStatus = totalReturnedQuantity === totalOriginalQuantity ? 'returned' : 'partially_returned';
+                        invoice.notes += `\nإرجاع بتاريخ ${formatDate(new Date())}: ${returnNotes.value}`;
+                        
+                        invoice.items.forEach(item => {
+                            const returnedItem = returnQuantities.find(ri => ri.id === item.id);
+                            if (returnedItem) {
+                                item.quantity -= returnedItem.quantity;
+                                item.total = item.quantity * item.price;
+                            }
+                        });
+                        
+                        invoice.items = invoice.items.filter(item => item.quantity > 0);
+                        invoice.total = calculateTotalForInvoice(invoice);
+                        
+                        if (invoice.items.length === 0) {
+                            invoice.status = 'returned';
+                        }
+                        
+                        localStorage.setItem('invoices', JSON.stringify(invoices));
+                        alert('تم تسجيل الإرجاع بنجاح');
+                        returnInvoiceModal.style.display = 'none';
+                        loadInvoices();
+                    }
+                });
+                
+                window.addEventListener('click', function(event) {
+                    if (event.target === returnInvoiceModal) {
+                        returnInvoiceModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Setup pagination functionality
+            function setupPagination() {
+                pageSizeSelect.addEventListener('change', function() {
+                    pageSize = parseInt(this.value);
+                    currentPage = 1;
+                    loadInvoices();
+                });
+            }
+            
+            // Load invoices with filters and pagination
             function loadInvoices() {
                 const supplierFilter = document.getElementById('filterSupplier').value;
                 const invoiceNoFilter = document.getElementById('filterInvoiceNo').value.toLowerCase();
                 const fromDateFilter = document.getElementById('filterFromDate').value;
                 const toDateFilter = document.getElementById('filterToDate').value;
                 
-                // Load from localStorage or use sample data
                 const storedInvoices = localStorage.getItem('invoices');
                 invoices = storedInvoices ? JSON.parse(storedInvoices) : sampleInvoices;
                 
-                // Get current invoice number from localStorage or use sample
                 const storedInvoiceNo = localStorage.getItem('currentInvoiceNumber');
                 currentInvoiceNumber = storedInvoiceNo ? parseInt(storedInvoiceNo) : 1003;
                 
-                // Filter invoices
                 let filteredInvoices = invoices.filter(invoice => {
-                    // Filter by supplier
                     if (supplierFilter && invoice.supplierId !== supplierFilter) {
                         return false;
                     }
                     
-                    // Filter by invoice number
                     if (invoiceNoFilter && !invoice.number.toLowerCase().includes(invoiceNoFilter)) {
                         return false;
                     }
                     
-                    // Filter by date range
                     if (fromDateFilter && invoice.date < fromDateFilter) {
                         return false;
                     }
@@ -1044,8 +1242,81 @@
                     return true;
                 });
                 
-                renderInvoicesTable(filteredInvoices);
+                // Calculate pagination
+                const totalItems = filteredInvoices.length;
+                const totalPages = Math.ceil(totalItems / pageSize);
+                currentPage = Math.min(currentPage, totalPages || 1);
+                
+                // Get paginated invoices
+                const startIndex = (currentPage - 1) * pageSize;
+                const endIndex = startIndex + pageSize;
+                const paginatedInvoices = filteredInvoices.slice(startIndex, endIndex);
+                
+                // Update pagination info
+                paginationInfo.textContent = `عرض ${startIndex + 1} إلى ${Math.min(endIndex, totalItems)} من ${totalItems} سجل`;
+                
+                renderInvoicesTable(paginatedInvoices);
+                renderPagination(totalPages);
             }
+            
+            // Render pagination controls
+            function renderPagination(totalPages) {
+                paginationNav.innerHTML = '';
+                
+                // First page button
+                const firstLi = document.createElement('li');
+                firstLi.style.margin = '0 5px';
+                firstLi.innerHTML = `<button class="btn btn-sm btn-primary ${currentPage === 1 ? 'disabled' : ''}" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(1)">
+                    <i class="fas fa-angle-double-right"></i>
+                </button>`;
+                paginationNav.appendChild(firstLi);
+                
+                // Previous page button
+                const prevLi = document.createElement('li');
+                prevLi.style.margin = '0 5px';
+                prevLi.innerHTML = `<button class="btn btn-sm btn-primary ${currentPage === 1 ? 'disabled' : ''}" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+                    <i class="fas fa-angle-right"></i>
+                </button>`;
+                paginationNav.appendChild(prevLi);
+                
+                // Page numbers
+                const maxVisiblePages = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageLi = document.createElement('li');
+                    pageLi.style.margin = '0 5px';
+                    pageLi.innerHTML = `<button class="btn btn-sm btn-primary ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+                    paginationNav.appendChild(pageLi);
+                }
+                
+                // Next page button
+                const nextLi = document.createElement('li');
+                nextLi.style.margin = '0 5px';
+                nextLi.innerHTML = `<button class="btn btn-sm btn-primary ${currentPage === totalPages ? 'disabled' : ''}" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+                    <i class="fas fa-angle-left"></i>
+                </button>`;
+                paginationNav.appendChild(nextLi);
+                
+                // Last page button
+                const lastLi = document.createElement('li');
+                lastLi.style.margin = '0 5px';
+                lastLi.innerHTML = `<button class="btn btn-sm btn-primary ${currentPage === totalPages ? 'disabled' : ''}" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${totalPages})">
+                    <i class="fas fa-angle-double-left"></i>
+                </button>`;
+                paginationNav.appendChild(lastLi);
+            }
+            
+            // Go to specific page
+            window.goToPage = function(page) {
+                currentPage = page;
+                loadInvoices();
+            };
             
             // Render invoices in table
             function renderInvoicesTable(invoices) {
@@ -1054,7 +1325,7 @@
                 
                 if (invoices.length === 0) {
                     const row = document.createElement('tr');
-                    row.innerHTML = `<td colspan="7" style="text-align: center;">لا توجد فواتير متطابقة مع معايير البحث</td>`;
+                    row.innerHTML = `<td colspan="8" style="text-align: center;">لا توجد فواتير متطابقة مع معايير البحث</td>`;
                     tbody.appendChild(row);
                     return;
                 }
@@ -1062,38 +1333,77 @@
                 invoices.forEach((invoice, index) => {
                     const row = document.createElement('tr');
                     
-                    // Determine status badge
                     let statusBadge = '';
                     if (invoice.status === 'paid') {
                         statusBadge = '<span class="badge badge-success">مدفوعة</span>';
                     } else if (invoice.status === 'pending') {
                         statusBadge = '<span class="badge badge-warning">قيد الانتظار</span>';
-                    } else {
+                    } else if (invoice.status === 'cancelled') {
                         statusBadge = '<span class="badge badge-danger">ملغاة</span>';
+                    } else if (invoice.status === 'returned') {
+                        statusBadge = '<span class="badge badge-info">مرتجعة</span>';
+                    }
+                    
+                    let returnStatusBadge = '';
+                    if (invoice.returnStatus === 'returned') {
+                        returnStatusBadge = '<span class="badge badge-info">مرتجعة بالكامل</span>';
+                    } else if (invoice.returnStatus === 'partially_returned') {
+                        returnStatusBadge = '<span class="badge badge-warning">مرتجعة جزئيًا</span>';
+                    } else {
+                        returnStatusBadge = '-';
                     }
                     
                     row.innerHTML = `
-                        <td>${index + 1}</td>
+                        <td>${(currentPage - 1) * pageSize + index + 1}</td>
                         <td>${invoice.number}</td>
                         <td>${invoice.supplier}</td>
                         <td>${formatDate(new Date(invoice.date))}</td>
                         <td>${invoice.total.toFixed(2)} ج.م</td>
                         <td>${statusBadge}</td>
+                        <td>${returnStatusBadge}</td>
                         <td>
                             <div class="item-actions">
-                                <button class="btn btn-info btn-sm" onclick="viewInvoice(${invoice.id})">
+                                <button class="btn btn-info btn-sm view-btn" data-id="${invoice.id}">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn btn-primary btn-sm" onclick="editInvoice(${invoice.id})">
+                                <button class="btn btn-primary btn-sm edit-btn" data-id="${invoice.id}">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteInvoice(${invoice.id})">
+                                <button class="btn btn-danger btn-sm delete-btn" data-id="${invoice.id}">
                                     <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="btn btn-warning btn-sm return-btn" data-id="${invoice.id}" ${invoice.returnStatus === 'returned' ? 'disabled' : ''}>
+                                    <i class="fas fa-undo"></i>
                                 </button>
                             </div>
                         </td>
                     `;
                     tbody.appendChild(row);
+                });
+                
+                // Attach event listeners to buttons
+                document.querySelectorAll('.view-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        viewInvoice(parseInt(this.getAttribute('data-id')));
+                    });
+                });
+                
+                document.querySelectorAll('.edit-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        editInvoice(parseInt(this.getAttribute('data-id')));
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        deleteInvoice(parseInt(this.getAttribute('data-id')));
+                    });
+                });
+                
+                document.querySelectorAll('.return-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        returnInvoice(parseInt(this.getAttribute('data-id')));
+                    });
                 });
             }
             
@@ -1121,13 +1431,17 @@
                     tbody.appendChild(row);
                 });
                 
-                // Update total
                 document.getElementById('invoiceTotal').textContent = `${calculateTotal().toFixed(2)} ج.م`;
             }
             
             // Calculate invoice total
             function calculateTotal() {
                 return invoiceItems.reduce((sum, item) => sum + item.total, 0);
+            }
+            
+            // Calculate total for a specific invoice
+            function calculateTotalForInvoice(invoice) {
+                return invoice.items.reduce((sum, item) => sum + item.total, 0);
             }
             
             // Reset invoice form
@@ -1143,6 +1457,14 @@
                 document.getElementById('quantity').value = '1';
                 document.getElementById('price').value = '';
                 document.getElementById('notes').value = '';
+                
+                document.getElementById('supplier').disabled = false;
+                document.getElementById('warehouse').disabled = false;
+                document.getElementById('item').disabled = false;
+                document.getElementById('quantity').disabled = false;
+                document.getElementById('price').disabled = false;
+                document.getElementById('addItemBtn').disabled = false;
+                document.getElementById('saveInvoiceBtn').style.display = 'block';
             }
             
             // Format date as dd/mm/yyyy
@@ -1154,7 +1476,7 @@
             }
             
             // View invoice details
-            window.viewInvoice = function(id) {
+            function viewInvoice(id) {
                 const invoice = invoices.find(inv => inv.id === id);
                 if (!invoice) return;
                 
@@ -1169,7 +1491,6 @@
                 document.getElementById('warehouse').value = invoice.warehouse;
                 document.getElementById('notes').value = invoice.notes || '';
                 
-                // Disable form elements when viewing
                 document.getElementById('supplier').disabled = true;
                 document.getElementById('warehouse').disabled = true;
                 document.getElementById('item').disabled = true;
@@ -1180,10 +1501,10 @@
                 
                 renderInvoiceItems();
                 invoiceModal.style.display = 'flex';
-            };
+            }
             
             // Edit invoice
-            window.editInvoice = function(id) {
+            function editInvoice(id) {
                 const invoice = invoices.find(inv => inv.id === id);
                 if (!invoice) return;
                 
@@ -1198,7 +1519,6 @@
                 document.getElementById('warehouse').value = invoice.warehouse;
                 document.getElementById('notes').value = invoice.notes || '';
                 
-                // Enable form elements when editing
                 document.getElementById('supplier').disabled = false;
                 document.getElementById('warehouse').disabled = false;
                 document.getElementById('item').disabled = false;
@@ -1209,16 +1529,53 @@
                 
                 renderInvoiceItems();
                 invoiceModal.style.display = 'flex';
-            };
+            }
             
             // Delete invoice
-            window.deleteInvoice = function(id) {
+            function deleteInvoice(id) {
                 if (confirm('هل أنت متأكد من حذف هذه الفاتورة؟')) {
                     invoices = invoices.filter(inv => inv.id !== id);
                     localStorage.setItem('invoices', JSON.stringify(invoices));
                     loadInvoices();
+                    alert('تم حذف الفاتورة بنجاح');
                 }
-            };
+            }
+            
+            // Return invoice
+            function returnInvoice(id) {
+                const invoice = invoices.find(inv => inv.id === id);
+                if (!invoice) return;
+                
+                currentReturnId = id;
+                document.getElementById('returnInvoiceModalTitle').textContent = `إرجاع الفاتورة ${invoice.number}`;
+                returnAllCheckbox.checked = false;
+                returnNotes.value = '';
+                
+                renderReturnItemsTable(invoice);
+                returnInvoiceModal.style.display = 'flex';
+            }
+            
+            // Render return items table
+            function renderReturnItemsTable(invoice) {
+                returnItemsTable.innerHTML = '';
+                
+                invoice.items.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    const returnedQuantity = invoice.returnedItems.find(ri => ri.id === item.id)?.quantity || 0;
+                    const availableQuantity = item.quantity - returnedQuantity;
+                    
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>${returnedQuantity}</td>
+                        <td>
+                            <input type="number" class="form-control" data-item-id="${item.id}" min="0" max="${availableQuantity}" value="0">
+                        </td>
+                    `;
+                    returnItemsTable.appendChild(row);
+                });
+            }
             
             // Remove item from invoice
             window.removeItem = function(index) {

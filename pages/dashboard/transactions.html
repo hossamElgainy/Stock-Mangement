@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل المعاملات - نظام إدارة المخازن</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3c8dbc;
+            --primary-dark: #367fa9;
+            --secondary: #00a65a;
+            --info: #00c0ef;
+            --warning: #f39c12;
+            --danger: #dd4b39;
+            --light: #f5f7fa;
+            --dark: #2c3e50;
+            --sidebar: #2c3e50;
+            --sidebar-dark: #1a252f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            right: 0;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: var(--sidebar-dark);
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+            overflow-y: auto;
+            height: calc(100vh - 60px);
+        }
+        
+        .sidebar-menu ul {
+            list-style: none;
+        }
+        
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: #b8c7ce;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .sidebar-menu li a:hover {
+            color: #fff;
+            background-color: #1e282c;
+        }
+        
+        .sidebar-menu li a i {
+            margin-left: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-menu li.active a {
+            color: #fff;
+            background-color: var(--primary);
+        }
+        
+        .sidebar-menu li.active a:before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: white;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-right: 250px;
+            transition: all 0.3s;
+        }
+        
+        .header {
+            padding: 15px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .mobile-header-title {
+            display: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-right: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .menu-toggle-container {
+            display: none;
+            align-items: center;
+        }
+        
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            color: var(--primary);
+            border: none;
+            padding: 5px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-items: center;
+        }
+        
+        .sidebar-close {
+            display: none;
+            background: transparent;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Transactions Section */
+        .transactions-filters {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(60, 141, 188, 0.3);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: #fff;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #008d4c;
+            transform: translateY(-2px);
+        }
+        
+        .transactions-list {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+        
+        .transaction-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .export-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .export-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pagination-btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 50px;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background-color: var(--primary);
+            color: #fff;
+            transform: scale(1.05);
+        }
+        
+        .pagination-btn.active {
+            background-color: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(60, 141, 188, 0.4);
+        }
+        
+        .pagination-btn:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .pagination-btn i {
+            margin-left: 5px;
+        }
+        
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .page-size-selector label {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .page-size-selector select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .page-size-selector select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-right: 220px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+                width: 280px;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-right: 0;
+                width: 100%;
+            }
+            
+            .menu-toggle-container {
+                display: flex;
+                align-items: center;
+            }
+            
+            .mobile-header-title {
+                display: block;
+            }
+            
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .sidebar-close {
+                display: block;
+            }
+            
+            .header {
+                padding: 10px 15px;
+            }
+            
+            .transactions-filters, .transactions-list {
+                margin: 10px;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .list-header {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 260px;
+            }
+            
+            .mobile-header-title {
+                font-size: 1rem;
+                margin-right: 10px;
+            }
+            
+            .user-info span {
+                display: none;
+            }
+            
+            .transaction-item {
+                padding: 10px;
+                font-size: 13px;
+            }
+            
+            .export-options {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            
+            .pagination-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .pagination {
+                gap: 5px;
+            }
+            
+            .pagination-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .page-size-selector select {
+                padding: 5px 8px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>نظام إدارة المخازن</h3>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> لوحة التحكم</a></li>
+                    <li><a href="warehouses.html"><i class="fas fa-warehouse"></i> إدارة المخازن</a></li>
+                    <li><a href="stockkeepers.html"><i class="fas fa-user-shield"></i> أمناء المخازن</a></li>
+                    <li><a href="items.html"><i class="fas fa-boxes"></i> إدارة الأصناف</a></li>
+                    <li><a href="categories.html"><i class="fas fa-tags"></i> إدارة الأقسام</a></li>
+                    <li><a href="suppliers.html"><i class="fas fa-truck"></i> إدارة الموردين</a></li>
+                    <li><a href="custody.html"><i class="fas fa-hand-holding"></i> إدارة العهدة</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
+                    <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
+                    <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                    <li class="active"><a href="transactions.html"><i class="fas fa-history"></i> سجل المعاملات</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="menu-toggle-container">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="mobile-header-title">سجل المعاملات</span>
+                </div>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40" alt="User">
+                    <span>أمين المخزن</span>
+                </div>
+            </div>
+            
+            <div class="transactions-filters">
+                <h3 style="margin-bottom: 20px;">تصفية المعاملات</h3>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>الفترة الزمنية</label>
+                        <select class="form-control" id="timePeriod">
+                            <option value="today">اليوم</option>
+                            <option value="week">أسبوع</option>
+                            <option value="month">شهر</option>
+                            <option value="quarter">ربع سنة</option>
+                            <option value="year">سنة</option>
+                            <option value="custom">مخصص</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>نوع المعاملة</label>
+                        <select class="form-control" id="transactionType">
+                            <option value="all">جميع المعاملات</option>
+                            <option value="custody">إضافة عهدة</option>
+                            <option value="item_in">إدخال صنف</option>
+                            <option value="item_out">إخراج صنف</option>
+                            <option value="invoice">إصدار فاتورة</option>
+                            <option value="installment">إضافة قسط</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>المخزن</label>
+                        <select class="form-control" id="warehouse">
+                            <option value="all">جميع المخازن</option>
+                            <option value="WH-001">المخزن الرئيسي</option>
+                            <option value="WH-002">مخزن الفرع الأول</option>
+                            <option value="WH-003">مخزن الفرع الثاني</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" id="stockkeeperFilter" style="display: none;">
+                        <label>الأمين</label>
+                        <select class="form-control" id="stockkeeper">
+                            <option value="all">جميع الأمناء</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-row" id="customDateRange" style="display:none;">
+                    <div class="filter-group">
+                        <label>من تاريخ</label>
+                        <input type="date" class="form-control" id="fromDate">
+                    </div>
+                    <div class="filter-group">
+                        <label>إلى تاريخ</label>
+                        <input type="date" class="form-control" id="toDate">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" id="applyFilters">
+                        <i class="fas fa-filter"></i> تطبيق الفلتر
+                    </button>
+                    <button class="btn btn-secondary" id="resetFilters" style="margin-right: 10px;">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </button>
+                </div>
+            </div>
+            
+            <div class="transactions-list">
+                <div class="list-header">
+                    <div class="page-size-selector">
+                        <label>عدد المعاملات لكل صفحة:</label>
+                        <select id="pageSize">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                    <div class="export-options">
+                        <button class="export-btn btn-primary">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </button>
+                        <button class="export-btn btn-secondary">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                </div>
+                <ul id="transactionsList">
+                </ul>
+                <div class="pagination-controls">
+                    <div class="pagination" id="pagination">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile sidebar elements
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            // Filter elements
+            const timePeriodSelect = document.getElementById('timePeriod');
+            const customDateRange = document.getElementById('customDateRange');
+            const transactionTypeSelect = document.getElementById('transactionType');
+            const warehouseSelect = document.getElementById('warehouse');
+            const stockkeeperFilter = document.getElementById('stockkeeperFilter');
+            const stockkeeperSelect = document.getElementById('stockkeeper');
+            const fromDateInput = document.getElementById('fromDate');
+            const toDateInput = document.getElementById('toDate');
+            const applyFiltersBtn = document.getElementById('applyFilters');
+            const resetFiltersBtn = document.getElementById('resetFilters');
+            const pageSizeSelect = document.getElementById('pageSize');
+            
+            // Pagination
+            let itemsPerPage = 5;
+            let currentPage = 1;
+            const pageSizes = [5, 10, 20];
+            
+            // Sample transaction data
+            const sampleData = {
+                stockkeepers: {
+                    '2154': 'حسام السيد',
+                    '2155': 'سارة علي',
+                    '2156': 'خالد حسن',
+                    '2157': 'محمد أحمد',
+                    '2158': 'فاطمة زهراء'
+                },
+                employees: {
+                    '245': 'خالد محمد',
+                    '246': 'أحمد علي',
+                    '247': 'ياسمين سمير',
+                    '248': 'علي محمود',
+                    '249': 'نورا خالد'
+                },
+                warehouses: {
+                    'WH-001': 'المخزن الرئيسي',
+                    'WH-002': 'مخزن الفرع الأول',
+                    'WH-003': 'مخزن الفرع الثاني'
+                },
+                warehouseStockkeepers: {
+                    'WH-001': ['2154', '2155'],
+                    'WH-002': ['2155', '2156'],
+                    'WH-003': ['2156', '2157', '2158']
+                },
+                transactions: [
+                    {
+                        id: 'TXN-001',
+                        timestamp: '2025-07-07T14:00:00Z',
+                        stockkeeper: '2154',
+                        warehouse: 'WH-001',
+                        type: 'custody',
+                        employee: '245'
+                    },
+                    {
+                        id: 'TXN-002',
+                        timestamp: '2025-07-14T13:30:00Z',
+                        stockkeeper: '2155',
+                        warehouse: 'WH-002',
+                        type: 'item_in',
+                        details: 'إدخال 10 وحدات من الصنف: كمبيوتر محمول'
+                    },
+                    {
+                        id: 'TXN-003',
+                        timestamp: '2025-07-14T12:45:00Z',
+                        stockkeeper: '2154',
+                        warehouse: 'WH-001',
+                        type: 'item_out',
+                        details: 'إخراج 5 وحدات من الصنف: طابعة ليزر'
+                    },
+                    {
+                        id: 'TXN-004',
+                        timestamp: '2025-07-14T11:20:00Z',
+                        stockkeeper: '2156',
+                        warehouse: 'WH-003',
+                        type: 'invoice',
+                        details: 'إصدار فاتورة INV-2025-1001 للمستلم: أحمد محمد'
+                    },
+                    {
+                        id: 'TXN-005',
+                        timestamp: '2025-07-14T10:15:00Z',
+                        stockkeeper: '2155',
+                        warehouse: 'WH-002',
+                        type: 'installment',
+                        employee: '246',
+                        details: 'إضافة قسط بقيمة 100 ريال'
+                    },
+                    {
+                        id: 'TXN-006',
+                        timestamp: '2025-07-13T09:00:00Z',
+                        stockkeeper: '2157',
+                        warehouse: 'WH-003',
+                        type: 'custody',
+                        employee: '247'
+                    },
+                    {
+                        id: 'TXN-007',
+                        timestamp: '2025-07-12T15:30:00Z',
+                        stockkeeper: '2158',
+                        warehouse: 'WH-003',
+                        type: 'item_in',
+                        details: 'إدخال 20 وحدة من الصنف: شاشات'
+                    },
+                    {
+                        id: 'TXN-008',
+                        timestamp: '2025-07-11T10:00:00Z',
+                        stockkeeper: '2154',
+                        warehouse: 'WH-001',
+                        type: 'custody',
+                        employee: '248'
+                    },
+                    {
+                        id: 'TXN-009',
+                        timestamp: '2025-07-10T14:20:00Z',
+                        stockkeeper: '2155',
+                        warehouse: 'WH-002',
+                        type: 'item_out',
+                        details: 'إخراج 3 وحدات من الصنف: لوحة مفاتيح'
+                    },
+                    {
+                        id: 'TXN-010',
+                        timestamp: '2025-07-09T16:45:00Z',
+                        stockkeeper: '2156',
+                        warehouse: 'WH-003',
+                        type: 'invoice',
+                        details: 'إصدار فاتورة INV-2025-1002 للمستلم: نورا خالد'
+                    }
+                ]
+            };
+            
+            // Initialize the page
+            function init() {
+                setupMobileSidebar();
+                setupFilters();
+                loadTransactions();
+                
+                // Set default date range
+                const today = new Date();
+                fromDateInput.valueAsDate = today;
+                toDateInput.valueAsDate = today;
+            }
+            
+            // Setup mobile sidebar functionality
+            function setupMobileSidebar() {
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.add('active');
+                    sidebarOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                sidebarClose.addEventListener('click', closeSidebar);
+                sidebarOverlay.addEventListener('click', closeSidebar);
+                
+                document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (window.innerWidth <= 768) {
+                            closeSidebar();
+                        }
+                    });
+                });
+                
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768) {
+                        closeSidebar();
+                    }
+                });
+            }
+            
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Setup filter and page size functionality
+            function setupFilters() {
+                timePeriodSelect.addEventListener('change', function() {
+                    customDateRange.style.display = this.value === 'custom' ? 'flex' : 'none';
+                });
+                
+                warehouseSelect.addEventListener('change', function() {
+                    updateStockkeeperOptions();
+                    stockkeeperFilter.style.display = this.value === 'all' ? 'none' : 'block';
+                    currentPage = 1;
+                    loadTransactions();
+                });
+                
+                applyFiltersBtn.addEventListener('click', function() {
+                    currentPage = 1;
+                    loadTransactions();
+                });
+                
+                resetFiltersBtn.addEventListener('click', function() {
+                    timePeriodSelect.value = 'today';
+                    customDateRange.style.display = 'none';
+                    transactionTypeSelect.value = 'all';
+                    warehouseSelect.value = 'all';
+                    stockkeeperFilter.style.display = 'none';
+                    stockkeeperSelect.innerHTML = '<option value="all">جميع الأمناء</option>';
+                    const today = new Date();
+                    fromDateInput.valueAsDate = today;
+                    toDateInput.valueAsDate = today;
+                    pageSizeSelect.value = '5';
+                    itemsPerPage = 5;
+                    currentPage = 1;
+                    loadTransactions();
+                });
+                
+                pageSizeSelect.addEventListener('change', function() {
+                    itemsPerPage = parseInt(this.value);
+                    currentPage = 1;
+                    loadTransactions();
+                });
+                
+                document.querySelectorAll('.export-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const format = this.classList.contains('btn-primary') ? 'Excel' : 'PDF';
+                        alert(`تم تصدير البيانات إلى ${format}`);
+                    });
+                });
+            }
+            
+            // Update stockkeeper dropdown based on selected warehouse
+            function updateStockkeeperOptions() {
+                const warehouse = warehouseSelect.value;
+                stockkeeperSelect.innerHTML = '<option value="all">جميع الأمناء</option>';
+                
+                if (warehouse !== 'all') {
+                    const stockkeepers = sampleData.warehouseStockkeepers[warehouse] || [];
+                    stockkeepers.forEach(stockkeeperId => {
+                        const option = document.createElement('option');
+                        option.value = stockkeeperId;
+                        option.textContent = sampleData.stockkeepers[stockkeeperId] || `الأمين ${stockkeeperId}`;
+                        stockkeeperSelect.appendChild(option);
+                    });
+                }
+            }
+            
+            // Format date to DD-MM-YYYY
+            function formatDate(date) {
+                const d = new Date(date);
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const year = d.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+            
+            // Get date range for filtering
+            function getDateRange(period) {
+                const today = new Date();
+                const start = new Date(today);
+                const end = new Date(today);
+                
+                switch (period) {
+                    case 'today':
+                        break;
+                    case 'week':
+                        start.setDate(today.getDate() - 7);
+                        break;
+                    case 'month':
+                        start.setMonth(today.getMonth() - 1);
+                        break;
+                    case 'quarter':
+                        start.setMonth(today.getMonth() - 3);
+                        break;
+                    case 'year':
+                        start.setFullYear(today.getFullYear() - 1);
+                        break;
+                    case 'custom':
+                        const from = new Date(fromDateInput.value);
+                        const to = new Date(toDateInput.value);
+                        return { start: from, end: to };
+                    default:
+                        return { start: today, end: today };
+                }
+                return { start, end };
+            }
+            
+            // Load transactions into the list
+            function loadTransactions() {
+                const list = document.getElementById('transactionsList');
+                list.innerHTML = '';
+                
+                const timePeriod = timePeriodSelect.value;
+                const transactionType = transactionTypeSelect.value;
+                const warehouse = warehouseSelect.value;
+                const stockkeeper = stockkeeperSelect.value;
+                
+                const { start, end } = getDateRange(timePeriod);
+                
+                const filteredTransactions = sampleData.transactions.filter(transaction => {
+                    const transactionDate = new Date(transaction.timestamp);
+                    
+                    // Date range filter
+                    const isInDateRange = transactionDate >= start && transactionDate <= new Date(end.getTime() + 86400000 - 1); // Include end of day
+                    
+                    // Transaction type filter
+                    const isTypeMatch = transactionType === 'all' || transaction.type === transactionType;
+                    
+                    // Warehouse filter
+                    const isWarehouseMatch = warehouse === 'all' || transaction.warehouse === warehouse;
+                    
+                    // Stockkeeper filter
+                    const isStockkeeperMatch = stockkeeper === 'all' || transaction.stockkeeper === stockkeeper;
+                    
+                    return isInDateRange && isTypeMatch && isWarehouseMatch && isStockkeeperMatch;
+                });
+                
+                console.log('Filtered Transactions:', filteredTransactions.length); // Debug log
+                
+                if (filteredTransactions.length === 0) {
+                    const li = document.createElement('li');
+                    li.className = 'transaction-item';
+                    li.textContent = 'لا توجد معاملات مطابقة';
+                    list.appendChild(li);
+                    renderPagination(0);
+                    return;
+                }
+                
+                // Pagination
+                const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedTransactions = filteredTransactions.slice(startIndex, endIndex);
+                
+                paginatedTransactions.forEach(transaction => {
+                    const li = document.createElement('li');
+                    li.className = 'transaction-item';
+                    
+                    const stockkeeperName = sampleData.stockkeepers[transaction.stockkeeper] || `الأمين ${transaction.stockkeeper}`;
+                    const date = formatDate(transaction.timestamp);
+                    
+                    if (transaction.type === 'custody') {
+                        const employeeName = sampleData.employees[transaction.employee] || `الموظف ${transaction.employee}`;
+                        li.textContent = `${stockkeeperName} أضاف عهدة جديدة للموظف ${employeeName} في ${date}`;
+                    } else {
+                        li.textContent = `${stockkeeperName} قام ب${getTransactionTypeText(transaction.type)} في ${date}`;
+                    }
+                    
+                    list.appendChild(li);
+                });
+                
+                console.log('Rendering Pagination with Total Pages:', totalPages); // Debug log
+                renderPagination(totalPages);
+            }
+            
+            // Render pagination controls
+            function renderPagination(totalPages) {
+                const pagination = document.getElementById('pagination');
+                pagination.innerHTML = '';
+                
+                // Always show at least page 1
+                const effectiveTotalPages = Math.max(1, totalPages);
+                
+                // Previous button
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'pagination-btn';
+                prevBtn.innerHTML = '<i class="fas fa-chevron-right"></i> السابق';
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        loadTransactions();
+                    }
+                });
+                pagination.appendChild(prevBtn);
+                
+                // Page numbers (limit to 5 pages, with ellipsis if needed)
+                const maxPagesToShow = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+                let endPage = Math.min(effectiveTotalPages, startPage + maxPagesToShow - 1);
+                
+                if (endPage - startPage < maxPagesToShow - 1) {
+                    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                }
+                
+                if (startPage > 1) {
+                    const firstPage = document.createElement('button');
+                    firstPage.className = 'pagination-btn';
+                    firstPage.textContent = '1';
+                    firstPage.addEventListener('click', () => {
+                        currentPage = 1;
+                        loadTransactions();
+                    });
+                    pagination.appendChild(firstPage);
+                    
+                    if (startPage > 2) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '...';
+                        ellipsis.style.padding = '8px';
+                        pagination.appendChild(ellipsis);
+                    }
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        loadTransactions();
+                    });
+                    pagination.appendChild(pageBtn);
+                }
+                
+                if (endPage < effectiveTotalPages) {
+                    if (endPage < effectiveTotalPages - 1) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '...';
+                        ellipsis.style.padding = '8px';
+                        pagination.appendChild(ellipsis);
+                    }
+                    
+                    const lastPage = document.createElement('button');
+                    lastPage.className = 'pagination-btn';
+                    lastPage.textContent = effectiveTotalPages;
+                    lastPage.addEventListener('click', () => {
+                        currentPage = effectiveTotalPages;
+                        loadTransactions();
+                    });
+                    pagination.appendChild(lastPage);
+                }
+                
+                // Next button
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'pagination-btn';
+                nextBtn.innerHTML = 'التالي <i class="fas fa-chevron-left"></i>';
+                nextBtn.disabled = currentPage === effectiveTotalPages;
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < effectiveTotalPages) {
+                        currentPage++;
+                        loadTransactions();
+                    }
+                });
+                pagination.appendChild(nextBtn);
+            }
+            
+            // Get transaction type text
+            function getTransactionTypeText(type) {
+                switch (type) {
+                    case 'item_in':
+                        return 'إدخال صنف';
+                    case 'item_out':
+                        return 'إخراج صنف';
+                    case 'invoice':
+                        return 'إصدار فاتورة';
+                    case 'installment':
+                        return 'إضافة قسط';
+                    default:
+                        return 'معاملة غير معروفة';
+                }
+            }
+            
+            init();
+        });
+    </script>
+</body>
+</html>

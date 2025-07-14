@@ -28,7 +28,7 @@
         }
         
         body {
-            background-color: #f5f7fa;
+            background-color: var(--light);
             color: #333;
             overflow-x: hidden;
         }
@@ -131,7 +131,6 @@
             z-index: 100;
         }
         
-        /* Mobile Header Title */
         .mobile-header-title {
             display: none;
             font-size: 1.2rem;
@@ -151,7 +150,6 @@
             margin-right: 10px;
         }
         
-        /* Menu Toggle */
         .menu-toggle-container {
             display: none;
             align-items: center;
@@ -178,7 +176,6 @@
             cursor: pointer;
         }
         
-        /* Overlay for mobile sidebar */
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -197,38 +194,113 @@
             visibility: visible;
         }
         
-        /* Card Styles */
-        .card {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-        }
-        
-        .card-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
+        /* Updated Settings Tabs */
+        .settings-tabs {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            padding: 5px;
         }
         
-        .card-header h3 {
-            margin: 0;
+        .settings-tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 16px;
+            color: var(--dark);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
         
-        .card-body {
-            padding: 20px;
+        .settings-tab:hover {
+            background-color: #f8f9fa;
+            color: var(--primary);
         }
         
-        /* Button Styles */
+        .settings-tab.active {
+            background-color: var(--primary);
+            color: #fff;
+            font-weight: 700;
+        }
+        
+        .tab-content {
+            display: none;
+            margin: 0 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .settings-form {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-section h4 {
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(60, 141, 188, 0.3);
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .col {
+            flex: 1;
+            min-width: 200px;
+        }
+        
         .btn {
-            padding: 8px 15px;
-            border-radius: 4px;
+            padding: 10px 20px;
+            border-radius: 6px;
             border: none;
             cursor: pointer;
             font-size: 14px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .btn-primary {
@@ -238,15 +310,7 @@
         
         .btn-primary:hover {
             background-color: var(--primary-dark);
-        }
-        
-        .btn-success {
-            background-color: var(--secondary);
-            color: #fff;
-        }
-        
-        .btn-success:hover {
-            background-color: #008d4c;
+            transform: translateY(-2px);
         }
         
         .btn-danger {
@@ -256,137 +320,30 @@
         
         .btn-danger:hover {
             background-color: #d33724;
+            transform: translateY(-2px);
         }
-        
-        .btn-info {
-            background-color: var(--info);
-            color: #fff;
-        }
-        
-        .btn-info:hover {
-            background-color: #00acd0;
-        }
-        
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-        
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-right: -5px;
-            margin-left: -5px;
-        }
-        
-        .col {
-            flex: 1;
-            padding: 0 5px;
-        }
-
-        /* Settings Specific Styles */
-        .settings-tabs {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-            margin: 0 20px 20px;
-            overflow-x: auto;
-        }
-        
-        .settings-tab {
-            padding: 12px 20px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-        
-        .settings-tab.active {
-            border-bottom-color: var(--primary);
-            color: var(--primary);
-            font-weight: 600;
-        }
-        
-        .settings-tab:hover:not(.active) {
-            background-color: #f8f9fa;
-        }
-        
-        .tab-content {
-            display: none;
-            margin: 0 20px;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .settings-form {
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .form-section {
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .form-section h4 {
-            margin-bottom: 15px;
-            color: var(--secondary);
-        }
-        
-        .theme-options {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
-        
-        .theme-option {
-            width: 60px;
-            height: 60px;
-            border-radius: 5px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        
-        .theme-option:hover, .theme-option.selected {
-            border-color: var(--primary);
-        }
-        
-        .theme-default { background: #3498db; }
-        .theme-dark { background: #2c3e50; }
-        .theme-green { background: #27ae60; }
-        .theme-purple { background: #9b59b6; }
         
         .user-profile {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
         }
         
         .user-avatar {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #eee;
+            border: 3px solid var(--primary);
             margin-left: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.05);
         }
         
         .avatar-upload {
@@ -402,34 +359,39 @@
             cursor: pointer;
         }
         
-        .backup-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .backup-card {
-            background: white;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .backup-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .backup-card i {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .avatar-upload-label {
+            display: block;
+            margin-top: 8px;
             color: var(--primary);
+            font-size: 13px;
+            text-align: center;
+            transition: color 0.3s ease;
         }
-
+        
+        .avatar-upload-label:hover {
+            color: var(--primary-dark);
+        }
+        
+        /* Checkbox Styling */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            font-size: 14px;
+            color: #333;
+        }
+        
         /* Responsive Styles */
         @media (max-width: 992px) {
             .sidebar {
@@ -476,7 +438,7 @@
                 padding: 10px 15px;
             }
             
-            .card, .settings-form, .settings-tabs, .tab-content {
+            .settings-form, .settings-tabs, .tab-content {
                 margin: 10px;
             }
             
@@ -493,10 +455,6 @@
             .user-avatar {
                 margin-left: 0;
                 margin-bottom: 15px;
-            }
-            
-            .backup-options {
-                grid-template-columns: 1fr;
             }
         }
         
@@ -516,17 +474,17 @@
             
             .settings-tabs {
                 flex-direction: column;
-                border-bottom: none;
+                padding: 0;
             }
             
             .settings-tab {
-                border-bottom: none;
-                border-right: 3px solid transparent;
+                border-radius: 0;
+                border-bottom: 1px solid #eee;
             }
             
             .settings-tab.active {
-                border-bottom: none;
-                border-right-color: var(--primary);
+                background-color: var(--primary);
+                color: #fff;
             }
         }
     </style>
@@ -555,6 +513,7 @@
                     <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
                     <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
                     <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="transactions.html"><i class="fas fa-history"></i> سجل المعاملات</a></li>
                     <li class="active"><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
                 </ul>
             </div>
@@ -577,9 +536,7 @@
             
             <div class="settings-tabs">
                 <div class="settings-tab active" data-tab="profile">الملف الشخصي</div>
-                <div class="settings-tab" data-tab="system">إعدادات النظام</div>
                 <div class="settings-tab" data-tab="notifications">الإشعارات</div>
-                <div class="settings-tab" data-tab="backup">النسخ الاحتياطي</div>
             </div>
             
             <!-- Profile Settings Tab -->
@@ -587,9 +544,9 @@
                 <div class="settings-form">
                     <div class="user-profile">
                         <div class="avatar-upload">
-                            <img src="https://via.placeholder.com/80" alt="User Avatar" class="user-avatar">
+                            <img src="https://via.placeholder.com/90" alt="User Avatar" class="user-avatar">
                             <input type="file" accept="image/*">
-                            <div class="text-muted" style="margin-top: 5px;">انقر لتغيير الصورة</div>
+                            <div class="avatar-upload-label">تغيير الصورة</div>
                         </div>
                         <div>
                             <h3>أحمد محمد</h3>
@@ -601,11 +558,11 @@
                     <div class="form-section">
                         <h4>المعلومات الشخصية</h4>
                         <div class="form-row">
-                            <div class="form-group">
+                            <div class="form-group col">
                                 <label>الاسم الأول</label>
                                 <input type="text" class="form-control" value="أحمد">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group col">
                                 <label>اسم العائلة</label>
                                 <input type="text" class="form-control" value="محمد">
                             </div>
@@ -618,6 +575,9 @@
                             <label>رقم الهاتف</label>
                             <input type="tel" class="form-control" value="01012345678">
                         </div>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التغييرات
+                        </button>
                     </div>
                     
                     <div class="form-section">
@@ -634,7 +594,9 @@
                             <label>تأكيد كلمة المرور الجديدة</label>
                             <input type="password" class="form-control">
                         </div>
-                        <button class="btn btn-primary">تحديث كلمة المرور</button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-lock"></i> تحديث كلمة المرور
+                        </button>
                     </div>
                     
                     <div class="form-section" style="border-bottom: none;">
@@ -645,101 +607,26 @@
                 </div>
             </div>
             
-            <!-- System Settings Tab -->
-            <div id="system-tab" class="tab-content">
-                <div class="settings-form">
-                    <div class="form-section">
-                        <h4>إعدادات المظهر</h4>
-                        <div class="form-group">
-                            <label>السمة</label>
-                            <div class="theme-options">
-                                <div class="theme-option theme-default selected" data-theme="default"></div>
-                                <div class="theme-option theme-dark" data-theme="dark"></div>
-                                <div class="theme-option theme-green" data-theme="green"></div>
-                                <div class="theme-option theme-purple" data-theme="purple"></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>لغة النظام</label>
-                            <select class="form-control">
-                                <option selected>العربية</option>
-                                <option>English</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-section">
-                        <h4>إعدادات المخزن</h4>
-                        <div class="form-group">
-                            <label>العملة الافتراضية</label>
-                            <select class="form-control">
-                                <option>جنيه مصري (ج.م)</option>
-                                <option>دولار أمريكي ($)</option>
-                                <option>ريال سعودي (ر.س)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>تنسيق التاريخ</label>
-                            <select class="form-control">
-                                <option selected>يوم/شهر/سنة (DD/MM/YYYY)</option>
-                                <option>سنة/شهر/يوم (YYYY-MM-DD)</option>
-                                <option>شهر/يوم/سنة (MM/DD/YYYY)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>الحد الأدنى لتنبيه المخزون</label>
-                            <input type="number" class="form-control" value="5">
-                            <small class="text-muted">سيتم إرسال تنبيه عندما تقل الكمية عن هذا الرقم</small>
-                        </div>
-                    </div>
-                    
-                    <div class="form-section" style="border-bottom: none;">
-                        <h4>إعدادات متقدمة</h4>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" checked> تمكين النسخ الاحتياطي التلقائي
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" checked> تمكين إشعارات البريد الإلكتروني
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox"> وضع الصيانة
-                            </label>
-                        </div>
-                        
-                        <button class="btn btn-primary">حفظ التغييرات</button>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Notifications Settings Tab -->
             <div id="notifications-tab" class="tab-content">
                 <div class="settings-form">
                     <div class="form-section">
                         <h4>إعدادات الإشعارات</h4>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" checked> تلقي إشعارات البريد الإلكتروني
-                            </label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="email-notifications" checked>
+                            <label for="email-notifications">تلقي إشعارات البريد الإلكتروني</label>
                         </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" checked> إشعارات تنبيه المخزون
-                            </label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="inventory-notifications" checked>
+                            <label for="inventory-notifications">إشعارات تنبيه المخزون</label>
                         </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" checked> إشعارات العهدة
-                            </label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="custody-notifications" checked>
+                            <label for="custody-notifications">إشعارات العهدة</label>
                         </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox"> إشعارات الفواتير
-                            </label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="invoices-notifications">
+                            <label for="invoices-notifications">إشعارات الفواتير</label>
                         </div>
                     </div>
                     
@@ -762,63 +649,8 @@
                                 <option>أسبوعي</option>
                             </select>
                         </div>
-                        
-                        <button class="btn btn-primary">حفظ التغييرات</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Backup Settings Tab -->
-            <div id="backup-tab" class="tab-content">
-                <div class="settings-form">
-                    <div class="form-section">
-                        <h4>النسخ الاحتياطي للنظام</h4>
-                        <p>قم بإنشاء نسخة احتياطية من جميع بيانات النظام لإمكانية استعادتها لاحقًا.</p>
-                        
-                        <div class="backup-options">
-                            <div class="backup-card">
-                                <i class="fas fa-database"></i>
-                                <h5>نسخ قاعدة البيانات</h5>
-                                <p>تصدير جميع البيانات إلى ملف SQL</p>
-                                <button class="btn btn-sm btn-primary">إنشاء نسخة</button>
-                            </div>
-                            
-                            <div class="backup-card">
-                                <i class="fas fa-file-excel"></i>
-                                <h5>تصدير إلى Excel</h5>
-                                <p>تصدير البيانات إلى ملفات Excel</p>
-                                <button class="btn btn-sm btn-primary">تصدير الآن</button>
-                            </div>
-                            
-                            <div class="backup-card">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <h5>رفع إلى السحابة</h5>
-                                <p>حفظ النسخة الاحتياطية على Google Drive</p>
-                                <button class="btn btn-sm btn-primary">رفع الآن</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-section" style="border-bottom: none;">
-                        <h4>استعادة النسخ الاحتياطية</h4>
-                        <div class="form-group">
-                            <label>اختر ملف النسخة الاحتياطية</label>
-                            <input type="file" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>نوع الاستعادة</label>
-                            <select class="form-control">
-                                <option>استعادة كاملة</option>
-                                <option>استعادة الأصناف فقط</option>
-                                <option>استعادة الفواتير فقط</option>
-                            </select>
-                        </div>
-                        
-                        <button class="btn btn-success">
-                            <i class="fas fa-redo"></i> استعادة النسخة الاحتياطية
-                        </button>
-                        <button class="btn btn-danger" style="margin-right: 10px;">
-                            <i class="fas fa-trash"></i> حذف جميع البيانات
+                        <button class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ التغييرات
                         </button>
                     </div>
                 </div>
@@ -836,29 +668,24 @@
             
             // Settings elements
             const tabs = document.querySelectorAll('.settings-tab');
-            const themeOptions = document.querySelectorAll('.theme-option');
             
             // Initialize the page
             function init() {
                 setupMobileSidebar();
                 setupSettingsTabs();
-                setupThemeSelection();
             }
             
             // Setup mobile sidebar functionality
             function setupMobileSidebar() {
-                // Toggle sidebar
                 menuToggle.addEventListener('click', function() {
                     sidebar.classList.add('active');
                     sidebarOverlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 });
                 
-                // Close sidebar
                 sidebarClose.addEventListener('click', closeSidebar);
                 sidebarOverlay.addEventListener('click', closeSidebar);
                 
-                // Close sidebar when clicking on a menu item (for mobile)
                 document.querySelectorAll('.sidebar-menu a').forEach(link => {
                     link.addEventListener('click', function() {
                         if (window.innerWidth <= 768) {
@@ -867,7 +694,6 @@
                     });
                 });
                 
-                // Close sidebar when window is resized to desktop view
                 window.addEventListener('resize', function() {
                     if (window.innerWidth > 768) {
                         closeSidebar();
@@ -875,7 +701,6 @@
                 });
             }
             
-            // Close sidebar function
             function closeSidebar() {
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
@@ -886,44 +711,19 @@
             function setupSettingsTabs() {
                 tabs.forEach(tab => {
                     tab.addEventListener('click', function() {
-                        // Remove active class from all tabs
                         tabs.forEach(t => t.classList.remove('active'));
-                        
-                        // Add active class to clicked tab
                         this.classList.add('active');
                         
-                        // Hide all tab contents
                         document.querySelectorAll('.tab-content').forEach(content => {
                             content.classList.remove('active');
                         });
                         
-                        // Show the selected tab content
                         const tabId = this.getAttribute('data-tab') + '-tab';
                         document.getElementById(tabId).classList.add('active');
                     });
                 });
             }
             
-            // Setup theme selection functionality
-            function setupThemeSelection() {
-                themeOptions.forEach(option => {
-                    option.addEventListener('click', function() {
-                        // Remove selected class from all options
-                        themeOptions.forEach(opt => {
-                            opt.classList.remove('selected');
-                        });
-                        
-                        // Add selected class to clicked option
-                        this.classList.add('selected');
-                        
-                        // Here you would actually change the theme
-                        const theme = this.getAttribute('data-theme');
-                        console.log('Theme changed to:', theme);
-                    });
-                });
-            }
-            
-            // Initialize the page
             init();
         });
     </script>

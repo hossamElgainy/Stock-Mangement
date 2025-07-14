@@ -39,7 +39,7 @@
             position: relative;
         }
         
-        /* Sidebar Styles - Updated */
+        /* Sidebar Styles */
         .sidebar {
             width: 250px;
             background: var(--sidebar);
@@ -131,7 +131,6 @@
             z-index: 100;
         }
         
-        /* Mobile Header Title */
         .mobile-header-title {
             display: none;
             font-size: 1.2rem;
@@ -151,7 +150,6 @@
             margin-right: 10px;
         }
         
-        /* Menu Toggle */
         .menu-toggle-container {
             display: none;
             align-items: center;
@@ -178,7 +176,6 @@
             cursor: pointer;
         }
         
-        /* Overlay for mobile sidebar */
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -197,7 +194,6 @@
             visibility: visible;
         }
         
-        /* Stats Cards */
         .stats-cards {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -241,7 +237,6 @@
             color: var(--dark);
         }
         
-        /* Card Styles */
         .card {
             background-color: #fff;
             border-radius: 5px;
@@ -265,7 +260,6 @@
             padding: 20px;
         }
         
-        /* Table Styles */
         .table-responsive {
             overflow-x: auto;
         }
@@ -286,7 +280,6 @@
             font-weight: 500;
         }
         
-        /* Button Styles */
         .btn {
             padding: 8px 15px;
             border-radius: 4px;
@@ -310,7 +303,6 @@
             font-size: 12px;
         }
         
-        /* Badge Styles */
         .badge {
             display: inline-block;
             padding: 3px 7px;
@@ -328,7 +320,6 @@
             background-color: var(--secondary);
         }
         
-        /* Image Styles */
         .item-img {
             width: 60px;
             height: 60px;
@@ -336,7 +327,26 @@
             border-radius: 4px;
         }
         
-        /* Responsive Styles */
+        .custody-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        
+        .status-active {
+            background-color: var(--secondary);
+        }
+        
+        .status-returned {
+            background-color: var(--primary);
+        }
+        
+        .status-overdue {
+            background-color: var(--danger);
+        }
+        
         @media (max-width: 992px) {
             .sidebar {
                 width: 220px;
@@ -441,6 +451,7 @@
                     <li><a href="employees.html"><i class="fas fa-users"></i> إدارة الموظفين</a></li>
                     <li><a href="invoices.html"><i class="fas fa-file-invoice"></i> الفواتير</a></li>
                     <li><a href="reports.html"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                    <li><a href="transactions.html"><i class="fas fa-history"></i> سجل المعاملات</a></li>
                     <li><a href="setting.html"><i class="fas fa-cog"></i> الإعدادات</a></li>
                 </ul>
             </div>
@@ -554,6 +565,30 @@
                     </table>
                 </div>
             </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3>آخر العهد المسلمة</h3>
+                    <a href="custody.html" class="btn btn-primary btn-sm">عرض الكل</a>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>كود العهدة</th>
+                                <th>المستلم</th>
+                                <th>الصنف</th>
+                                <th>تاريخ التسليم</th>
+                                <th>تاريخ الاستلام</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="custodyTableBody">
+                            <!-- Custody records will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -564,21 +599,84 @@
             const sidebar = document.getElementById('sidebar');
             const sidebarClose = document.getElementById('sidebarClose');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const custodyTableBody = document.getElementById('custodyTableBody');
+            
+            // Sample data (from custody.html)
+            const employees = [
+                { id: 1, name: 'أحمد محمد', department: 'IT' },
+                { id: 2, name: 'محمد علي', department: 'المالية' },
+                { id: 3, name: 'سارة عبدالله', department: 'الموارد البشرية' }
+            ];
+            
+            const custodyRecords = [
+                { 
+                    id: 1, 
+                    code: 'CST-2001', 
+                    employeeId: 1, 
+                    items: [
+                        { 
+                            id: 1, 
+                            code: 'ITM-1001', 
+                            name: 'كمبيوتر محمول',
+                            initialCondition: 'new',
+                            currentCondition: 'assigned',
+                            returnCondition: null,
+                            returnNotes: ''
+                        }
+                    ], 
+                    assignDate: '2023-05-15', 
+                    expectedReturnDate: '2023-08-15', 
+                    actualReturnDate: null, 
+                    status: 'active', 
+                    notes: 'تسليم لموظف جديد', 
+                    returnCondition: null,
+                    returnNotes: null
+                },
+                { 
+                    id: 2, 
+                    code: 'CST-2002', 
+                    employeeId: 2, 
+                    items: [
+                        { 
+                            id: 3, 
+                            code: 'ITM-2001', 
+                            name: 'طابعة',
+                            initialCondition: 'good',
+                            currentCondition: 'returned',
+                            returnCondition: 'excellent',
+                            returnNotes: 'تم الاستلام في حالة ممتازة بعد الصيانة'
+                        },
+                        { 
+                            id: 5, 
+                            code: 'ITM-3002', 
+                            name: 'كرسي مكتب',
+                            initialCondition: 'poor',
+                            currentCondition: 'returned',
+                            returnCondition: 'damaged',
+                            returnNotes: 'تم الاستلام مع تلف في الظهر'
+                        }
+                    ], 
+                    assignDate: '2023-06-01', 
+                    expectedReturnDate: '2023-09-01', 
+                    actualReturnDate: '2023-09-05', 
+                    status: 'returned', 
+                    notes: 'تسليم لمشروع مؤقت', 
+                    returnCondition: 'partially_damaged',
+                    returnNotes: 'تم استلام بعض الأصناف بحالة تالفة'
+                }
+            ];
             
             // Setup mobile sidebar functionality
             function setupMobileSidebar() {
-                // Toggle sidebar
                 menuToggle.addEventListener('click', function() {
                     sidebar.classList.add('active');
                     sidebarOverlay.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 });
                 
-                // Close sidebar
                 sidebarClose.addEventListener('click', closeSidebar);
                 sidebarOverlay.addEventListener('click', closeSidebar);
                 
-                // Close sidebar when clicking on a menu item (for mobile)
                 document.querySelectorAll('.sidebar-menu a').forEach(link => {
                     link.addEventListener('click', function() {
                         if (window.innerWidth <= 768) {
@@ -587,7 +685,6 @@
                     });
                 });
                 
-                // Close sidebar when window is resized to desktop view
                 window.addEventListener('resize', function() {
                     if (window.innerWidth > 768) {
                         closeSidebar();
@@ -595,15 +692,78 @@
                 });
             }
             
-            // Close sidebar function
             function closeSidebar() {
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
                 document.body.style.overflow = '';
             }
             
+            // Render custody table
+            function renderCustodyTable() {
+                custodyTableBody.innerHTML = '';
+                
+                // Get the last 5 custody records
+                const lastFiveRecords = custodyRecords.slice(-5);
+                
+                if (lastFiveRecords.length === 0) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td colspan="6" style="text-align: center;">لا توجد سجلات</td>`;
+                    custodyTableBody.appendChild(tr);
+                    return;
+                }
+                
+                lastFiveRecords.forEach(record => {
+                    const employee = employees.find(e => e.id === record.employeeId);
+                    const tr = document.createElement('tr');
+                    
+                    tr.innerHTML = `
+                        <td>${record.code}</td>
+                        <td>${employee ? employee.name : 'غير معروف'}</td>
+                        <td>${record.items.map(item => `${item.name} (${item.code})`).join('<br>')}</td>
+                        <td>${formatDate(record.assignDate)}</td>
+                        <td>${record.expectedReturnDate ? formatDate(record.expectedReturnDate) : '-'}</td>
+                        <td>
+                            <span class="custody-status ${getStatusClass(record)}"></span>
+                            ${getStatusText(record)}
+                        </td>
+                    `;
+                    
+                    custodyTableBody.appendChild(tr);
+                });
+            }
+            
+            // Format date for display
+            function formatDate(dateString) {
+                if (!dateString) return '-';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ar-EG');
+            }
+            
+            // Get status class for styling
+            function getStatusClass(record) {
+                if (record.status === 'returned') return 'status-returned';
+                
+                const today = new Date();
+                const returnDate = new Date(record.expectedReturnDate);
+                if (today > returnDate) return 'status-overdue';
+                
+                return 'status-active';
+            }
+            
+            // Get status text
+            function getStatusText(record) {
+                if (record.status === 'returned') return 'مرجعة';
+                
+                const today = new Date();
+                const returnDate = new Date(record.expectedReturnDate);
+                if (today > returnDate) return 'متأخرة';
+                
+                return 'نشطة';
+            }
+            
             // Initialize the page
             setupMobileSidebar();
+            renderCustodyTable();
         });
     </script>
 </body>
